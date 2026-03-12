@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "GlumbSys": {
+    "PortalCavaleirosDeSalomao": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -72,10 +72,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "GlumbSys:build:production"
+              "browserTarget": "PortalCavaleirosDeSalomao:build:production"
             },
             "development": {
-              "browserTarget": "GlumbSys:build:development"
+              "browserTarget": "PortalCavaleirosDeSalomao:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -83,7 +83,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "GlumbSys:build"
+            "browserTarget": "PortalCavaleirosDeSalomao:build"
           }
         },
         "test": {
