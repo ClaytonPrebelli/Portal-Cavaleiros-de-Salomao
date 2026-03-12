@@ -1,0 +1,34 @@
+<app-header></app-header>
+<div class="overlay" *ngIf="busy">
+    <img src="../../../assets/images/glumbsp_logo.png" alt="GLUMBSP" class="loading col-12 col-md-1">
+</div>
+<div class="home contanier-fluid">
+    <div class="home--inner container">
+        <app-breadcumb></app-breadcumb>
+        <div class="livros">
+            <div class="livros--buttons">
+                <button mat-raised-button class="livros--buttons--btn" (click)="seleciona('aprendiz')">Grau Aprendiz</button>
+                <button mat-raised-button class="livros--buttons--btn" (click)="seleciona('companheiro')" [disabled]="!currentUser.isCompanheiro">Grau Companheiro</button>
+                <button mat-raised-button class="livros--buttons--btn" (click)="seleciona('mestre')" [disabled]="!currentUser.isMestre">Grau Mestre</button>
+            </div>
+            <div class="livros--lista" *ngIf="selecionadoAprendiz">
+                <h2 class="livros--lista--title">Livros Grau Aprendiz</h2>
+                
+                <a *ngFor="let livro of livrosAprendiz" href="{{livro.link}}" download target="_blank"class="livros--lista--link">{{livro.nome.toUpperCase()}}&nbsp; <mat-icon  fontIcon="    menu_book"></mat-icon></a>
+
+            </div>
+            <div class="livros--lista" *ngIf="selecionadoCompanheiro">
+                <h2 class="livros--lista--title">Livros Grau Companheiro</h2>
+                
+                <a *ngFor="let livro of livrosCompanheiro" href="{{livro.link}}" download target="_blank"class="livros--lista--link">{{livro.nome.toUpperCase()}}&nbsp; <mat-icon  fontIcon="    menu_book"></mat-icon></a>
+
+            </div>
+            <div class="livros--lista" *ngIf="selecionadoMestre">
+                <h2 class="livros--lista--title">Livros Grau Mestre</h2>
+                
+                <a *ngFor="let livro of livrosMestre" href="{{livro.link}}" download target="_blank"class="livros--lista--link">{{livro.nome.toUpperCase()}}&nbsp; <mat-icon  fontIcon="    menu_book"></mat-icon></a>
+
+            </div>
+        </div>
+    </div>
+</div>

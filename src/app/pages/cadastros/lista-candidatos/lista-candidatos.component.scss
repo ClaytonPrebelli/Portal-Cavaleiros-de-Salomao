@@ -1,0 +1,82 @@
+.candidatos{
+    padding: 120px 0 0 0;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    &--inner{
+      &--table{
+         &--foto{
+            width:100%;
+         }
+      }
+    }
+}
+.cap{
+   text-transform: capitalize;
+}
+
+::ng-deep .mat-column-indice{
+   width:1%;
+}
+
+::ng-deep .mat-column-nome{
+   width:27%;
+}
+
+::ng-deep .mat-column-status{
+   width:25%;
+}
+::ng-deep .mat-column-acoes{
+   width:25%;
+}
+tr:nth-child(odd) {
+	background-color:#ffffff;
+	}
+	tr:nth-child(even) {
+	background-color:#e4e4e4;
+	}
+   .acoes{
+      display: flex;
+      width: 100%;
+      flex-direction: row;
+      justify-content: space-between;
+      &--btn{
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         padding: 4px;
+         column-gap: 8px;
+         border:1px solid #343e99;
+         border-radius: 4px;
+         height: 100%;
+         &--editar{
+            margin-left: 8px!important;
+            color:#343e99;
+
+         }
+      }
+   }
+   @media screen and (min-width:320px) and (max-width:767px){
+      
+      ::ng-deep .mat-column-nome{
+         width:60%;
+      }
+      ::ng-deep .mdc-data-table__cell{
+         text-align: center!important;
+      }
+      ::ng-deep .mat-column-status{
+         width:20%;
+         text-align: center!important;
+      }
+      ::ng-deep .mat-column-acoes{
+         width:20%;
+      }
+      .acoes{
+         &--btn{
+            flex-direction: column;
+            &--icon{
+               margin-left:0!important;
+               margin-right: 0!important;
+            }
+         }
+      }
+   }

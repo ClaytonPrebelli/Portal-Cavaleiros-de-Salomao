@@ -1,0 +1,67 @@
+.modalFamilia{
+    &--inner{
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        &--btn{
+            border-radius: 8px;
+            background-color: #343e99!important;
+            color:#fff!important;
+            margin-top: 24px;
+            &:disabled{
+               background-color: #f5f5f5!important;
+               border:1px solid #000;
+               color:#00000085!important;
+            }
+        }
+        &--form{
+            border:1px solid #343e99;
+            border-radius: 4px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            &--formulario{
+                width:100%;
+                display: flex;
+                flex-direction: column;
+                padding: 16px 0;
+                &--linha{
+                    width:100%;
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: space-between;
+                    align-items: center;
+                    &--btn{
+                        border-radius: 8px;
+                        background-color: #343e99!important;
+                        color:#fff!important;
+                        &:disabled{
+                           background-color: #f5f5f5!important;
+                           border:1px solid #000;
+                           color:#00000085!important;
+                        }
+                    }
+                }
+            }
+        }
+        &--lista{
+            border:1px solid #343e99;
+            border-radius: 4px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            &--linha{
+                border-bottom: 1px solid #000;
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 6px;
+                &--text{
+                    line-height: 0;
+                    margin-top: 6px;
+                    margin-bottom: 6px;
+                }
+            }
+        }
+    }
+}
+.botao{cursor: pointer;color:rgb(202, 7, 7);}

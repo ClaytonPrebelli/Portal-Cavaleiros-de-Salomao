@@ -1,0 +1,107 @@
+.candidato{
+    &--header{
+    position: fixed;
+    top:0;
+    left:0;
+    max-width: 100vw;
+    background: #343e99;
+    z-index: 99;
+    // background: radial-gradient(circle, rgb(177, 246, 248) 0%, rgba(0, 213, 255, 0.445) 100%);
+    padding: 6px 0;
+        &--inner{
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            &--left{
+                display: flex;
+                column-gap: 16px;
+                align-items: flex-end;
+                &--logo{
+                    width:60px;
+                }
+                &--title{
+                    font-size: 18pt;
+                    line-height: 0;
+                    color:#fff;
+                    text-align: center;
+                }
+            }
+        }
+    }
+    &--aviso{
+        margin-top: 120px;
+        margin-bottom: 24px;
+        &--inner{
+            padding: 16px;
+            border:1px solid #343e99;
+            &--title{
+                text-align: center;
+            }
+        }
+    }
+}
+.formulario{
+    &--inner{
+        border: 1px solid #343e99;
+        display: flex;
+        padding: 0;
+        flex-direction: column;
+        &--title{
+            width: 100%;
+            text-align: center;
+            padding: 16px 0;
+            line-height: 0;
+            background-color: #343e99;
+            color:#fff;
+            margin-bottom: 16px;
+        }
+        &--form{
+            width:100%;
+            display: flex;
+            flex-wrap: wrap;
+            padding: 16px 0;
+            &--linha{
+                width:100%;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                &--btn{
+                    height: 48px;
+                    margin-top:16px;
+                    border-radius: 8px;
+                    background-color: #343e99!important;
+                    color:#fff!important;
+                    &:disabled{
+                       background-color: #f5f5f5!important;
+                       border:1px solid #000;
+                       color:#00000085!important;
+                    }
+                }
+            }
+        }
+    }
+}
+.slides{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+::ng-deep.mat-mdc-slide-toggle .mdc-form-field{
+    display: flex;
+    flex-direction: column-reverse;
+    row-gap: 8px;
+}
+::ng-deep .mat-slide-toggle-label{
+    color: red!important;
+    font-weight: 500;
+}
+::ng-deep .mat-mdc-slide-toggle .mdc-switch:enabled .mdc-switch__track::after{
+    background-color: rgb(75, 64, 221)!important;
+}
+::ng-deep .mat-mdc-slide-toggle .mdc-switch.mdc-switch--selected:enabled .mdc-switch__handle::after{
+    background-color: rgb(40, 30, 182)!important;
+}
+::ng-deep mat-slide-toggle>div>label{
+    font-weight: 600;
+    text-align: center;
+}

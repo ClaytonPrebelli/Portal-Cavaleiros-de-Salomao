@@ -1,0 +1,60 @@
+.corpo{
+    background: rgb(200,249,251);
+    background: radial-gradient(circle, rgb(177, 246, 248) 0%, rgba(0, 213, 255, 0.445) 100%);
+    min-height: 100vh;
+    padding: 40px 0 ;
+    &--inner{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 60vh;
+        
+        &--box{
+            background-color: #ffffff77;
+            height: 350px;
+            padding: 24px;
+            box-shadow: 0 0 8px 2px #000000b7;
+            &--form{
+               width:100%;
+                display: flex;
+                flex-direction: column;
+                &--btns{
+                    width:100%;
+                    display: flex;
+                    justify-content: space-between;
+                    &--limpar{
+                        background-color: #fff56b!important;
+                    }
+                }
+            }
+        }
+    }
+}
+::ng-deep .mat-mdc-snack-bar-container.msg-error > div{
+    background-color: #AA120C!important;
+    color:#fff!important;
+    font-weight: bold!important;
+    
+ }
+::ng-deep .mat-mdc-snack-bar-container.msg-error > div > div > div >div >.mat-mdc-simple-snack-bar>div>button{
+    background-color: #AA120C!important;
+    color:#fff!important;
+    font-weight: bold!important;
+    
+ }
+ ::ng-deep .mat-mdc-snack-bar-container.msg-success>div{
+    background-color: #41e07e!important;
+    color:#000!important;
+    font-weight: bold!important;
+ }
+ ::ng-deep .mat-mdc-snack-bar-container.msg-success>div> div > div >div >.mat-mdc-simple-snack-bar>div>button{
+    background-color: #41e07e!important;
+    color:#000!important;
+    font-weight: bold!important;
+ }
+ ::ng-deep .mat-mdc-snack-bar-container.msg-success>div> div > div >div >.mat-mdc-simple-snack-bar>div{
+    
+    color:#000!important;
+    font-weight: bold!important;
+ }

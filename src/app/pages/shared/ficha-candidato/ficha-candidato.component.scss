@@ -1,0 +1,129 @@
+.ficha{
+    padding: 24px 0;
+    background-image: url(../../../../assets/images/bg_blue.jpg);
+    background-size: cover;
+    &--inner{
+        border:1px solid #343e99;
+        width:21cm;
+        height: 27cm;
+        background-color: #fff;
+        padding: 0;
+ 
+        &--head{
+            background-image: url(../../../../assets/images/head-fichaCandidato.png);
+            width:100%;
+            height: 3cm;
+            background-size: 21cm 3cm;
+        }
+    }
+}
+.separador{
+    width:100%;
+    background-color: #343e99;
+    color:#fff;
+    &--title{
+        text-align: center;
+    }
+}
+.pessoais{
+    margin-top:-16px;
+    padding: 8px 8px;
+    column-gap: 8px;
+   display: flex;
+   &--familiares{
+    width:100%;
+    border: 1px solid #343e99;
+    &--box{
+        display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid #000;
+        color:#000;
+    }
+    &--item{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color:#000;
+        &--text{
+            padding: 8px 8px 0 8px;
+            color:#000;
+        }
+    }
+   }
+   &--foto{
+    width:25%;
+   }
+   &--info{
+    width:100%;
+    border: 1px solid #343e99;
+    &--linha{
+       
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        border-bottom: 1px solid #000;
+        display: flex ;
+        justify-content: space-between;
+        &--text{
+            padding: 8px 8px 0 8px;
+            color:#000;
+            font-size: 10pt;
+        }
+        
+        
+    }
+   }
+}
+.nome{
+    width:65%;
+    font-size: 15pt;
+}
+
+.cim{
+    width:29%;
+     font-size: 15pt;
+}
+.sangue{
+    color:#aa0000;
+    font-weight: 600;
+}
+.loja{
+     font-size: 15pt;
+}
+.cargo,.titulo{
+    width:48%;
+}
+.datas{
+    width:33%;
+}
+.acoesFicha{
+    width:120px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top:40px;
+    right: 40px;
+    row-gap: 16px;
+    &--baixar{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 8px;
+        width:80px;
+        height: 70px;
+    }
+}
+.parent{
+    width:59%;
+    margin-bottom: 0;
+}
+.tel{
+    width:18%;
+    margin-bottom: 0;
+}
+.nasc{
+    width:22%;
+    margin-bottom: 0;
+    margin-top: 8px;
+}
+

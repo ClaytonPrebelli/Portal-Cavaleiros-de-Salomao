@@ -1,0 +1,378 @@
+.painel{
+    padding: 120px 0 0 0;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    &--inner{
+        
+        &--tab{
+            border:1px solid #343e99;
+            border-radius: 4px;
+            display: flex;
+            flex-wrap: wrap;
+            width:100%;
+            &--foto{
+               
+                
+            }
+            &--item{
+                width: 70%;
+                display: flex;
+                flex-wrap: wrap;
+               // justify-content: space-between;
+                width: 100%;
+                padding-left: 16px;
+                &--familiar{
+                    border-bottom: 1px solid #343e99;
+                    display: flex;
+                    flex-wrap: wrap;
+                    margin-bottom: 16px;
+                }
+                &--btn{
+                    margin-right: 16px;
+                    background-color: #343e99!important;
+                    color: #fff!important;
+                }
+                &--text{
+
+                   
+                }
+            }
+        }
+    }
+}
+.inner{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+   
+    &--info{
+       
+    }
+}
+::ng-deep .mat-mdc-tab-group{
+    flex-direction: row!important;
+    width: 100%;
+}
+::ng-deep .mat-mdc-tab-labels{
+    flex-direction: column!important;
+}
+::ng-deep .mat-mdc-tab-header{
+    border-right: 1px solid #343e99;
+}
+::ng-deep .mat-mdc-tab-body-wrapper{
+    padding: 16px;
+    height: 70vh;
+    max-height: 70vh;
+    overflow-y: scroll;
+    width: 100%;
+}
+.box-carteirinha{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.carteirinha{
+    &--frente{
+        width:39%;
+        height: 5.5cm;
+        border-radius: 16px;
+        border:2px solid black;
+        background-image: url("../../../../assets/images/bg-frente.png");
+        background-size: cover;
+        padding: 0.2cm 0.2cm;
+        overflow: hidden;
+        display: flex;
+        justify-content: space-between;
+        align-items: space-between;
+        row-gap: 10px;
+        flex-wrap: wrap;
+        
+        &--glumb{
+            width:1.5cm;
+            height: 1.7cm;
+        }
+        &--loja{
+            width:1.7cm;
+            height: 1.7cm;
+        }
+        &--head{
+            width:4.5cm;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            row-gap: 8px;
+            &--cim{
+                width: 100%;
+                padding: 0.2cm;
+                background-color: #f5f5f5;
+                border-radius: 4px;
+                box-shadow: 2px 2px 6px 2px #0000006b;
+                display: flex;
+                flex-direction: column;
+                row-gap: 16px;
+                &--title{
+                    font-size: 8px;
+                    font-weight: 600;
+                    line-height: 24px;
+                    font-family: Roboto, sans-serif;
+                    letter-spacing: .03125em;
+                    margin: 0;
+                    line-height: 0;
+                    text-align: center;
+                }
+                &--numero{
+                    font-size: 14px;
+                    font-weight: 600;
+                    line-height: 24px;
+                    font-family: Roboto, sans-serif;
+                    letter-spacing: .03125em;
+                    margin: 0;
+                    line-height: 0;
+                    text-align: center;
+                    color: #4e9ac2;
+    text-shadow: 1px 1px #000000e0;
+                }
+            }
+            &--nome{
+                width: 100%;
+                padding: 0.2cm;
+                background-color: #f5f5f5;
+                border-radius: 4px;
+                box-shadow: 2px 2px 6px 2px #0000006b;
+                display: flex;
+                flex-direction: column;
+                row-gap: 8px;
+                &--title{
+                    font-size: 10px;
+                    font-weight: 600;
+                    line-height: 24px;
+                    font-family: Roboto, sans-serif;
+                    letter-spacing: .03125em;
+                    margin: 0;
+                    line-height: 0;
+                    text-align: center;
+                    text-transform: uppercase;
+                }
+                &--grau{
+                    font-size: 8px;
+                    font-weight: 600;
+                    line-height: 24px;
+                    font-family: Roboto, sans-serif;
+                    letter-spacing: .03125em;
+                    margin: 0;
+                    line-height: 0;
+                    text-align: center;
+                    font-style: italic;
+             
+                }
+            }
+        }
+        &--corpo{
+           width: 100%;
+           
+            display: flex;
+            justify-content: center;
+            &--box{
+                width:5.2cm;
+                background-color: #f5f5f5;
+                border-radius: 4px;
+                box-shadow: 2px 2px 6px 2px #0000006b;
+                margin-left: -7px;
+                display: flex;
+             
+                &--infos{
+                    width:70%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    &--item{
+                        padding:0.07cm;
+                        border-bottom: 1px solid #000;
+                        line-height: 1;
+                        margin-bottom: 0;
+                    }
+                }
+                &--foto{
+                    width:30%;
+                    border-radius: 4px;
+                    box-shadow: 2px 2px 6px 2px #0000006b;
+                }
+            }
+        }
+        &--footer{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            &--inner{
+                width:5cm;
+                display: flex;
+                justify-content: space-between;
+                &--item{
+                    width:40%;
+                    padding: 0.1cm;
+                    background-color: #f5f5f5;
+                    border-radius: 4px;
+                    box-shadow: 2px 2px 6px 2px #0000006b;
+                    display: flex;
+                    flex-direction: column;
+                    &--text{
+                        text-align: center;
+                        line-height: 1;
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
+    &--tras{
+        width:8.5cm;
+        height: 5.5cm;
+        border-radius: 16px;
+        border:2px solid black;
+        background-image: url("../../../../assets/images/bg-tras.png"); 
+        background-size: cover;
+        padding: 0.5cm 0.2cm;
+        overflow: hidden;
+        display: flex;
+        justify-content: space-between;
+        align-items: space-between;
+        row-gap: 10px;
+        flex-wrap: wrap;
+        &--title{
+            width: 100%;
+            color:#fff;
+            font-size: 13px;
+            margin:0;
+            font-weight: 600;
+            line-height: 0;
+            text-align: center;
+        }
+        &--text{
+            width: 100%;
+            color:#fff;
+            font-size: 13px;
+            margin:0;
+            line-height: 1;
+            text-align: center;
+        }
+        &--graus{
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            height: fit-content;
+            &--item{
+                width:32%;
+                display: flex;
+                flex-direction: column;
+                padding: 0.1cm;
+                background-color: #f5f5f5;
+                border-radius: 4px;
+                box-shadow: 2px 2px 6px 2px #0000006b;
+                height: fit-content;
+                &--text{
+                    text-align: center;
+                    line-height: 1;
+                    margin: 0;
+                    font-weight: 600;
+                }
+            }
+        }
+        &--ass{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            height: fit-content;
+            &--img{
+                width:30%;
+            }
+        }
+    }
+  
+}
+.btnCarteirinha{
+    margin-right: 16px;
+    background-color: #343e99!important;
+    color: #fff!important;
+    margin:16px auto;
+}
+.box-button{
+    justify-content: center;
+    display: flex;
+}
+@media screen and (min-width:320px) and (max-width:767px){
+    ::ng-deep .mat-mdc-tab-group{
+        flex-direction: column!important;
+    }
+    p{
+        font-size: 12px;
+    }
+    ::ng-deep .mat-mdc-tab-body-wrapper{
+        padding: 0;
+    }
+    .carteirinha{
+        &--frente{
+            width:100%;
+            background-size: 100% 100%;
+            background-position: center center;
+            padding: 6px 0;
+            &--glumb{
+                width:21%;
+            }
+            &--head{
+                width:50%;
+                &--cim{
+                    &--title{
+                        font-size: 7px;
+                    }
+                }
+                &--nome{
+                    &--title{
+                        font-size: 8px;
+                    }
+                }
+            }
+            &--loja{
+                width:20%;
+                margin-right: 6px;
+            }
+            &--corpo{
+                &--box{
+                    width:64%;
+                    margin-left: 0;
+                    &--infos{
+                        &--item{
+                            font-size:11px;
+                        }
+                    }
+                }
+            }
+            &--footer{
+                &--inner{
+                    width: 60%;
+                }
+            }
+        }&--tras{
+            &--title{
+                font-size: 12px;
+            }
+            &--graus{
+                &--item{
+                    &--text{
+                        font-size:12px;
+                    }
+                }
+            }
+        }
+    }
+    .box-button{
+        justify-content: center;
+        display: flex;
+    }
+    .inner{
+        flex-direction: column;
+        align-items: center;
+    }
+}

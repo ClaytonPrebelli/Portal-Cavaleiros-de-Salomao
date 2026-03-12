@@ -1,0 +1,147 @@
+<app-header></app-header>
+<div class="overlay" *ngIf="busy">
+    <img src="../../../assets/images/glumbsp_logo.png" alt="GLUMBSP" class="loading col-12 col-md-1">
+</div>
+<div class="painel contanier-fluid">
+    <div class="painel--inner container">
+        <app-breadcumb></app-breadcumb>
+        <div class="painel--inner--tab">
+            <mat-tab-group>
+                
+                <mat-tab label="Meus dados"> 
+                    <div class="inner col-12">
+                    <img src="https://prebellisolucoes.com/FotosUsers/{{currentUser.id}}.png" class="painel--inner--tab--foto col-12 col-md-3">
+                    <div class="inner--info col-12 col-md-9">
+                    <div class="painel--inner--tab--item">
+                        <p class="painel--inner--tab--item--text col-8 col-md-9"><strong>Nome: </strong>{{currentUser.nome}}</p>
+                        <p class="painel--inner--tab--item--text col-3 col-md-2"><strong>CIM: </strong>{{macom.cim}}</p>
+                    </div>
+                    <div class="painel--inner--tab--item">
+                        <p class="painel--inner--tab--item--text col-12 col-md-6"><strong>Telefone: </strong>{{macom.fone}}</p>
+                        <p class="painel--inner--tab--item--text col-12 col-md-6"><strong>E-mail: </strong>{{macom.email}}</p>
+                    </div>
+             
+                    <div class="painel--inner--tab--item">
+                        <p class="painel--inner--tab--item--text col-12"><strong>Endereço: </strong>{{macom.endereco}} nº {{macom.numero}}, {{macom.bairro}} - {{macom.cidade}}</p>
+                  
+                    </div>
+             
+                    <div class="painel--inner--tab--item">
+                        <p class="painel--inner--tab--item--text col-12 col-md-6"><strong>Grau Simbólico: </strong>{{validaGrauSimb(macom)}}</p>
+                        <p class="painel--inner--tab--item--text col-12 col-md-3"><strong>Nasc.: </strong>{{macom.nascimento| date:"dd/MM/yyyy"}}</p>
+                        <p class="painel--inner--tab--item--text col-2"><strong>Idade: </strong>{{getAge(macom.nascimento.toString())}} anos</p>
+                    </div>
+                    <div class="painel--inner--tab--item">
+                        <p class="painel--inner--tab--item--text col-12 col-md-6"><strong>Loja: </strong>{{nomeLoja}} nº {{macom.loja?.numeroLoja}}</p>
+                        <p class="painel--inner--tab--item--text col-12 col-md-6"><strong>Cargo.: </strong>{{macom.cargo}}</p>
+                        
+                    </div>
+                    <div class="painel--inner--tab--item">
+                        <p class="painel--inner--tab--item--text col-12 col-md-6"><strong>Titulo: </strong>{{macom.titulo}}</p>
+                        
+                        
+                    </div>
+                    <!--<div class="painel--inner--tab--item">
+                        <a  class="painel--inner--tab--item--btn col-3" mat-raised-button><mat-icon>edit</mat-icon>Alterar dados</a>
+                        <a  class="painel--inner--tab--item--btn col-3" mat-raised-button><mat-icon>image</mat-icon>Alterar foto</a>
+                        <a  class="painel--inner--tab--item--btn col-3" mat-raised-button><mat-icon>key</mat-icon>Alterar senha</a>
+                        
+                    </div>-->
+
+                </div>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Carteirinha Digital">
+                    <div class="box-carteirinha">
+                        <div class="carteirinha--frente">
+                            <img src="../../../../assets/images/logos/glumbsp_logo.png" alt="" class="carteirinha--frente--glumb">
+                            <div class="carteirinha--frente--head">
+                                <div class="carteirinha--frente--head--cim">
+                                    <h4 class="carteirinha--frente--head--cim--title">CARTEIRA DE IDENTIDADE MAÇÔNICA</h4>
+                                    <h4 class="carteirinha--frente--head--cim--numero">{{pad(macom.cim)}}</h4>
+                                </div>
+                                <div class="carteirinha--frente--head--nome">
+                                    <h4 class="carteirinha--frente--head--nome--title">{{(macom.nome.toString())}}</h4>
+                                    <h4 class="carteirinha--frente--head--nome--grau">{{grau(macom)}}</h4>
+                                </div>
+                            </div>
+                            
+                            <img src="https://prebellisolucoes.com/FotosLojas/{{macom.loja?.id}}.png" alt="" class="carteirinha--frente--loja">
+                            <div class="carteirinha--frente--corpo">
+                                <div class="carteirinha--frente--corpo--box">
+                                    <div class="carteirinha--frente--corpo--box--infos">
+                                        <h5 class="carteirinha--frente--corpo--box--infos--item"><strong>Oriente:</strong> {{macom.loja?.oriente}}</h5>
+                                        <h5 class="carteirinha--frente--corpo--box--infos--item"><strong>Loja:</strong> {{nomeLoja}}</h5>
+                                        <h5 class="carteirinha--frente--corpo--box--infos--item"><strong>Obediência:</strong> GLUMBSP</h5>
+                                    </div>
+                                    <img src="https://prebellisolucoes.com/FotosUsers/{{macom.id}}.png" alt="" class="carteirinha--frente--corpo--box--foto">
+                                </div>
+                            </div>
+                            <div class="carteirinha--frente--footer">
+                                <div class="carteirinha--frente--footer--inner">
+                                    <div class="carteirinha--frente--footer--inner--item">
+                                        <h5 class="carteirinha--frente--footer--inner--item--text"><strong>Emissão</strong></h5>
+                                        <h5 class="carteirinha--frente--footer--inner--item--text"><strong>{{hoje}}</strong></h5>
+                                    </div>
+                                    <div class="carteirinha--frente--footer--inner--item">
+                                        <h5 class="carteirinha--frente--footer--inner--item--text"><strong>Validade</strong></h5>
+                                        <h5 class="carteirinha--frente--footer--inner--item--text"><strong>{{validade}}</strong></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carteirinha--tras">
+                            <h3 class="carteirinha--tras--title">GRANDE LOJA UNIDA MAÇÔNICA DO BRASIL-SP</h3>
+                            <h4 class="carteirinha--tras--text">Esta carteira de identidade maçônica constitui documento oficial da Grande Loja Unida Maçônica do Brasil-SP, certificando regularidade de obreiro.</h4>
+                            <div class="carteirinha--tras--graus">
+                                <div class="carteirinha--tras--graus--item">
+                                    <h4 class="carteirinha--tras--graus--item--text">Iniciação</h4>
+                                    <h4 class="carteirinha--tras--graus--item--text">{{(macom.iniciacao.toString().split("T")[0]).toString().split("-")[2]+"/"+(macom.iniciacao.toString().split("T")[0]).toString().split("-")[1]+"/"+(macom.iniciacao.toString().split("T")[0]).toString().split("-")[0]  }}</h4>
+                                </div>
+                                <div class="carteirinha--tras--graus--item">
+                                    <h4 class="carteirinha--tras--graus--item--text">Elevação</h4>
+                                    <h4 class="carteirinha--tras--graus--item--text">{{macom.elevacao!=null?((macom.elevacao.toString().split("T")[0]).toString().split("-")[2]+"/"+(macom.elevacao.toString().split("T")[0]).toString().split("-")[1]+"/"+(macom.elevacao.toString().split("T")[0]).toString().split("-")[0]):"XXXX"  }}</h4>
+                                </div>
+                                <div class="carteirinha--tras--graus--item">
+                                    <h4 class="carteirinha--tras--graus--item--text">Exaltação</h4>
+                                    <h4 class="carteirinha--tras--graus--item--text">{{macom.exaltacao!=null?((macom.exaltacao.toString().split("T")[0]).toString().split("-")[2]+"/"+(macom.exaltacao.toString().split("T")[0]).toString().split("-")[1]+"/"+(macom.exaltacao.toString().split("T")[0]).toString().split("-")[0]):"XXXX"  }}</h4>
+                                </div>
+                            </div>
+                            <div class="carteirinha--tras--ass">
+                                <img src="../../../../assets/images/ser.png" alt="" class="carteirinha--tras--ass--img">
+                            </div>
+                        </div>
+                        <div class="box-button col-12">
+                            <button mat-raised-button class="btnCarteirinha" (click)="openPDF()">Baixar</button>
+                        </div>
+                    </div>
+                   
+
+                </mat-tab>
+                <mat-tab label="Familiares"> 
+                    <div class="inner col-12">
+                        <div class="painel--inner--tab--item--familiar col-12" *ngFor="let familiar of macom.familiares">
+                            <p class="painel--inner--tab--item--text col-6"><strong>Nome: </strong>{{familiar.familiarNome}}</p>
+                            <p class="painel--inner--tab--item--text col-6"><strong>Parentesco: </strong>{{familiar.relacao}}</p>
+                            <p class="painel--inner--tab--item--text col-3"><strong>Data Nasc.: </strong>{{familiar.nascimentoFamiliar|date:"dd/MM/yyyy"}}</p>
+                            <p class="painel--inner--tab--item--text col-3"><strong>Idade: </strong>{{getAge(familiar.nascimentoFamiliar.toString())}} anos</p>
+                            <p class="painel--inner--tab--item--text col-6"><strong>Telefone: </strong>{{familiar.telefone}}</p>
+                        </div>
+                    </div>
+                    <div class="painel--inner--tab--item">
+                        <a  class="painel--inner--tab--item--btn col-3" mat-raised-button><mat-icon>person_add</mat-icon>Cadastrar Familiar</a>
+                        <a  class="painel--inner--tab--item--btn col-3" mat-raised-button><mat-icon>edit</mat-icon>Editar Familiar</a>
+                       
+                        
+                    </div>
+
+
+                </mat-tab>
+                <mat-tab label="Documentos"> Em Breve </mat-tab>
+                <mat-tab label="Débitos"> Em Breve</mat-tab>
+                <mat-tab label="Alterar Foto"> Em Breve</mat-tab>
+                <mat-tab label="Trocar Senha"> Em Breve</mat-tab>
+              </mat-tab-group>
+        </div>
+    </div>
+</div>

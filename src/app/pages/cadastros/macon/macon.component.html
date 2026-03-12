@@ -1,0 +1,217 @@
+<app-header></app-header>
+<div class="overlay" *ngIf="busy">
+    <img src="../../../assets/images/glumbsp_logo.png" alt="GLUMBSP" class="loading col-12 col-md-1">
+</div>
+<div class="macom contanier-fluid">
+    <div class="macom--inner container">
+        <app-breadcumb></app-breadcumb>
+        <h2 class="macom--inner--title">Notícia</h2>
+        <div class="macom--inner--box col-12">
+            <form class="macom--inner--box--form" [formGroup]="macomForm">
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-8">
+                    <mat-label>Nome</mat-label>
+                        <input matInput placeholder="Nome Completo" formControlName="nome" name="nome">
+                </mat-form-field>
+
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-1">
+                    <mat-label>CIM</mat-label>
+                    <input matInput placeholder="CIM" formControlName="cim" mask="000000"name="cim">
+                </mat-form-field>
+
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-2">
+                    <mat-label>CPF</mat-label>
+                    <input matInput placeholder="CPF" formControlName="cpf" mask="000.000.000-00"name="cpf">
+                </mat-form-field>
+
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-2">
+                    <mat-label>RG</mat-label>
+                    <input matInput placeholder="RG" formControlName="rg" name="rg">
+                </mat-form-field>
+                <mat-form-field class="box--form--input col-12 col-md-3">
+                    <mat-label>Data de Nascimento</mat-label>
+                    <input type="date" matInput formControlName="nascimento" name="nascimento" >
+                    
+                  </mat-form-field>
+
+
+                  <mat-form-field class="macom--inner--box--form--input col-12 col-md-3">
+                    <mat-label>Naturalidade</mat-label>
+                    <input matInput placeholder="Naturalidade" formControlName="naturalidade" name="naturalidade">
+                </mat-form-field>
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-2">
+                    <mat-label>Estado</mat-label>
+                    <mat-select formControlName="estado">
+                      <mat-option *ngFor="let estado of listaEstados" [value]="estado">
+                         <strong>{{estado}}</strong>
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field class="macom--inner--box--form--input col-12 col-md-3">
+                    <mat-label>Nacionalidade</mat-label>
+                    <input matInput placeholder="Nacionalidade" formControlName="nacionalidade" name="nacionalidade">
+                </mat-form-field>
+
+                  <mat-form-field class="macom--inner--box--form--input col-12 col-md-2">
+                    <mat-label>Estado Civil</mat-label>
+                    <input matInput placeholder="Estado Civil" formControlName="estadoCivil" name="estadoCivil">
+                </mat-form-field>
+                
+                  <mat-form-field class="macom--inner--box--form--input col-12 col-md-2">
+                    <mat-label>Tipo Sanguíneo</mat-label>
+                    <input matInput placeholder="Ex. A+" formControlName="tipoSanguineo" name="tipoSanguineo">
+                </mat-form-field>
+                
+                  <mat-form-field class="macom--inner--box--form--input col-12 col-md-2">
+                    <mat-label>CEP</mat-label>
+                    <input matInput placeholder="CEP" formControlName="cep" mask="00000-000" name="cep">
+                </mat-form-field>
+                
+                  <mat-form-field class="macom--inner--box--form--input col-12 col-md-2">
+                    <mat-label>Profissao</mat-label>
+                    <input matInput placeholder="Profissao" formControlName="profissao"  name="profissao">
+                </mat-form-field>
+                
+                  <mat-form-field class="macom--inner--box--form--input col-12 col-md-5">
+                    <mat-label>Endereço</mat-label>
+                    <input matInput placeholder="Ex. Rua Joao da Silva" formControlName="endereco"  name="endereco">
+                </mat-form-field>
+                
+                  <mat-form-field class="macom--inner--box--form--input col-12 col-md-2">
+                    <mat-label>Numero/Compl.</mat-label>
+                    <input matInput placeholder="33 Casa A" formControlName="numero"  name="numero">
+                </mat-form-field>
+                
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-2">
+                    <mat-label>Bairro</mat-label>
+                    <input matInput placeholder="Bairro" formControlName="bairro"  name="bairro">
+                </mat-form-field>
+
+                  <mat-form-field class="macom--inner--box--form--input col-12 col-md-2">
+                    <mat-label>Cidade</mat-label>
+                    <input matInput placeholder="Cidade" formControlName="cidade"  name="cidade">
+                </mat-form-field>
+
+                  <mat-form-field class="macom--inner--box--form--input col-12 col-md-3">
+                    <mat-label>E-mail</mat-label>
+                    <input type="email" matInput placeholder="Email" formControlName="email"  name="email">
+                </mat-form-field>
+
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-2">
+                    <mat-label>Telefone</mat-label>
+                    <input matInput placeholder="Telefone" formControlName="fone" mask="(00) 0 0000-0000" name="fone">
+                </mat-form-field>
+
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-2">
+                    <mat-label>Contato Emerg.</mat-label>
+                    <input matInput placeholder="Ex Maria da Silva" formControlName="contatoEmergencia"  name="contatoEmergencia">
+                </mat-form-field>
+
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-2">
+                    <mat-label>Tel. Emerg.</mat-label>
+                    <input matInput placeholder="Telefone" formControlName="foneEmergencia" mask="(00) 0 0000-0000" name="foneEmergencia">
+                </mat-form-field>
+
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-5">
+                    <mat-label>Pai</mat-label>
+                    <input matInput placeholder="Nome do Pai" formControlName="pai"  name="pai">
+                </mat-form-field>
+
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-6">
+                    <mat-label>Mãe</mat-label>
+                    <input matInput placeholder="Nome da Mãe" formControlName="mae"  name="mae">
+                </mat-form-field>
+
+                <div class="slides col-5 col-md-2">
+                    <mat-slide-toggle formControlName="isAprendiz" name="isAprendiz" >Aprendiz</mat-slide-toggle>
+                  </div>
+                <div class="slides col-5 col-md-2">
+                    <mat-slide-toggle formControlName="isCompanheiro" name="isCompanheiro">Companheiro</mat-slide-toggle>
+                  </div>
+                <div class="slides col-5 col-md-2">
+                    <mat-slide-toggle formControlName="isMestre" name="isMestre" >Mestre</mat-slide-toggle>
+                  </div>
+                <div class="slides col-5 col-md-2">
+                    <mat-slide-toggle formControlName="isAdmin" name="isAdmin" >Admin</mat-slide-toggle>
+                  </div>
+                <div class="slides col-5 col-md-2">
+                    <mat-slide-toggle formControlName="isSuperAdmin" name="isSuperAdmin" >SuperAdmin</mat-slide-toggle>
+                  </div>
+
+                <mat-form-field class="box--form--input col-12 col-md-3">
+                    <mat-label>Iniciação</mat-label>
+                    <input type="date" matInput formControlName="iniciacao" name="iniciacao" >
+                  </mat-form-field>
+
+                <mat-form-field class="box--form--input col-12 col-md-3" >
+                    <mat-label>Elevação</mat-label>
+                    <input type="date" matInput  formControlName="elevacao" name="elevacao"  [ariaDisabled]="!macomForm.value.isCompanheiro">
+                  </mat-form-field>
+
+                <mat-form-field class="box--form--input col-12 col-md-3" >
+                    <mat-label>Exaltação</mat-label>
+                    <input type="date" matInput  formControlName="exaltacao" name="exaltacao"  [ariaDisabled]="!macomForm.value.isMestre">
+                </mat-form-field>
+
+                <mat-form-field class="box--form--input col-12 col-md-3" >
+                    <mat-label>Data Afiliação</mat-label>
+                    <input type="date" matInput formControlName="dataAfiliacao" name="dataAfiliacao"  >
+                </mat-form-field>
+
+                  <mat-form-field class="macom--inner--box--form--input col-12 col-md-3">
+                    <mat-label>Forma Afiliação</mat-label>
+                    <mat-select formControlName="formaAfiliacao">
+                      <mat-option *ngFor="let forma of listaFormas" [value]="forma">
+                         <strong>{{forma}}</strong>
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  
+                  <mat-form-field class="macom--inner--box--form--input col-12 col-md-4">
+                    <mat-label>Cargo</mat-label>
+                    <input matInput placeholder="Cargo em Loja" formControlName="cargo"  name="cargo">
+                </mat-form-field>
+
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-4">
+                  <mat-label>Título</mat-label>
+                  <input matInput placeholder="Ex.: Ven.'., Gr.'. Sec.'., etc" formControlName="titulo"  name="titulo">
+              </mat-form-field>
+
+              <mat-form-field class="macom--inner--box--form--input col-12 col-md-4">
+                <mat-label>Status</mat-label>
+                <mat-select formControlName="statusId">
+                  
+                  <mat-option *ngFor="let status of listaStatus" [value]="status.id">
+                     <strong>{{status.status}}</strong>
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field class="macom--inner--box--form--input col-12 col-md-4">
+                <mat-label>Loja</mat-label>
+                <mat-select formControlName="lojaId">
+                  <mat-option value="0" aria-selected="true"> </mat-option>
+                  <mat-option *ngFor="let loja of listaLojas" [value]="loja.id">
+                     <strong>{{loja.nomeLoja}} nº{{loja.numeroLoja}}</strong>
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+
+              <mat-form-field class="macom--inner--box--form--input col-12 col-md-3">
+                <mat-label>Senha</mat-label>
+                <input matInput [type]="hide ? 'password' : 'text'" formControlName="pass" name="pass">
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Esconder Senha'" [attr.aria-pressed]="hide">
+                  <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+              </mat-form-field>
+
+                <img src="{{foto}}" alt="Foto macom" *ngIf="foto!=''" class="col-12 col-md-4  previa">
+               <div class="col-12"><button mat-raised-button class="input col-12 col-md-4" (click)="escolheFoto()"><mat-icon>image</mat-icon>{{textoFoto}}</button>
+                <input type="file" id="input-file" (change)="onFileChange($event)" style="display: none;"/>
+                <button mat-raised-button class="salvar col-12 col-md-4" (click)="salvar()" ><mat-icon>save</mat-icon>Salvar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+  
+</div>

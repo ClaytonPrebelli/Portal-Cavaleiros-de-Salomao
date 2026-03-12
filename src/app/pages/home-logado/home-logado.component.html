@@ -1,0 +1,87 @@
+<app-header></app-header>
+<div class="overlay" *ngIf="busy">
+    <img src="../../../assets/images/glumbsp_logo.png" alt="GLUMBSP" class="loading col-12 col-md-1">
+</div>
+<div class="home contanier-fluid">
+    <div class="home--inner container">
+        <h2 class="home--inner--title">IIr.'. Aniversariantes do Mês</h2>
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+            <ng-container matColumnDef="irmao">
+                <th mat-header-cell *matHeaderCellDef> Ir.'. </th>
+                <td mat-cell *matCellDef="let element"> 
+                  {{element.nome}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="loja">
+                <th mat-header-cell *matHeaderCellDef>Loja </th>
+                <td mat-cell *matCellDef="let element"> 
+                  {{element.loja.nomeLoja.replace("A.'.R.'.L.'.S.'. ","")+" "+element.loja.numeroLoja}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="oriente">
+                <th mat-header-cell *matHeaderCellDef>Oriente </th>
+                <td mat-cell *matCellDef="let element"> 
+                  {{element.loja.oriente}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="data">
+                <th mat-header-cell *matHeaderCellDef>Data </th>
+                <td mat-cell *matCellDef="let element"> 
+                  {{element.nascimento | date: "dd/MM/yyyy"}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="idade">
+                <th mat-header-cell *matHeaderCellDef>Idade </th>
+                <td mat-cell *matCellDef="let element"> 
+                  {{getAge(element.nascimento) + " Anos"}}
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns,true" updateStickyHeaderRowStyles></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <h2 class="home--inner--title mt-2">Familiares Aniversariantes</h2>
+
+        <table mat-table [dataSource]="dataSourceFamilia" class="mat-elevation-z8">
+            <ng-container matColumnDef="nome">
+                <th mat-header-cell *matHeaderCellDef>Nome </th>
+                <td mat-cell *matCellDef="let element"> 
+                  {{element.nome + " ("+element.parentesco+")"}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="irmao">
+                <th mat-header-cell *matHeaderCellDef>Ir.'. </th>
+                <td mat-cell *matCellDef="let element"> 
+                  {{element.irmao}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="loja">
+                <th mat-header-cell *matHeaderCellDef>Loja </th>
+                <td mat-cell *matCellDef="let element"> 
+                  {{element.loja.replace("A.'.R.'.L.'.S.'. ","")}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="data">
+                <th mat-header-cell *matHeaderCellDef>Data </th>
+                <td mat-cell *matCellDef="let element"> 
+                  {{element.data | date: "dd/MM/yyyy"}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="idade">
+                <th mat-header-cell *matHeaderCellDef>Idade </th>
+                <td mat-cell *matCellDef="let element"> 
+                  {{getAge(element.data) + " Anos"}}
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsFam,true" updateStickyHeaderRowStyles></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsFam;"></tr>
+        </table>
+    </div>
+</div>

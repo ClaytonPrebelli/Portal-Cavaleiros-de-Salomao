@@ -1,0 +1,88 @@
+::ng-deep .mat-mdc-snack-bar-container.msg-error > div{
+    background-color: #AA120C!important;
+    color:#fff!important;
+    font-weight: bold!important;
+    
+ }
+::ng-deep .mat-mdc-snack-bar-container.msg-error > div > div > div >div >.mat-mdc-simple-snack-bar>div>button{
+    background-color: #AA120C!important;
+    color:#fff!important;
+    font-weight: bold!important;
+    
+ }
+ ::ng-deep .mat-mdc-snack-bar-container.msg-success>div{
+    background-color: #41e07e!important;
+    color:#000!important;
+    font-weight: bold!important;
+ }
+ ::ng-deep .mat-mdc-snack-bar-container.msg-success>div> div > div >div >.mat-mdc-simple-snack-bar>div>button{
+    background-color: #41e07e!important;
+    color:#000!important;
+    font-weight: bold!important;
+ }
+ ::ng-deep .mat-mdc-snack-bar-container.msg-success>div> div > div >div >.mat-mdc-simple-snack-bar>div{
+    
+    color:#000!important;
+    font-weight: bold!important;
+ }
+.macom{
+    padding: 120px 0 0 0;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    &--inner{
+      &--box{
+         border:1px solid #343e99c9;
+         border-radius: 16px;
+         padding: 16px;
+         &--form{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+         }
+      }
+    }
+}
+.input{
+   border:1px solid #000;
+   margin-top: 16px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   line-height: 0;
+}
+.previa{
+   margin: 0 auto;
+}
+.slides{
+    margin-bottom: 16px;
+}
+.salvar{
+   margin-top:16px;
+   border-radius: 8px;
+   background-color: #343e99!important;
+   color:#fff!important;
+   &:disabled{
+      background-color: #f5f5f5!important;
+      border:1px solid #000;
+      color:#00000085!important;
+   }
+}
+
+::ng-deep.mat-mdc-slide-toggle .mdc-form-field{
+    display: flex;
+    flex-direction: column-reverse;
+    row-gap: 8px;
+}
+::ng-deep .mat-slide-toggle-label{
+    color: red!important;
+    font-weight: 500;
+}
+::ng-deep .mat-mdc-slide-toggle .mdc-switch:enabled .mdc-switch__track::after{
+    background-color: rgb(75, 64, 221)!important;
+}
+::ng-deep .mat-mdc-slide-toggle .mdc-switch.mdc-switch--selected:enabled .mdc-switch__handle::after{
+    background-color: rgb(40, 30, 182)!important;
+}
+::ng-deep mat-slide-toggle>div>label{
+    font-weight: 600;
+}

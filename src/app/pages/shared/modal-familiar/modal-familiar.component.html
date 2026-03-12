@@ -1,0 +1,40 @@
+<div class="container-fluid modalFamilia">
+    <div class="container modalFamilia--inner">
+        <h1 class="modalFamilia--inner--title">Cadastro de Familiares</h1>
+        <p class="modalFamilia--inner--text">Cadastre seus familiares de primeiro grau (Esposa, filhos e filhas)</p>
+        <div class="modalFamilia--inner--form">
+            <form class="modalFamilia--inner--form--formulario" [formGroup]="familiarForm">
+                <div class="modalFamilia--inner--form--formulario--linha">
+                    <mat-form-field class="col-12 col-md-7">
+                        <mat-label>Nome</mat-label>
+                        <input matInput placeholder="Nome Completo" formControlName="familiarNome" name="nome">
+                    </mat-form-field>
+                    <mat-form-field class=" col-12 col-md-4">
+                        <mat-label>Relação</mat-label>
+                        <input matInput placeholder="Ex. Esposa, filho,etc" formControlName="relacao" name="relacao">
+                    </mat-form-field>
+                </div>
+                <div class="modalFamilia--inner--form--formulario--linha">
+                    <mat-form-field class="col-12 col-md-4">
+                        <mat-label>Telefone</mat-label>
+                        <input matInput placeholder="Telefone" formControlName="telefone" name="telefone" mask="(00) 0 0000-0000">
+                    </mat-form-field>
+                    <mat-form-field class=" col-12 col-md-4">
+                        <mat-label>Data Nascimento</mat-label>
+                        <input type="date" matInput placeholder="Nascimento" formControlName="nascimentoFamiliar" name="nascimentoFamiliar">
+                    </mat-form-field>
+                    <button mat-raised-button class="modalFamilia--inner--form--formulario--linha--btn" [disabled]="!familiarForm.valid" (click)="adicionar()"><mat-icon>add</mat-icon>Adicionar</button>
+                </div>
+            </form>
+        </div>
+        <h2 class="modalFamilia--inner--subtitle">Familiares Adicionados</h2>
+        <div class="modalFamilia--inner--lista">
+            <div class="modalFamilia--inner--lista--linha" *ngFor="let item of listaFamiliares">
+                <h3 class="modalFamilia--inner--lista--linha--text col-6"><strong>Nome: </strong>{{item.familiarNome}}</h3>
+                <h3 class="modalFamilia--inner--lista--linha--text col-3"><strong>Relação: </strong>{{item.relacao}}</h3>
+                <mat-icon (click)="remover(listaFamiliares.indexOf(item))" class="botao">delete</mat-icon>
+            </div>
+        </div>
+        <button mat-raised-button class="modalFamilia--inner--btn col-12 col-md-3" (click)="salvar()"><mat-icon>save</mat-icon>Enviar</button>
+    </div>
+</div>

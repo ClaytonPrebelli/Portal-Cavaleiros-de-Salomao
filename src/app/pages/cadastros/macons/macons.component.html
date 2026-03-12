@@ -1,0 +1,83 @@
+
+<app-header></app-header>
+<div class="overlay" *ngIf="busy">
+    <img src="../../../assets/images/glumbsp_logo.png" alt="GLUMBSP" class="loading col-12 col-md-1">
+</div>
+<div class="macons contanier-fluid">
+    <div class="macons--inner container">
+        <app-breadcumb></app-breadcumb>
+        <h2 class="macons--inner--title">Maçons</h2>
+        <div class="macons--inner--buttons">
+            <button [routerLink]="['/cadastros/macons/0']" mat-raised-button class="macons--inner--buttons--item"><mat-icon>add</mat-icon>Cadastrar Maçon</button>
+            <div class="parametros">
+              <mat-form-field class="macom--inner--box--form--input col-12 col-md-4" >
+              <mat-label>Filtrar por Loja</mat-label>
+              <mat-select [(ngModel)]="lojaEscolhida">
+                <mat-option value="0" aria-selected="true" ><strong>Todas</strong></mat-option>
+                <mat-option *ngFor="let loja of listaLojas" value="{{loja.id}}">
+                   <strong>{{loja.nomeLoja}} nº{{loja.numeroLoja}}</strong>
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="macom--inner--box--form--input col-12 col-md-4" >
+              <mat-label>Filtrar por Status</mat-label>
+              <mat-select [(ngModel)]="statusEscolhido">
+                <mat-option value="0" aria-selected="true" ><strong>Todos</strong></mat-option>
+                <mat-option *ngFor="let status of listaStatus" value="{{status.id}}">
+                   <strong>{{status.status}}</strong>
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="macom--inner--box--form--input col-12 col-md-4">
+              <mat-label>Localizar</mat-label>
+              <input matInput placeholder="Ex. ium" #input [(ngModel)]="sentenca">
+            </mat-form-field>
+            <button mat-raised-button class="parametros--btn" (click)="buscarMacons()">Buscar</button>
+          </div>
+        </div>
+       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="indice">
+          <th mat-header-cell *matHeaderCellDef> Nr </th>
+          <td mat-cell *matCellDef="let element, let i = index"> 
+            {{i+1}}
+          </td>
+        </ng-container>
+            <ng-container matColumnDef="foto">
+                <th mat-header-cell *matHeaderCellDef> foto </th>
+                <td mat-cell *matCellDef="let element"> 
+                  <img src="https://prebellisolucoes.com/FotosUsers/{{element.id}}.png" alt="" class="macons--inner--table--foto"></td>
+              </ng-container>
+            <ng-container matColumnDef="cim">
+                <th mat-header-cell *matHeaderCellDef> CIM </th>
+                <td mat-cell *matCellDef="let element"> {{element.cim | qtdNumeros}}</td>
+              </ng-container>
+            <ng-container matColumnDef="nome">
+                <th mat-header-cell *matHeaderCellDef class="cap"> Nome </th>
+                <td mat-cell *matCellDef="let element"> {{element.nome}}</td>
+              </ng-container>
+              <ng-container matColumnDef="loja">
+                <th mat-header-cell *matHeaderCellDef> Loja </th>
+                <td mat-cell *matCellDef="let element"> {{element.loja.nomeLoja}} nº {{element.loja.numeroLoja}}</td>
+              </ng-container>
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef> Status </th>
+                <td mat-cell *matCellDef="let element"> {{element.status.status}}</td>
+              </ng-container>
+            <ng-container matColumnDef="acoes">
+                <th mat-header-cell *matHeaderCellDef> Ações </th>
+                <td mat-cell *matCellDef="let element"> 
+                  <div class="acoes">
+                    <a routerLink="/cadastros/macons/{{element.id}}"  class="acoes--btn" mat-raised-button><mat-icon class="acoes--btn--editar">edit</mat-icon>Editar</a>
+                  
+                    <a routerLink="/ficha/macons/{{element.id}}"  class="acoes--btn" mat-raised-button><mat-icon class="acoes--btn--editar">picture_as_pdf</mat-icon>Ficha</a>
+                    <a routerLink="/documentos/macons/{{element.id}}"  class="acoes--btn" mat-raised-button><mat-icon class="acoes--btn--editar">folder</mat-icon>Documentos</a>
+                    
+                  </div>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns,true" updateStickyHeaderRowStyles></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </div>
+</div>

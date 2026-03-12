@@ -1,0 +1,210 @@
+
+<div class="overlay" *ngIf="busy">
+    <img src="../../../assets/images/glumbsp_logo.png" alt="GLUMBSP" class="loading col-12 col-md-1">
+</div>
+<header class="candidato--header container-fluid mat-elevation-z8">
+    <div class="candidato--header--inner container">
+            <img src="../../../../assets/images/glumbsp_logo.png" alt="GLUMBSP" class="candidato--header--inner--left--logo col-12 col-md-1">
+            <h1 class="candidato--header--inner--left--title col-12 col-md-11">Ficha de Candidato</h1>
+    </div>
+</header>
+<div class="candidato--aviso container-fluid">
+    <div class="candidato--aviso--inner container">
+        <h2 class="candidato--aviso--inner--title">AVISO</h2>
+        <p class="candidato--aviso--inner--text">Boas vindas. Se você está aqui é porque recebeu um link de um Maçom que acredita que o senhor tenha um perfil apto a ingressar à Sublime Ordem da Maçonaria.</p>
+        <p class="candidato--aviso--inner--text">O preenchimento deste formulário é de suma importância e <strong>não garante aceitação imediata</strong>. Através dele, iremos avaliar e marcar uma entrevista para que o conheçamos melhor e, após avaliação, informar sobre a possível aceitação, portanto, preencha com suas informações verdadeiras e precisas.</p>
+    </div>
+</div>
+
+<div class="formulario container-fluid">
+    <div class="formulario--inner container">
+        <h2 class="formulario--inner--title">Formulário de Cadastro</h2>
+        <form class="formulario--inner--form" [formGroup]="candidatoForm">
+            <div class="formulario--inner--form--linha">
+                
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-5">
+                    <mat-label>Nome</mat-label>
+                        <input matInput placeholder="Nome Completo" formControlName="nome" name="nome">
+                </mat-form-field>
+
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-3">
+                    <mat-label>CPF</mat-label>
+                        <input matInput placeholder="CPF" mask="000.000.000-00" formControlName="cpf" name="cpf">
+                </mat-form-field>
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-3">
+                    <mat-label>RG</mat-label>
+                        <input matInput placeholder="RG" formControlName="rg" name="rg">
+                </mat-form-field>
+
+            </div>
+
+            <div class="formulario--inner--form--linha">
+                
+                <mat-form-field class="macom--inner--box--form--input col-6 col-md-2">
+                    <mat-label>Data Expedição</mat-label>
+                        <input type="date" matInput  formControlName="dataExpedicao" name="dataExpedicao">
+                </mat-form-field>
+                <mat-form-field class="macom--inner--box--form--input col-6 col-md-2">
+                    <mat-label>Data Nascimento</mat-label>
+                        <input type="date" matInput  formControlName="nascimento" name="nascimento">
+                </mat-form-field>
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-3">
+                    <mat-label>Religião</mat-label>
+                        <input matInput placeholder="Ex. Catolico, Espirita" formControlName="religiao" name="religiao">
+                </mat-form-field>
+                <div class="slides col-5 col-md-2">
+                    <mat-slide-toggle formControlName="acreditaSerSupremo" name="acreditaSerSupremo" required>Acredita em um Ser Supremo?</mat-slide-toggle>
+                  </div>
+            </div>
+
+            <div class="formulario--inner--form--linha">
+                
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-5">
+                    <mat-label>Naturalidade</mat-label>
+                        <input matInput placeholder="Cidade em que nasceu" formControlName="naturalidade" name="naturalidade">
+                </mat-form-field>
+
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-2">
+                    <mat-label>Estado</mat-label>
+                    <mat-select formControlName="estado">
+                        <mat-option *ngFor="let estado of listaEstados" [value]="estado">
+                           <strong>{{estado}}</strong>
+                        </mat-option>
+                      </mat-select>
+                </mat-form-field>
+                
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-4">
+                    <mat-label>Nacionalidade</mat-label>
+                        <input matInput placeholder="Ex. Brasileiro" formControlName="nacionalidade" name="nacionalidade">
+                </mat-form-field>
+
+            </div>
+
+            <div class="formulario--inner--form--linha">
+                
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-3">
+                    <mat-label>Estado Civil</mat-label>
+                        <input matInput placeholder="Ex. Casado, Solteiro,etc" formControlName="estadoCivil" name="estadoCivil">
+                </mat-form-field>
+
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-5">
+                    <mat-label>Profissão</mat-label>
+                        <input matInput placeholder="Profissão" formControlName="profissao" name="profissao">
+                </mat-form-field>
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-3">
+                    <mat-label>Tipo Sanguíneo</mat-label>
+                        <input matInput placeholder="Ex. A+" formControlName="tipoSanguineo" name="tipoSanguineo">
+                </mat-form-field>
+
+            </div>
+
+            <div class="formulario--inner--form--linha">
+                
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-6">
+                    <mat-label>Endereço</mat-label>
+                        <input matInput placeholder="Endereço" formControlName="endereco" name="endereco">
+                </mat-form-field>
+
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-3">
+                    <mat-label>Núm./Complemento</mat-label>
+                        <input matInput placeholder="Ex. 10 cs1" formControlName="numero" name="numero">
+                </mat-form-field>
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-2">
+                    <mat-label>CEP</mat-label>
+                        <input matInput placeholder="CEP" formControlName="cep" name="cep" mask="00000-000">
+                </mat-form-field>
+
+            </div>
+
+            <div class="formulario--inner--form--linha">
+                
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-3">
+                    <mat-label>Bairro</mat-label>
+                        <input matInput placeholder="Bairro" formControlName="bairro" name="bairro">
+                </mat-form-field>
+
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-5">
+                    <mat-label>Cidade</mat-label>
+                        <input matInput placeholder="Cidade" formControlName="cidade" name="cidade">
+                </mat-form-field>
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-3">
+                    <mat-label>Tempo Moradia</mat-label>
+                        <input matInput placeholder="Ex. 3 anos" formControlName="tempoMoradia" name="tempoMoradia" >
+                </mat-form-field>
+
+            </div>
+            <div class="formulario--inner--form--linha">
+                
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-3">
+                    <mat-label>E-mail</mat-label>
+                        <input type="email" matInput placeholder="E-mail" formControlName="email" name="email">
+                </mat-form-field>
+
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-5">
+                    <mat-label>Telefone</mat-label>
+                        <input matInput placeholder="Telefone" mask="(00) 0 0000-0000" formControlName="fone" name="fone">
+                </mat-form-field>
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-3">
+                    <mat-label>Renda Mensal</mat-label>
+                        <input matInput placeholder="Aproximada"  formControlName="renda" name="renda" >
+                </mat-form-field>
+
+            </div>
+            <div class="formulario--inner--form--linha">
+                
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-5">
+                    <mat-label>Mãe</mat-label>
+                        <input  matInput placeholder="Mãe" formControlName="mae" name="mae">
+                </mat-form-field>
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-5">
+                    <mat-label>Pai</mat-label>
+                        <input  matInput placeholder="Pai" formControlName="pai" name="pai">
+                </mat-form-field>
+
+                <div class="slides col-5 col-md-1">
+                    <mat-slide-toggle formControlName="paiMacom" name="paiMacom" required>Pai Maçom?</mat-slide-toggle>
+                  </div>
+
+            </div>
+            <div class="formulario--inner--form--linha">
+                
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-5">
+                    <mat-label>Vícios</mat-label>
+                        <input  matInput placeholder="Vícios" formControlName="vicios" name="vicios">
+                </mat-form-field>
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-6">
+                    <mat-label>Aptidões</mat-label>
+                        <input  matInput placeholder="Aptidões" formControlName="aptidoes" name="aptidoes">
+                </mat-form-field>
+
+             
+
+            </div>
+            <div class="formulario--inner--form--linha">
+                
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-3">
+                    <mat-label>Tel Emergência</mat-label>
+                        <input  matInput placeholder="Tel Emergência" formControlName="foneEmergencia" name="foneEmergencia" mask="(00) 0 0000-0000">
+                </mat-form-field>
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-3">
+                    <mat-label>Contato Emergência</mat-label>
+                        <input  matInput placeholder="Contato Emergência" formControlName="contatoEmergencia" name="contatoEmergencia">
+                </mat-form-field>
+
+                <div class="slides col-5 col-md-4">
+                    <mat-slide-toggle formControlName="familiaConcorda" name="familiaConcorda" required>A Família concorda com o ingresso?</mat-slide-toggle>
+                  </div>
+
+            </div>
+            <div class="formulario--inner--form--linha">
+                <mat-form-field class="macom--inner--box--form--input col-12 col-md-12">
+                    <mat-label>Quais os motivos o levaram a querer ingressar na Maçonaria?</mat-label>
+                        <textarea rows="4"  matInput placeholder="Quais os motivos o levaram a querer ingressar na Maçonaria?" formControlName="motivos" name="motivos"></textarea>
+                </mat-form-field>
+            </div>
+            <div class="formulario--inner--form--linha">
+                <button mat-raised-button class="formulario--inner--form--linha--btn col-12 col-md-3" (click)="salvar()" ><mat-icon>send</mat-icon>Enviar</button>
+            </div>
+        </form>
+    </div>
+</div>
