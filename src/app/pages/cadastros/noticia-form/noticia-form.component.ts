@@ -46,7 +46,7 @@ export class NoticiaFormComponent implements OnInit{
         this.noticiaService.verNoticia(parseInt(id)).subscribe(data=>{
           this.noticiaForm.controls['id'].setValue(data.id)
           this.noticiaForm.controls['titulo'].setValue(data.titulo)
-          var texto = data.texto.replaceAll("</p>","\n").replaceAll("<p>","")
+          var texto = data.texto.replace("</p>","\n").replace("<p>","")
           this.noticiaForm.controls['texto'].setValue(texto)
           this.noticiaForm.controls['dataPublicacao'].setValue(data.dataPublicacao)
           this.noticiaForm.controls['autorId'].setValue(data.autorId)

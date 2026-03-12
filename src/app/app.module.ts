@@ -1,5 +1,3 @@
-import { NgModule, LOCALE_ID, DEFAULT_CURRENCY_CODE } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -24,9 +22,6 @@ import { AcreditaPipe } from './core/pipes/acredita.pipe';
 import { BibliotecaComponent } from './pages/biblioteca/biblioteca.component';
 import { DocumentoComponent } from './pages/cadastros/macon/documento/documento.component';
 
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { NgxMaskModule, IConfig } from 'ngx-mask';
-import { CurrencyMaskModule } from 'ng2-currency-mask';
 
 // Angular Material
 import { MatInputModule } from '@angular/material/input';
@@ -47,6 +42,12 @@ import { MatExpansionModule } from '@angular/material/expansion';
 // Locale
 import { registerLocaleData } from '@angular/common';
 import ptBr from '@angular/common/locales/pt';
+import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule } from '@angular/core';
+import { IConfig, NgxMaskModule } from 'ngx-mask';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
 registerLocaleData(ptBr);
 
 const maskConfig: Partial<IConfig> = {
