@@ -1,31 +1,76 @@
-<div class="overlay" *ngIf="busy">
-    <img src="../../../assets/images/logos/salomao.png" alt="GLUMBSP" class="loading col-12 col-md-1">
-</div>
-<div class="container-fluid corpo">
-    <div class="container corpo--inner">
-        <h1 class="corpo--inner--title">Cavaleiros de Salomão 7106</h1>
-        <img src="../../../assets/images/logos/salomao.png" alt="GLUMBSP" class="col-12 col-md-1">
-        <h2 class="corpo--inner--subtitle">Área Restrita</h2>
-        <div class="col-12 col-md-4 corpo--inner--box mat-elevation-z5">
-            <h3 class="corpo--inner--box--title">Efetue login para acessar a área restrita</h3>
-            <form class="corpo--inner--box--form" [formGroup]="loginForm">
-                <mat-form-field class="corpo--inner--box--form--input">
-                    <mat-label>Usuário</mat-label>
-                    <input matInput placeholder="Usuário" formControlName="cpf" name="cpf">
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Senha</mat-label>
-                    <input matInput [type]="hide ? 'password' : 'text'" formControlName="pass" name="pass">
-                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Esconder Senha'" [attr.aria-pressed]="hide">
-                      <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-                    </button>
-                  </mat-form-field>
-                  <div class="corpo--inner--box--form--btns">
-                    <button mat-raised-button color="primary" class="corpo--inner--box--form--btns--entrar" [disabled]="!loginForm.valid" (click)="login()">Entrar</button>
-                    <button mat-raised-button class="corpo--inner--box--form--btns--limpar" (click)="limpar()">Limpar</button>
-                  </div>
-            </form>
-        </div>
+<div class="login-container">
+  <!-- Overlay de carregamento -->
+  @if (busy) {
+    <div class="loading-overlay">
+      <div class="loading-content">
+        <img src="assets/images/logos/salomao.png" alt="Portal Cavaleiros de Salomão" class="loading-logo">
+        <mat-spinner diameter="50" color="primary"></mat-spinner>
+      </div>
     </div>
+  }
+
+  <!-- Card de login -->
+  <mat-card class="login-card">
+    <mat-card-header class="login-header">
+      <div class="logo-container">
+        <img src="assets/images/logos/salomao.png" alt="GLUMBSP" class="logo">
+      </div>
+      <mat-card-title class="title">Cavaleiros de Salomão 7106</mat-card-title>
+      <mat-card-subtitle class="subtitle">Área Restrita</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="loginForm" class="login-form">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>CPF</mat-label>
+          <input matInput 
+                 formControlName="cpf" 
+                 placeholder="000.000.000-00"
+                 mask="000.000.000-00">
+          <mat-icon matSuffix>badge</mat-icon>
+          @if (loginForm.get('cpf')?.invalid && loginForm.get('cpf')?.touched) {
+            <mat-error>CPF é obrigatório</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Senha</mat-label>
+          <input matInput 
+                 [type]="hidePassword ? 'password' : 'text'" 
+                 formControlName="pass"
+                 placeholder="Digite sua senha">
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (loginForm.get('pass')?.invalid && loginForm.get('pass')?.touched) {
+            <mat-error>Senha é obrigatória</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button mat-raised-button 
+                  color="primary" 
+                  type="submit"
+                  class="btn-entrar"
+                  [disabled]="loginForm.invalid || busy"
+                  (click)="login()">
+            @if (!busy) {
+              <span mat-icon>login</span>
+              <span>Entrar</span>
+            } @else {
+              <mat-spinner diameter="20"></mat-spinner>
+            }
+          </button>
+          
+          <button mat-button 
+                  type="button"
+                  class="btn-limpar"
+                  (click)="limpar()">
+            <mat-icon>clear</mat-icon>
+            <span>Limpar</span>
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
 </div>

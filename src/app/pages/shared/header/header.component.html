@@ -1,113 +1,235 @@
-<div class="container-fluid header mat-elevation-z8">
-   <div class="container header--inner">
-    <div class="header--inner--left col-12 col-md-2">
-       <a [routerLink]="['/home']"> <img src="../../../../assets/images/logos/salomao.png" alt="" class="header--inner--left--logo"></a>
-        <h3 class="header--inner--left--title">Cav.Salomao</h3>
-        <button class="hamburguer" (click)="showHamb()"><mat-icon>menu</mat-icon></button>
+<header class="app-header">
+  <div class="header-inner">
+    <!-- Left: Logo + Mobile Toggle -->
+    <div class="header-left">
+      <button class="mobile-toggle" (click)="showHamb()" mat-icon-button>
+        <mat-icon>menu</mat-icon>
+      </button>
+      
+      <a [routerLink]="['/home']" class="logo-link">
+        <img src="assets/images/logos/salomao.png" alt="Logo" class="logo-img">
+        <span class="logo-text">Cav. Salomão</span>
+      </a>
     </div>
-    <div class="header--inner--menu col-7">
-        <button mat-button [matMenuTriggerFor]="Cadastros" class="header--inner--menu--item" *ngIf="currentUser.isAdmin || currentUser.isSuperAdmin">Cadastros</button>
-<mat-menu #Cadastros="matMenu">
-  <a mat-menu-item [routerLink]="['/cadastros/macons']">Maçons</a>
-  <a mat-menu-item>Lojas</a>
-  <a mat-menu-item>Cobranças</a>
-  <a mat-menu-item [routerLink]="['/cadastros/noticias']">Notícias</a>
-</mat-menu>
-        <a [routerLink]="['/biblioteca']" mat-button  class="header--inner--menu--item" *ngIf="!currentUser.isCandidato">Biblioteca</a>
 
-        <button mat-button class="header--inner--menu--item" [matMenuTriggerFor]="indicacao" >Indicação</button>
-        <mat-menu #indicacao="matMenu">
-          <button mat-menu-item (click)="gerarToken()">Gerar Link de Candidato</button>
-          <a [routerLink]="['/candidatos']" mat-menu-item *ngIf="currentUser.isMestre">Lista de Candidatos</a >
+    <!-- Center: Navigation (Desktop) -->
+    <nav class="nav-desktop">
+      @if (currentUser?.isAdmin || currentUser?.isSuperAdmin) {
+        <button mat-button [matMenuTriggerFor]="menuCadastros" class="nav-btn">
+          <mat-icon>folder</mat-icon>
+          <span>Cadastros</span>
+        </button>
+        <mat-menu #menuCadastros="matMenu">
+          <button mat-menu-item [routerLink]="['/cadastros/macons']">
+            <mat-icon>people</mat-icon>
+            <span>Maçons</span>
+          </button>
+          <button mat-menu-item disabled>
+            <mat-icon>store</mat-icon>
+            <span>Lojas</span>
+          </button>
+          <button mat-menu-item disabled>
+            <mat-icon>payment</mat-icon>
+            <span>Cobranças</span>
+          </button>
+          <button mat-menu-item [routerLink]="['/cadastros/noticias']">
+            <mat-icon>description</mat-icon>
+            <span>Notícias</span>
+          </button>
         </mat-menu>
+      }
 
-        <button mat-button [matMenuTriggerFor]="servicos" class="header--inner--menu--item" *ngIf="!currentUser.isCandidato">Servicos Online</button>
-        <mat-menu #servicos="matMenu">
-          <button mat-menu-item>2ª Via de Certificado</button>
-          <button mat-menu-item>Transferência</button>
-          <button mat-menu-item>Quite Placet</button>
-          <button mat-menu-item>Alterações Cadastrais</button>
-        </mat-menu>
+      @if (!currentUser?.isCandidato) {
+        <a mat-button [routerLink]="['/biblioteca']" class="nav-btn">
+          <mat-icon>library_books</mat-icon>
+          <span>Biblioteca</span>
+        </a>
+      }
 
-        <button mat-button class="header--inner--menu--item" [matMenuTriggerFor]="admin" *ngIf="currentUser.isAdmin || currentUser.isSuperAdmin">Admin</button>
-        <mat-menu #admin="matMenu">
-          <button mat-menu-item>Em Breve</button>
-          <button mat-menu-item>Em Breve</button>
+      <button mat-button [matMenuTriggerFor]="menuIndicacao" class="nav-btn">
+        <mat-icon>person_add</mat-icon>
+        <span>Indicação</span>
+      </button>
+      <mat-menu #menuIndicacao="matMenu">
+        <button mat-menu-item (click)="gerarToken()">
+          <mat-icon>link</mat-icon>
+          <span>Gerar Link</span>
+        </button>
+        @if (currentUser?.isMestre) {
+          <button mat-menu-item [routerLink]="['/candidatos']">
+            <mat-icon>list</mat-icon>
+            <span>Candidatos</span>
+          </button>
+        }
+      </mat-menu>
+
+      @if (!currentUser?.isCandidato) {
+        <button mat-button [matMenuTriggerFor]="menuServicos" class="nav-btn">
+          <mat-icon>build</mat-icon>
+          <span>Serviços</span>
+        </button>
+        <mat-menu #menuServicos="matMenu">
+          <button mat-menu-item disabled>
+            <mat-icon>description</mat-icon>
+            <span>2ª Via Certificado</span>
+          </button>
+          <button mat-menu-item disabled>
+            <mat-icon>swap_horiz</mat-icon>
+            <span>Transferência</span>
+          </button>
+          <button mat-menu-item disabled>
+            <mat-icon>check_circle</mat-icon>
+            <span>Quite Placet</span>
+          </button>
+          <button mat-menu-item disabled>
+            <mat-icon>edit</mat-icon>
+            <span>Alterações</span>
+          </button>
         </mat-menu>
+      }
+
+      @if (currentUser?.isAdmin || currentUser?.isSuperAdmin) {
+        <button mat-button [matMenuTriggerFor]="menuAdmin" class="nav-btn">
+          <mat-icon>settings</mat-icon>
+          <span>Admin</span>
+        </button>
+        <mat-menu #menuAdmin="matMenu">
+          <button mat-menu-item disabled>
+            <mat-icon>settings</mat-icon>
+            <span>Em Breve</span>
+          </button>
+        </mat-menu>
+      }
+    </nav>
+
+    <!-- Right: User Controls -->
+    <div class="header-right">
+      <a mat-button [routerLink]="['/meu-painel']" class="nav-btn">
+        <mat-icon>person</mat-icon>
+        <span>Painel</span>
+      </a>
+      
+      <button mat-icon-button (click)="sair()" matTooltip="Sair" class="logout-btn">
+        <mat-icon>exit_to_app</mat-icon>
+      </button>
+
+      <img 
+        [src]="'https://prebellisolucoes.com/FotosUsers/' + currentUser?.id + '.png'"
+        [alt]="currentUser?.nome"
+        class="user-avatar"
+        (error)="setDefaultImage($event)">
     </div>
-    <div class="header--inner--controls col-3">
-      <div class="header--inner--controls--links">
-        <a [routerLink]="['/meu-painel']" mat-button class="header--inner--menu--item" >Meu Painel</a>
-        <button mat-button class="header--inner--menu--item" (click)="sair()">Sair</button>
+  </div>
+
+  <!-- Mobile Menu Overlay -->
+  @if (exibeHamb) {
+    <div class="mobile-overlay" (click)="showHamb()"></div>
+  }
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" [class.open]="exibeHamb">
+    <div class="mobile-header">
+      <button mat-icon-button (click)="showHamb()" class="mobile-close">
+        <mat-icon>close</mat-icon>
+      </button>
+      
+      <img 
+        [src]="'https://prebellisolucoes.com/FotosUsers/' + currentUser?.id + '.png'"
+        [alt]="currentUser?.nome"
+        class="mobile-avatar"
+        (error)="setDefaultImage($event)">
+      
+      <span class="mobile-name">{{ currentUser?.nome }}</span>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="mobile-content">
+      @if (currentUser?.isAdmin || currentUser?.isSuperAdmin) {
+        <div class="mobile-section">
+          <div class="section-title">Cadastros</div>
+          <button mat-button [routerLink]="['/cadastros/macons']" (click)="showHamb()">
+            <mat-icon>people</mat-icon>
+            <span>Maçons</span>
+          </button>
+          <button mat-button disabled>
+            <mat-icon>store</mat-icon>
+            <span>Lojas</span>
+          </button>
+          <button mat-button disabled>
+            <mat-icon>payment</mat-icon>
+            <span>Cobranças</span>
+          </button>
+          <button mat-button [routerLink]="['/cadastros/noticias']" (click)="showHamb()">
+            <mat-icon>description</mat-icon>
+            <span>Notícias</span>
+          </button>
+        </div>
+      }
+
+      @if (!currentUser?.isCandidato) {
+        <button mat-button [routerLink]="['/biblioteca']" (click)="showHamb()">
+          <mat-icon>library_books</mat-icon>
+          <span>Biblioteca</span>
+        </button>
+      }
+
+      <div class="mobile-section">
+        <div class="section-title">Indicação</div>
+        <button mat-button (click)="gerarToken(); showHamb()">
+          <mat-icon>link</mat-icon>
+          <span>Gerar Link</span>
+        </button>
+        @if (currentUser?.isMestre) {
+          <button mat-button [routerLink]="['/candidatos']" (click)="showHamb()">
+            <mat-icon>list</mat-icon>
+            <span>Candidatos</span>
+          </button>
+        }
       </div>
-      <img src="https://prebellisolucoes.com/FotosUsers/{{currentUser.id}}.png" alt="Foto Perfil" class="header--inner--controls--foto"> 
-     
+
+      @if (!currentUser?.isCandidato) {
+        <div class="mobile-section">
+          <div class="section-title">Serviços</div>
+          <button mat-button disabled>
+            <mat-icon>description</mat-icon>
+            <span>2ª Via Certificado</span>
+          </button>
+          <button mat-button disabled>
+            <mat-icon>swap_horiz</mat-icon>
+            <span>Transferência</span>
+          </button>
+          <button mat-button disabled>
+            <mat-icon>check_circle</mat-icon>
+            <span>Quite Placet</span>
+          </button>
+          <button mat-button disabled>
+            <mat-icon>edit</mat-icon>
+            <span>Alterações</span>
+          </button>
+        </div>
+      }
+
+      @if (currentUser?.isAdmin || currentUser?.isSuperAdmin) {
+        <div class="mobile-section">
+          <div class="section-title">Admin</div>
+          <button mat-button disabled>
+            <mat-icon>settings</mat-icon>
+            <span>Em Breve</span>
+          </button>
+        </div>
+      }
+
+      <mat-divider></mat-divider>
+
+      <button mat-button [routerLink]="['/meu-painel']" (click)="showHamb()">
+        <mat-icon>person</mat-icon>
+        <span>Meu Painel</span>
+      </button>
+      <button mat-button (click)="sair()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Sair</span>
+      </button>
     </div>
-   </div>
-</div>
-
-<div id="menuHamburguer" class="mob--menuMobile" >
-  <div class="mob--menuMobile--close">
-      <button class="mob--menuMobile--close--bt" (click)="showHamb()"><mat-icon class="mob--menuMobile--close--bt--icon">close</mat-icon></button>
   </div>
-  <div class="mob--menuMobile--controls col-12">
-    <img src="https://prebellisolucoes.com/FotosUsers/{{currentUser.id}}.png" alt="Foto Perfil" class="mob--menuMobile--controls--foto "> 
-    <div class="mob--menuMobile--controls--links">
-      <a [routerLink]="['/meu-painel']" mat-button class="mob--menuMobile--controls--links--item" >Meu Painel</a>
-        <button mat-button class="mob--menuMobile--controls--links--item" (click)="sair()">Sair</button>
-    </div>
-  </div>
-  <mat-accordion class="col-12">
-    <mat-expansion-panel hideToggle *ngIf="currentUser.isAdmin">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-         Cadastros
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <a class="mob--menuMobile--link" [routerLink]="['/cadastros/macons']">Maçons</a>
-      <a class="mob--menuMobile--link">Lojas</a>
-      <a class="mob--menuMobile--link">Cobranças</a>
-      <a class="mob--menuMobile--link" [routerLink]="['/cadastros/noticias']">Notícias</a>
-    </mat-expansion-panel>
-
-    <a class="linkDireto" [routerLink]="['/biblioteca']">Biblioteca</a>
-    
-
-    <mat-expansion-panel hideToggle>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-         Indicação
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <button class="mob--menuMobile--link" (click)="gerarToken()">Gerar Link de Candidato</button>
-      <a [routerLink]="['/candidatos']" *ngIf="currentUser.isMestre" class="mob--menuMobile--link">Lista de Candidatos</a >
-    </mat-expansion-panel>
-
-    <mat-expansion-panel hideToggle>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-         Serviços Online
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <a class="mob--menuMobile--link">2ª Via de Certificado</a>
-      <a class="mob--menuMobile--link">Transferência</a>
-      <a class="mob--menuMobile--link">Quite Placet</a>
-      <a class="mob--menuMobile--link">Alterações Cadastrais</a>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel hideToggle *ngIf="currentUser.isAdmin || currentUser.isSuperAdmin">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-         Admin
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <a class="mob--menuMobile--link">2ª Via de Certificado</a>
-      <a class="mob--menuMobile--link">Transferência</a>
-      <a class="mob--menuMobile--link">Quite Placet</a>
-      <a class="mob--menuMobile--link">Alterações Cadastrais</a>
-    </mat-expansion-panel>
-
-  </mat-accordion>
-  
-</div>
-
+</header>

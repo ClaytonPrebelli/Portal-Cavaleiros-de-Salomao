@@ -1,66 +1,96 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { LoginParams } from 'src/app/core/interfaces/login';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { LoginParams } from 'src/app/core/interfaces/login';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+
 @Component({
   selector: 'app-login',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
+    NgxMaskDirective
+  ],
+  providers: [provideNgxMask()],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit{
-  busy=false;
-  hide=true;
-loginForm:FormGroup = new FormGroup({
-  cpf: new FormControl('',[Validators.required]),
-  pass:new FormControl('',[Validators.required])
-})
+export class LoginComponent {
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
 
-showMessage(msg: string, isError: boolean = false): void {
-  this.snackBar.open(msg, 'X', {
-    duration: 5000,
-    horizontalPosition: 'center',
-    verticalPosition: "top",
-    panelClass: isError ? ['msg-error'] : ['msg-success']
-  })
-}  
+  busy = false;
+  hidePassword = true;
 
-  constructor(private route :Router, private authService: AuthService,private snackBar: MatSnackBar){}
+  loginForm: FormGroup = this.fb.group({
+    cpf: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(14)]],
+    pass: ['', [Validators.required, Validators.minLength(6)]]
+  });
+
   ngOnInit(): void {
+    if (localStorage.getItem('MasonUser')) {
+      this.router.navigate(['/home']);
+    }
+  }
 
-      if (localStorage.getItem("MasonUser")){
-     
-        this.route.navigate(['/home'])
+  showMessage(msg: string, isError: boolean = false): void {
+    this.snackBar.open(msg, '✕', {
+      duration: 5000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: isError ? 'msg-error' : 'msg-success'
+    });
+  }
+
+  login(): void {
+    if (this.loginForm.invalid || this.busy) return;
+
+    this.busy = true;
+    const { cpf, pass } = this.loginForm.value;
+    
+    const login: LoginParams = {
+      cpf: cpf.replace(/[^\d]/g, ''),
+      pass: pass
+    };
+
+    this.authService.login(login).subscribe({
+      next: (data) => {
+        localStorage.setItem('MasonUser', JSON.stringify(data));
+        const welcomeMsg = data.titulo 
+          ? `Bem-vindo Ir. ${data.titulo} ${data.nome}`
+          : `Bem-vindo Ir. ${data.nome}`;
+        
+        this.showMessage(welcomeMsg, false);
+        this.router.navigate(['/home']);
+        this.busy = false;
+      },
+      error: (error) => {
+        this.showMessage(error?.message || 'Usuário ou senha inválidos!', true);
+        this.busy = false;
       }
-    
+    });
   }
 
-  login(){
-    this.busy=true
-    
-    var login:LoginParams = this.loginForm.value
-    login.pass = login.pass.replace(".","").replace("-","").replace(" ","")
-        this.authService.login(login).subscribe(data=>{
-          console.log(data)
-          localStorage.setItem('MasonUser',JSON.stringify(data))
-          if(data.titulo){
-            this.showMessage(`Bem vindo Ir.'. ${data.titulo} ${data.nome}`,false)
-          }else{
-          this.showMessage(`Bem vindo Ir.'. ${data.nome}`,false)
-          }
-          this.route.navigate(["/home"])
-          this.busy=false
-        },(error)=>{
-
-          if(error.status==404){
-            this.showMessage("Usuário ou senha inválidos!",true)
-            this.busy=false
-          }
-          this.busy=false
-        })
-  }
-  limpar(){
-    this.loginForm.reset()
+  limpar(): void {
+    this.loginForm.reset();
   }
 }

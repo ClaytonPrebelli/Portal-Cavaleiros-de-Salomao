@@ -1,34 +1,175 @@
-<app-header></app-header>
-<div class="overlay" *ngIf="busy">
-    <img src="../../../assets/images/glumbsp_logo.png" alt="GLUMBSP" class="loading col-12 col-md-1">
-</div>
-<div class="home contanier-fluid">
-    <div class="home--inner container">
-        <app-breadcumb></app-breadcumb>
-        <div class="livros">
-            <div class="livros--buttons">
-                <button mat-raised-button class="livros--buttons--btn" (click)="seleciona('aprendiz')">Grau Aprendiz</button>
-                <button mat-raised-button class="livros--buttons--btn" (click)="seleciona('companheiro')" [disabled]="!currentUser.isCompanheiro">Grau Companheiro</button>
-                <button mat-raised-button class="livros--buttons--btn" (click)="seleciona('mestre')" [disabled]="!currentUser.isMestre">Grau Mestre</button>
-            </div>
-            <div class="livros--lista" *ngIf="selecionadoAprendiz">
-                <h2 class="livros--lista--title">Livros Grau Aprendiz</h2>
-                
-                <a *ngFor="let livro of livrosAprendiz" href="{{livro.link}}" download target="_blank"class="livros--lista--link">{{livro.nome.toUpperCase()}}&nbsp; <mat-icon  fontIcon="    menu_book"></mat-icon></a>
-
-            </div>
-            <div class="livros--lista" *ngIf="selecionadoCompanheiro">
-                <h2 class="livros--lista--title">Livros Grau Companheiro</h2>
-                
-                <a *ngFor="let livro of livrosCompanheiro" href="{{livro.link}}" download target="_blank"class="livros--lista--link">{{livro.nome.toUpperCase()}}&nbsp; <mat-icon  fontIcon="    menu_book"></mat-icon></a>
-
-            </div>
-            <div class="livros--lista" *ngIf="selecionadoMestre">
-                <h2 class="livros--lista--title">Livros Grau Mestre</h2>
-                
-                <a *ngFor="let livro of livrosMestre" href="{{livro.link}}" download target="_blank"class="livros--lista--link">{{livro.nome.toUpperCase()}}&nbsp; <mat-icon  fontIcon="    menu_book"></mat-icon></a>
-
-            </div>
-        </div>
+<div class="biblioteca-container">
+  <!-- Loading Overlay -->
+  @if (busy) {
+    <div class="loading-overlay">
+      <div class="loading-content">
+        <img src="assets/images/glumbsp_logo.png" alt="GLUMBSP" class="loading-logo">
+        <p>Carregando livros...</p>
+      </div>
     </div>
+  }
+
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="page-icon">library_books</mat-icon>
+        <div>
+          <h1>Biblioteca Maçônica</h1>
+          <p>Leitura recomendada por grau</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <mat-card class="tabs-card">
+    <mat-card-content>
+      <mat-tab-group 
+        [(selectedIndex)]="selectedTab" 
+        (selectedTabChange)="onTabChange($event)"
+        animationDuration="300ms"
+        class="biblioteca-tabs">
+        
+        <!-- Tab Aprendiz -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">menu_book</mat-icon>
+            <span>Aprendiz</span>
+            @if (getLivrosCount('aprendiz') > 0) {
+              <span class="tab-badge">{{ getLivrosCount('aprendiz') }}</span>
+            }
+          </ng-template>
+          
+          <div class="tab-content">
+            @if (canAccessTab(0)) {
+              @if (getLivrosCount('aprendiz') > 0) {
+                <div class="books-grid">
+                  @for (livro of livrosAprendiz; track livro.id) {
+                    <a [href]="livro.link" download target="_blank" class="book-card">
+                      <div class="book-cover">
+                        <mat-icon class="book-icon">menu_book</mat-icon>
+                      </div>
+                      <div class="book-info">
+                        <h3 class="book-title">{{ livro.nome }}</h3>
+                        <span class="book-grau">Grau Aprendiz</span>
+                      </div>
+                      <div class="book-action">
+                        <mat-icon>download</mat-icon>
+                        <span>Download</span>
+                      </div>
+                    </a>
+                  }
+                </div>
+              } @else {
+                <div class="empty-state">
+                  <mat-icon class="empty-icon">menu_book</mat-icon>
+                  <p>Nenhum livro disponível para este grau</p>
+                </div>
+              }
+            } @else {
+              <div class="access-denied">
+                <mat-icon class="denied-icon">lock</mat-icon>
+                <h3>Acesso Restrito</h3>
+                <p>Você ainda não possui acesso a esta seção</p>
+              </div>
+            }
+          </div>
+        </mat-tab>
+
+        <!-- Tab Companheiro -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">auto_stories</mat-icon>
+            <span>Companheiro</span>
+            @if (getLivrosCount('companheiro') > 0) {
+              <span class="tab-badge">{{ getLivrosCount('companheiro') }}</span>
+            }
+          </ng-template>
+          
+          <div class="tab-content">
+            @if (canAccessTab(1)) {
+              @if (getLivrosCount('companheiro') > 0) {
+                <div class="books-grid">
+                  @for (livro of livrosCompanheiro; track livro.id) {
+                    <a [href]="livro.link" download target="_blank" class="book-card">
+                      <div class="book-cover">
+                        <mat-icon class="book-icon">auto_stories</mat-icon>
+                      </div>
+                      <div class="book-info">
+                        <h3 class="book-title">{{ livro.nome }}</h3>
+                        <span class="book-grau">Grau Companheiro</span>
+                      </div>
+                      <div class="book-action">
+                        <mat-icon>download</mat-icon>
+                        <span>Download</span>
+                      </div>
+                    </a>
+                  }
+                </div>
+              } @else {
+                <div class="empty-state">
+                  <mat-icon class="empty-icon">auto_stories</mat-icon>
+                  <p>Nenhum livro disponível para este grau</p>
+                </div>
+              }
+            } @else {
+              <div class="access-denied">
+                <mat-icon class="denied-icon">lock</mat-icon>
+                <h3>Acesso Restrito</h3>
+                <p>Você ainda não possui acesso a esta seção</p>
+              </div>
+            }
+          </div>
+        </mat-tab>
+
+        <!-- Tab Mestre -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">school</mat-icon>
+            <span>Mestre</span>
+            @if (getLivrosCount('mestre') > 0) {
+              <span class="tab-badge">{{ getLivrosCount('mestre') }}</span>
+            }
+          </ng-template>
+          
+          <div class="tab-content">
+            @if (canAccessTab(2)) {
+              @if (getLivrosCount('mestre') > 0) {
+                <div class="books-grid">
+                  @for (livro of livrosMestre; track livro.id) {
+                    <a [href]="livro.link" download target="_blank" class="book-card">
+                      <div class="book-cover">
+                        <mat-icon class="book-icon">school</mat-icon>
+                      </div>
+                      <div class="book-info">
+                        <h3 class="book-title">{{ livro.nome }}</h3>
+                        <span class="book-grau">Grau Mestre</span>
+                      </div>
+                      <div class="book-action">
+                        <mat-icon>download</mat-icon>
+                        <span>Download</span>
+                      </div>
+                    </a>
+                  }
+                </div>
+              } @else {
+                <div class="empty-state">
+                  <mat-icon class="empty-icon">school</mat-icon>
+                  <p>Nenhum livro disponível para este grau</p>
+                </div>
+              }
+            } @else {
+              <div class="access-denied">
+                <mat-icon class="denied-icon">lock</mat-icon>
+                <h3>Acesso Restrito</h3>
+                <p>Você ainda não possui acesso a esta seção</p>
+              </div>
+            }
+          </div>
+        </mat-tab>
+
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
 </div>

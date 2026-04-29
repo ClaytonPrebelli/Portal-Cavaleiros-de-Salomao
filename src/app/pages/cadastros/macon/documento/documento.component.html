@@ -1,35 +1,109 @@
-<app-header></app-header>
-<div class="overlay" *ngIf="busy">
-    <img src="../../../assets/images/glumbsp_logo.png" alt="GLUMBSP" class="loading col-12 col-md-1">
-</div>
-<div class="home contanier-fluid">
-    <div class="home--inner container">
-        <h1 class="nomeMacom">Documentos do Ir.'. {{nomeIrmao}}</h1>
-        <div class="livros">
-            <div class="livros--buttons">
-                <a [routerLink]="['/cadastros/macons']" mat-raised-button class="livros--buttons--btn">Voltar</a>
-                <button mat-raised-button class="livros--buttons--btn" (click)="seleciona('ver')">Ver Documentos</button>
-                <button mat-raised-button class="livros--buttons--btn" (click)="seleciona('cadastrar')" [disabled]="!currentUser.isAdmin">Upload Documentos</button>
-                
-            </div>
-            <div class="livros--lista" *ngIf="selecionadoVer">
-                <h2 class="livros--lista--title">Documentos Cadastrados</h2>
-                <a *ngFor="let documento of listaDocumentos" href="{{documento.link}}" download target="_blank"class="livros--lista--link">{{documento.nome.toUpperCase()}}&nbsp; <mat-icon  fontIcon="    menu_book"></mat-icon></a>
-
-            
-
-            </div>
-            <div class="livros--lista" *ngIf="selecionadoCadastrar">
-                <h2 class="livros--lista--title">Enviar Documento</h2>
-               
-                <div class="col-12"><button mat-raised-button class="input col-12 col-md-4" (click)="escolheDoc()">{{textoDoc}}</button>
-                 <input type="file" id="input-file" (change)="onFileChange($event)" style="display: none;"/>
-                 <button mat-raised-button class="salvar col-12 col-md-4" (click)="salvar()" ><mat-icon>save</mat-icon>Salvar</button>
-              
-
-            </div>
-            
-        </div>
+<div class="documentos-container">
+  
+  <!-- Loading -->
+  @if (busy) {
+    <div class="loading-overlay">
+      <mat-spinner diameter="60" color="primary"></mat-spinner>
+      <p>Carregando...</p>
     </div>
+  }
 
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="page-icon">folder</mat-icon>
+        <div>
+          <h1>Documentos do Ir. {{ nomeIrmao }}</h1>
+          <p>Gerencie os documentos do maçom</p>
+        </div>
+      </div>
+      <button mat-button routerLink="/cadastros/macons" class="btn-voltar">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Voltar</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <mat-card class="main-card">
+    <mat-card-content>
+      <mat-tab-group animationDuration="300ms">
+        
+        <!-- Tab: Ver Documentos -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">visibility</mat-icon>
+            <span>Ver Documentos</span>
+            <mat-chip class="count-chip">{{ listaDocumentos.length }}</mat-chip>
+          </ng-template>
+
+          <div class="tab-content">
+            @if (listaDocumentos.length > 0) {
+              <mat-list class="documents-list">
+                @for (documento of listaDocumentos; track documento.nome) {
+                  <mat-list-item class="document-item" (click)="downloadDocumento(documento)">
+                    <mat-icon matListItemIcon>description</mat-icon>
+                    <div matListItemTitle class="doc-name">{{ documento.nome.toUpperCase() }}</div>
+                    <button mat-icon-button matListItemMeta>
+                      <mat-icon>download</mat-icon>
+                    </button>
+                  </mat-list-item>
+                  <mat-divider></mat-divider>
+                }
+              </mat-list>
+            } @else {
+              <div class="empty-state">
+                <mat-icon class="empty-icon">folder_open</mat-icon>
+                <h3>Nenhum documento encontrado</h3>
+                <p>Cadastre documentos na aba "Upload"</p>
+              </div>
+            }
+          </div>
+        </mat-tab>
+
+        <!-- Tab: Upload (apenas para admins) -->
+        @if (currentUser?.isAdmin) {
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon class="tab-icon">cloud_upload</mat-icon>
+              <span>Upload</span>
+            </ng-template>
+
+            <div class="tab-content upload-tab">
+              <div class="upload-area" (click)="escolheDoc()">
+                @if (selectedFile) {
+                  <div class="file-selected">
+                    <mat-icon class="file-icon">insert_drive_file</mat-icon>
+                    <div class="file-info">
+                      <strong>{{ selectedFile.name }}</strong>
+                      <small>{{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB</small>
+                    </div>
+                    <button mat-icon-button class="remove-btn" (click)="selectedFile = undefined; textoDoc = 'Escolha um Documento'">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                } @else {
+                  <mat-icon class="upload-icon">cloud_upload</mat-icon>
+                  <p class="upload-text">{{ textoDoc }}</p>
+                  <span class="upload-hint">PDF, DOC, DOCX, JPG, PNG (máx. 10MB)</span>
+                }
+              </div>
+
+              <input type="file" id="input-file" (change)="onFileChange($event)" style="display: none;">
+
+              <button mat-raised-button 
+                      color="primary" 
+                      class="btn-salvar"
+                      [disabled]="!selectedFile"
+                      (click)="salvar()">
+                <mat-icon>save</mat-icon>
+                <span>Salvar Documento</span>
+              </button>
+            </div>
+          </mat-tab>
+        }
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
 </div>

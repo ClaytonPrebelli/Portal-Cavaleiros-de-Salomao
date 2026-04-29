@@ -1,102 +1,182 @@
-<div class="overlay" *ngIf="busy">
-    <img src="../../../assets/images/glumbsp_logo.png" alt="GLUMBSP" class="loading col-12 col-md-1">
-</div>
+<div class="ficha-container">
+  <!-- Loading -->
+  @if (busy) {
+    <div class="loading-overlay">
+      <mat-spinner diameter="60" color="primary"></mat-spinner>
+      <p>Carregando...</p>
+    </div>
+  }
 
-<div class="container-fluid ficha">
-    <div class="container ficha--inner" id="htmlData">
-            <div class="ficha--inner--head">
-            </div>
-            <div class="separador col-12" id="separador1">
-                <h2 class="separador--title">Dados Pessoais</h2>
-            </div>
-            <div class="pessoais">
-                <img src="https://prebellisolucoes.com/FotosUsers/{{macom.id}}.png" alt="{{macom.nome}}" class="pessoais--foto ">
-                <div class="pessoais--info ">
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text nome"><strong>Nome:</strong> {{capitalize(macom.nome)}}</p>
-                        <p class="pessoais--info--linha--text cim"><strong>CIM:</strong> {{pad(macom.cim)}}</p>
-                    </div>
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text "><strong>CPF:</strong> {{macom.cpf}}</p>
-                        <p class="pessoais--info--linha--text "><strong>RG:</strong> {{macom.rg}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Data Nasc.</strong> {{macom.nascimento | date:"dd/MM/yyyy"}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Idade:</strong> {{idade}} anos</p>
-                    </div>
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text "><strong>Naturalidade:</strong> {{macom.naturalidade}}/{{macom.estado}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Nacionalidade:</strong> {{macom.nacionalidade}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Tipo. Sang.:</strong> <span class="sangue"> {{macom.tipoSanguineo}}</span></p>
-                    </div>
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text "><strong>Pai:</strong> {{capitalize(macom.pai)}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Mãe:</strong> {{capitalize(macom.mae)}}</p>
-                        
-                      
-                    </div>
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text "><strong>Profissão:</strong> {{capitalize(macom.profissao)}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Telefone:</strong> {{macom.fone}}</p>
-                        <p class="pessoais--info--linha--text "><strong>E-mail:</strong> {{macom.email}}</p>
-                      
-                    </div>
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text "><strong>Endereço:</strong> {{macom.endereco}},{{macom.numero}}, {{macom.bairro}} / CEP: {{macom.cep}} - {{macom.cidade}}</p>
-                        
-                      
-                    </div>
-                </div>
-               
-            </div>
-            <div class="separador col-12" id="separador2">
-                <h2 class="separador--title">Dados Maçônicos</h2>
-            </div>
-            <div class="pessoais">
-                <img src="https://prebellisolucoes.com/FotosLojas/{{macom.loja?.id}}.png" alt="{{macom.loja?.nomeLoja}}" class="pessoais--foto">
-                <div class="pessoais--info ">
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text loja"><strong>Loja:</strong> {{macom.loja?.nomeLoja}} nº {{macom.loja?.numeroLoja}}</p>
-                    </div>
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text loja"><strong>Oriente:</strong> {{macom.loja?.oriente}} / {{macom.loja?.estado}}</p>
-                    </div>
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text"><strong>Grau Simb.'.:</strong> {{grauSimb}}</p>
-                        <p class="pessoais--info--linha--text"><strong>Data Afiliação</strong> {{macom.dataAfiliacao | date:"dd/MM/yyyy"}}</p>
-                        <p class="pessoais--info--linha--text"><strong>Status</strong> {{macom.status.status }}</p>
-                       
-                    </div>
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text datas"><strong>Iniciação:</strong> {{macom.iniciacao | date:"dd/MM/yyyy"}}</p>
-                        <p class="pessoais--info--linha--text datas"><strong>Elevação:</strong> {{macom.elevacao |date:"dd/MM/yyyy"}}</p>
-                        <p class="pessoais--info--linha--text datas"><strong>Exaltação:</strong> {{macom.exaltacao |date:"dd/MM/yyyy"}}</p>
-                    </div>
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text cargo"><strong>Cargo em Loja:</strong> {{macom.cargo}}</p>
-                        <p class="pessoais--info--linha--text titulo"><strong>Título</strong> {{macom.titulo}}</p>
-                        
-                    </div>
-            </div>
-           
-    </div>
-    <div class="separador col-12" id="separador3">
-        <h2 class="separador--title">Familiares</h2>
-    </div>
-    <div class="pessoais">
-        <div class="pessoais--familiares">
-            <div class="pessoais--familiares--box" *ngFor="let familiar of macom.familiares">
-                <div class="pessoais--familiares--item">
-                    <p class="pessoais--familiares--item--text parent"><strong>Nome:</strong> {{capitalize(familiar.familiarNome)}} ({{familiar.relacao}}) - {{getAge(familiar.nascimentoFamiliar.toString())}} anos</p>
-                    <p class="pessoais--familiares--item--tex nasc"><strong>Data Nasc.:</strong> {{(familiar.nascimentoFamiliar | date:"dd/MM/yyyy")}}</p>
-                    <p class="pessoais--familiares--item--text tel"><strong>Tel:</strong> {{familiar.telefone}}</p>
-                </div>
-              
-            </div>
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="page-icon">badge</mat-icon>
+        <div>
+          <h1>Ficha do Maçom</h1>
+          <p>{{ macom.nome }}</p>
         </div>
-
+      </div>
+      <a mat-raised-button color="primary" routerLink="/cadastros/macons" class="btn-voltar">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Voltar</span>
+      </a>
     </div>
-</div>
+  </header>
 
-<div class="acoesFicha">
-    <button mat-raised-button class="acoesFicha--baixar" (click)="openPDF()"><mat-icon>download</mat-icon>Baixar Ficha</button>
-    <a [routerLink]="['/cadastros/macons']" mat-raised-button class="acoesFicha--baixar"><mat-icon>undo</mat-icon>Voltar</a>
+  <!-- Content -->
+  @if (!busy) {
+    <div class="ficha-content" #htmlData>
+      
+      <!-- Dados Pessoais -->
+      <section class="section">
+        <h2 class="section-title">Dados Pessoais</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <img [src]="'https://prebellisolucoes.com/FotosUsers/' + macom.id + '.png'" 
+                 [alt]="macom.nome" class="foto-macom">
+          </div>
+          <div class="info-item">
+            <div class="info-grid-inner">
+              <div class="info-item">
+                <strong>Nome:</strong> {{ capitalize(macom.nome) }}
+              </div>
+              <div class="info-item">
+                <strong>CIM:</strong> {{ pad(macom.cim) }}
+              </div>
+              <div class="info-item">
+                <strong>CPF:</strong> {{ macom.cpf }}
+              </div>
+              <div class="info-item">
+                <strong>RG:</strong> {{ macom.rg }}
+              </div>
+              <div class="info-item">
+                <strong>Data Nasc.:</strong> {{ macom.nascimento | date:"dd/MM/yyyy" }}
+              </div>
+              <div class="info-item">
+                <strong>Idade:</strong> {{ idade }} anos
+              </div>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-grid-inner">
+              <div class="info-item">
+                <strong>Naturalidade:</strong> {{ macom.naturalidade }}/{{ macom.estado }}
+              </div>
+              <div class="info-item">
+                <strong>Nacionalidade:</strong> {{ macom.nacionalidade }}
+              </div>
+              <div class="info-item">
+                <strong>Tipo Sang.:</strong> <span class="sangue"> {{ macom.tipoSanguineo }}</span>
+              </div>
+              <div class="info-item">
+                <strong>Pai:</strong> {{ capitalize(macom.pai) }}
+              </div>
+              <div class="info-item">
+                <strong>Mãe:</strong> {{ capitalize(macom.mae) }}
+              </div>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-grid-inner">
+              <div class="info-item">
+                <strong>Profissão:</strong> {{ capitalize(macom.profissao) }}
+              </div>
+              <div class="info-item">
+                <strong>Telefone:</strong> {{ macom.fone }}
+              </div>
+              <div class="info-item">
+                <strong>E-mail:</strong> {{ macom.email }}
+              </div>
+              <div class="info-item full-width">
+                <strong>Endereço:</strong> {{ macom.endereco }}, {{ macom.numero }}, {{ macom.bairro }} / CEP: {{ macom.cep }} - {{ macom.cidade }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dados Maçônicos -->
+      <section class="section">
+        <h2 class="section-title">Dados Maçônicos</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <img [src]="'https://prebellisolucoes.com/FotosLojas/' + macom.loja?.id + '.png'" 
+                 [alt]="macom.loja?.nomeLoja" class="foto-loja">
+          </div>
+          <div class="info-item">
+            <div class="info-grid-inner">
+              <div class="info-item">
+                <strong>Loja:</strong> {{ macom.loja?.nomeLoja }} nº {{ macom.loja?.numeroLoja }}
+              </div>
+              <div class="info-item">
+                <strong>Oriente:</strong> {{ macom.loja?.oriente }} / {{ macom.loja?.estado }}
+              </div>
+              <div class="info-item">
+                <strong>Grau Simb.:</strong> {{ grauSimb }}
+              </div>
+              <div class="info-item">
+                <strong>Status:</strong> {{ macom.status?.status }}
+              </div>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-grid-inner">
+              <div class="info-item">
+                <strong>Data Afiliação:</strong> {{ macom.dataAfiliacao | date:"dd/MM/yyyy" }}
+              </div>
+              <div class="info-item">
+                <strong>Forma Afiliação:</strong> {{ macom.formaAfiliacao }}
+              </div>
+              <div class="info-item">
+                <strong>Iniciação:</strong> {{ macom.iniciacao | date:"dd/MM/yyyy" }}
+              </div>
+              <div class="info-item">
+                <strong>Elevação:</strong> {{ macom.elevacao | date:"dd/MM/yyyy" }}
+              </div>
+              <div class="info-item">
+                <strong>Exaltação:</strong> {{ macom.exaltacao | date:"dd/MM/yyyy" }}
+              </div>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-grid-inner">
+              <div class="info-item">
+                <strong>Cargo em Loja:</strong> {{ macom.cargo }}
+              </div>
+              <div class="info-item">
+                <strong>Título:</strong> {{ macom.titulo }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Familiares -->
+      <section class="section">
+        <h2 class="section-title">Familiares</h2>
+        <div class="familiares-list">
+          @for (familiar of macom.familiares; track familiar.familiarNome) {
+            <div class="familiar-item">
+              <p class="familiar-nome"><strong>Nome:</strong> {{ capitalize(familiar.familiarNome) }} ({{ familiar.relacao }}) - {{ getAge(familiar.nascimentoFamiliar.toString()) }} anos</p>
+              <p><strong>Data Nasc.:</strong> {{ familiar.nascimentoFamiliar | date:"dd/MM/yyyy" }}</p>
+              <p><strong>Tel:</strong> {{ familiar.telefone }}</p>
+            </div>
+          }
+        </div>
+      </section>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button mat-raised-button class="btn-download" (click)="openPDF()">
+        <mat-icon>download</mat-icon>
+        <span>Baixar Ficha</span>
+      </button>
+      <a mat-raised-button routerLink="/cadastros/macons" class="btn-back">
+        <mat-icon>undo</mat-icon>
+        <span>Voltar</span>
+      </a>
+    </div>
+  }
 </div>

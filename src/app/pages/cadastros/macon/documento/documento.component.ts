@@ -1,109 +1,140 @@
-import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatChipsModule } from '@angular/material/chips';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Observable, catchError, finalize, of, tap } from 'rxjs';
 import FileSaver from 'file-saver';
-import { DocumentosInterface, DocumentosResponse } from 'src/app/core/interfaces/documentos';
-import { LoginResponse } from 'src/app/core/interfaces/login';
+import { DocumentosResponse } from 'src/app/core/interfaces/documentos';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { DocumentosService } from 'src/app/core/services/documentos.service';
 
 @Component({
   selector: 'app-documento',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterLink,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatListModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
+    MatTabsModule,
+    MatTooltipModule,
+    MatChipsModule
+  ],
   templateUrl: './documento.component.html',
   styleUrls: ['./documento.component.scss']
 })
-export class DocumentoComponent implements OnInit{
-busy=false
-currentUser!:LoginResponse
-selecionadoVer=true
-selecionadoCadastrar=false
-usuario: string|null = ""
-listaDocumentos:DocumentosResponse[]=[]
-nomeIrmao = ""
-documento=''
-textoDoc='Escolha um Documento'
-hide=true;
-file!: File;
-arquivoFoto!:string|ArrayBuffer|null;
-showMessage(msg: string, isError: boolean = false): void {
-  this.snackBar.open(msg, 'X', {
-    duration: 5000,
-    horizontalPosition: 'center',
-    verticalPosition: "top",
-    panelClass: isError ? ['msg-error'] : ['msg-success']
-  })
-}  
-constructor(private documentosService:DocumentosService, private route:ActivatedRoute,private snackBar: MatSnackBar,private usuarioService:AuthService){
-}
-  ngOnInit():void{
-    var local:any = localStorage.getItem("MasonUser")
-    local = JSON.parse(local)
-    this.currentUser = local
-    this.usuario = this.route.snapshot.paramMap.get("id")
-    this.usuarioService.verMacom(this.usuario).subscribe(data=>{
-      this.nomeIrmao = data.nome
-    })
-    this.buscaDocumentos(this.usuario)
+export class DocumentoComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private snackBar = inject(MatSnackBar);
+  private usuarioService = inject(AuthService);
+  private documentosService = inject(DocumentosService);
+
+  busy = false;
+  currentUser: any = null;
+  usuarioId: string | null = null;
+  nomeIrmao = '';
+  listaDocumentos: DocumentosResponse[] = [];
+  selectedFile?: File;
+  textoDoc = 'Escolha um Documento';
+
+  ngOnInit(): void {
+    const local = localStorage.getItem('MasonUser');
+    if (local) {
+      this.currentUser = JSON.parse(local);
+    }
+
+    this.usuarioId = this.route.snapshot.paramMap.get('id');
+    
+    if (this.usuarioId) {
+      this.loadMacomData(this.usuarioId);
+      this.buscaDocumentos(this.usuarioId);
+    }
   }
 
-  seleciona(altera:string){
-    
-    if(altera=="ver"){
-      
-      this.selecionadoVer = true
-      this.selecionadoCadastrar = false
-    }
-    if(altera=="cadastrar"){
-      this.selecionadoVer = false
-      this.selecionadoCadastrar = true
-    }
-    
-  
-  }
-  buscaDocumentos(id:any){
-    this.busy = true
-    this.documentosService.verDocumentosUsuario(this.usuario).subscribe(data=>{
-      this.listaDocumentos = data
-      this.busy=false
-    }, error=>{
-      this.busy = false
-    })
-  }
-  onFileChange(event:any){
-    this.file = <File>event.target.files[0]
-
-    if (event.target.files && event.target.files[0]) {
-      var reader = new FileReader();
-      reader.onload = (event: any) => {
-       var ok = event.target.result;
-       this.arquivoFoto = ok
-       this.documento = this.arquivoFoto?.toString()?this.arquivoFoto?.toString():''
+  private loadMacomData(id: string): void {
+    this.usuarioService.verMacom(id).subscribe({
+      next: (data) => {
+        this.nomeIrmao = data.nome;
+      },
+      error: (err) => {
+        this.showMessage('Erro ao carregar dados do maçom!', true);
       }
-      reader.readAsDataURL(event.target.files[0]);
-      this.textoDoc = this.file.name
+    });
+  }
+
+  buscaDocumentos(id: string): void {
+    this.busy = true;
+    this.documentosService.verDocumentosUsuario(id)
+      .pipe(
+        tap(data => {
+          this.listaDocumentos = data;
+        }),
+        catchError(() => {
+          this.showMessage('Erro ao carregar documentos!', true);
+          return of([]);
+        }),
+        finalize(() => this.busy = false)
+      )
+      .subscribe();
+  }
+
+  onFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.selectedFile = input.files[0];
+      this.textoDoc = this.selectedFile.name;
     }
   }
-  escolheDoc(){
-    document.getElementById('input-file')!.click();
+
+  escolheDoc(): void {
+    document.getElementById('input-file')?.click();
   }
-  formataData(data:any){
-    var stringData = new Date(data).toLocaleDateString()
-    var splitData = stringData.split("/").reverse()
-    var dataFormatada = splitData[0]+"-"+splitData[1]+"-"+splitData[2]
-    return dataFormatada
+
+  salvar(): void {
+    if (!this.selectedFile || !this.usuarioId) return;
+
+    this.busy = true;
+    this.documentosService.enviarDocumentoUsuario(this.selectedFile, this.usuarioId)
+      .pipe(
+        tap(() => {
+          this.showMessage('Documento cadastrado com sucesso!', false);
+          this.buscaDocumentos(this.usuarioId!);
+          this.selectedFile = undefined;
+          this.textoDoc = 'Escolha um Documento';
+        }),
+        catchError(() => {
+          this.showMessage('Erro ao salvar documento. Tente novamente.', true);
+          return of(null);
+        }),
+        finalize(() => this.busy = false)
+      )
+      .subscribe();
   }
-  salvar(){
-    this.busy = true
-      this.documentosService.enviarDocumentoUsuario(this.file,this.usuario).subscribe(dataFoto=>{
-        this.showMessage("Documento cadastrado com sucesso",false)
-        this.busy=false
-        this.buscaDocumentos(this.usuario)
-      },error=>{
-        this.showMessage("Houve um erro, contate o administrador",true)
-        this.busy=false
-      })
+
+  downloadDocumento(doc: DocumentosResponse): void {
+    if (!doc.link) return;
+    
+    window.open(doc.link, '_blank');
+  }
+
+  showMessage(msg: string, isError: boolean = false): void {
+    this.snackBar.open(msg, '✕', {
+      duration: 5000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: isError ? 'msg-error' : 'msg-success'
+    });
+  }
 }
-
-
-}
-

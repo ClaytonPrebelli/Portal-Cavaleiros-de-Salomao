@@ -1,60 +1,217 @@
-.corpo{
-    background: rgb(200,249,251);
-    background: radial-gradient(circle, rgb(177, 246, 248) 0%, rgba(0, 213, 255, 0.445) 100%);
-    min-height: 100vh;
-    padding: 40px 0 ;
-    &--inner{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        min-height: 60vh;
-        
-        &--box{
-            background-color: #ffffff77;
-            height: 350px;
-            padding: 24px;
-            box-shadow: 0 0 8px 2px #000000b7;
-            &--form{
-               width:100%;
-                display: flex;
-                flex-direction: column;
-                &--btns{
-                    width:100%;
-                    display: flex;
-                    justify-content: space-between;
-                    &--limpar{
-                        background-color: #fff56b!important;
-                    }
-                }
-            }
-        }
-    }
+:host {
+  display: block;
+  min-height: 100vh;
 }
-::ng-deep .mat-mdc-snack-bar-container.msg-error > div{
-    background-color: #AA120C!important;
-    color:#fff!important;
-    font-weight: bold!important;
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: rotate 30s linear infinite;
+  }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.loading-content {
+  text-align: center;
+  
+  .loading-logo {
+    width: 120px;
+    margin-bottom: 24px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.login-card {
+  max-width: 420px;
+  width: 100%;
+  padding: 40px 32px;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  animation: slideUp 0.6s ease-out;
+  position: relative;
+  z-index: 1;
+
+  &:hover {
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.logo-container {
+  margin-bottom: 20px;
+  
+  .logo {
+    width: 100px;
+    height: auto;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+    transition: transform 0.3s ease;
     
- }
-::ng-deep .mat-mdc-snack-bar-container.msg-error > div > div > div >div >.mat-mdc-simple-snack-bar>div>button{
-    background-color: #AA120C!important;
-    color:#fff!important;
-    font-weight: bold!important;
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a237e;
+  margin: 0 0 8px 0;
+  letter-spacing: 0.5px;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #666;
+  margin: 0;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-field {
+  width: 100%;
+  
+  mat-icon {
+    color: #666;
+  }
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  
+  .btn-entrar {
+    flex: 2;
+    height: 48px;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     
- }
- ::ng-deep .mat-mdc-snack-bar-container.msg-success>div{
-    background-color: #41e07e!important;
-    color:#000!important;
-    font-weight: bold!important;
- }
- ::ng-deep .mat-mdc-snack-bar-container.msg-success>div> div > div >div >.mat-mdc-simple-snack-bar>div>button{
-    background-color: #41e07e!important;
-    color:#000!important;
-    font-weight: bold!important;
- }
- ::ng-deep .mat-mdc-snack-bar-container.msg-success>div> div > div >div >.mat-mdc-simple-snack-bar>div{
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
     
-    color:#000!important;
-    font-weight: bold!important;
- }
+    mat-spinner {
+      margin: 0;
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+    }
+  }
+  
+  .btn-limpar {
+    flex: 1;
+    height: 48px;
+    font-size: 1rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background-color: #fff56b;
+    
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+::ng-deep {
+  .mat-mdc-snack-bar-container {
+    &.msg-error {
+      .mdc-snackbar__surface {
+        background-color: #AA120C !important;
+        color: #fff !important;
+        font-weight: bold !important;
+      }
+    }
+    
+    &.msg-success {
+      .mdc-snackbar__surface {
+        background-color: #41e07e !important;
+        color: #000 !important;
+        font-weight: bold !important;
+      }
+    }
+  }
+}
