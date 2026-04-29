@@ -66,7 +66,8 @@ export interface UsuariosInterface{
   loja?:LojasInterface,
   familiares?:FamiliaresInterface[],
   documentos?:[],
-  cobrancas?:[]
+  cobrancas?:[],
+  foto?:FotoInterface[]
 }
 export interface StatusInterface{
   id:number,

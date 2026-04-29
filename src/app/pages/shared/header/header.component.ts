@@ -1,74 +1,102 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
-import { LoginResponse } from 'src/app/core/interfaces/login';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { Router, RouterLink } from '@angular/router';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { ModalTokenComponent } from '../modal-token/modal-token.component';
+import { Observable, catchError, of, tap } from 'rxjs';
 
 @Component({
   selector: 'app-header',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterLink,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDividerModule,
+    MatDialogModule,
+    MatSnackBarModule
+  ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit{
-  currentUser!:LoginResponse
+export class HeaderComponent implements OnInit {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
+
+  currentUser: any = null;
   exibeHamb = false;
-  menuHamburguer = document.querySelector('#menuHamburguer') as HTMLElement;
-  constructor(private authService:AuthService, private router: Router,private modal:MatDialog){}
-ngOnInit(): void {
-  
-  this.menuHamburguer = document.querySelector('#menuHamburguer') as HTMLElement;
-  var local:any = localStorage.getItem("MasonUser")
-      local = JSON.parse(local)
-      if(local){
-        this.currentUser = local
-        this.authService.verificaAtivo(this.currentUser.id).subscribe(
-          data=>{
-            
-          }, error=>{
-            localStorage.removeItem("MasonUser")
-            this.router.navigate(["login"])
-          }
-        )
-      }else{
-        this.router.navigate(["login"])
-      }
 
-   }
-   showHamb(){
-    console.log("entrou")
-    this.menuHamburguer = document.querySelector('#menuHamburguer') as HTMLElement;
-    this.exibeHamb = !this.exibeHamb;
-    if(this.exibeHamb){
-      this.menuHamburguer.style.left = '0';
-    }else{
-      this.menuHamburguer.style.left = '-100%';
+  ngOnInit(): void {
+    const local: any = localStorage.getItem('MasonUser');
+    if (local) {
+      this.currentUser = JSON.parse(local);
+      this.verificaAtivo();
+    } else {
+      this.router.navigate(['/login']);
     }
-  
-  
   }
-  
-   sair(){
-    localStorage.removeItem("MasonUser")
-    this.router.navigate(["login"])
-   }
-   gerarToken(){
-    var token ='https://restrito.glumbsp.com.br/cadastro/candidato/'
-    this.authService.gerarToken(this.currentUser.id).subscribe(data=>{
-      token += data
-      this.abrirModal(token)
-    },error=>{
-      
-      token += error.error.text
-      this.abrirModal(token)
-    })
 
-   }
-   abrirModal(token:string){
-    
-    const dialogRef = this.modal.open(ModalTokenComponent, {
-      data: {link:token},
-      
-    })
-   }
+  private verificaAtivo(): void {
+    this.authService.verificaAtivo(this.currentUser.id).pipe(
+      tap(() => {}),
+      catchError(() => {
+        localStorage.removeItem('MasonUser');
+        this.router.navigate(['/login']);
+        return of(null);
+      })
+    ).subscribe();
+  }
+
+  showHamb(): void {
+    this.exibeHamb = !this.exibeHamb;
+  }
+
+  setDefaultImage(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.src = 'assets/images/default-avatar.png';
+  }
+
+  sair(): void {
+    localStorage.removeItem('MasonUser');
+    this.router.navigate(['/login']);
+  }
+
+  gerarToken(): void {
+    const token = 'https://restrito.glumbsp.com.br/cadastro/candidato/';
+    this.authService.gerarToken(this.currentUser.id).pipe(
+      tap(data => {
+        this.abrirModal(token + data);
+      }),
+      catchError(error => {
+        const errorToken = token + (error?.error?.text || 'erro');
+        this.abrirModal(errorToken);
+        return of(null);
+      })
+    ).subscribe();
+  }
+
+  private abrirModal(token: string): void {
+    this.dialog.open(ModalTokenComponent, {
+      data: { link: token }
+    });
+  }
+
+  showMessage(msg: string, isError: boolean = false): void {
+    this.snackBar.open(msg, '✕', {
+      duration: 5000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: isError ? 'msg-error' : 'msg-success'
+    });
+  }
 }

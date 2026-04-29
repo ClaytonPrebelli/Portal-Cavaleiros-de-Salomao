@@ -14,5 +14,7 @@ export interface NoticiasResponse{
     resultados:number,
     page:number,
     totalPaginas:number,
+    totalItems:number,
+    pageSize:number,
     noticias:NoticiasInterface[]
 }

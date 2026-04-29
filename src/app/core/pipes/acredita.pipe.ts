@@ -1,16 +1,13 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'acredita'
+  name: 'acredita',
+  standalone: true
 })
 export class AcreditaPipe implements PipeTransform {
 
   transform(value: boolean, ...args: unknown[]): string {
-   if(value){
-    return "Sim"
-   }else{
-    return "Não"
-   }
+    return value ? 'Sim' : 'Não';
   }
 
 }

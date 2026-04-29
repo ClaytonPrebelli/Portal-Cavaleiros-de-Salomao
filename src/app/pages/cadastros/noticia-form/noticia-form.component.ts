@@ -1,161 +1,174 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FotoNoticiaInterface } from 'src/app/core/interfaces/foto';
-import { NoticiasInterface } from 'src/app/core/interfaces/noticias';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NoticiasService } from 'src/app/core/services/noticias.service';
+import { NoticiasInterface } from 'src/app/core/interfaces/noticias';
+import { Observable, catchError, finalize, of, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-noticia-form',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDatepickerModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule
+  ],
   templateUrl: './noticia-form.component.html',
   styleUrls: ['./noticia-form.component.scss']
 })
-export class NoticiaFormComponent implements OnInit{
-  busy=false;
-  file!: File;
-  arquivoFoto!:string|ArrayBuffer|null;
-  noticiaForm:FormGroup = new FormGroup({
-    id: new FormControl('',[Validators.required]),
-    titulo: new FormControl('',[Validators.required]),
-    texto: new FormControl('',[Validators.required]),
-    dataPublicacao: new FormControl('',[Validators.required]),
-    autorId:new FormControl('',[Validators.required])
-  })
-  foto=''
-  textoFoto='Escolha uma imagem'
-  acao = 'criar'
-  fotoNoticia!:FotoNoticiaInterface
-  showMessage(msg: string, isError: boolean = false): void {
-    this.snackBar.open(msg, 'X', {
-      duration: 5000,
-      horizontalPosition: 'center',
-      verticalPosition: "top",
-      panelClass: isError ? ['msg-error'] : ['msg-success']
-    })
-  }  
-  constructor(private route:ActivatedRoute,private noticiaService:NoticiasService,private snackBar: MatSnackBar,private router:Router){}
+export class NoticiaFormComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private noticiaService = inject(NoticiasService);
+  private snackBar = inject(MatSnackBar);
+
+  busy = false;
+  noticiaForm: FormGroup;
+  fotoPreview: string | ArrayBuffer | null = null;
+  selectedFile?: File;
+  isEditing = false;
+
+  constructor() {
+    this.noticiaForm = this.fb.group({
+      id: [0],
+      titulo: ['', [Validators.required, Validators.minLength(5)]],
+      texto: ['', [Validators.required, Validators.minLength(50)]],
+      dataPublicacao: [new Date(), Validators.required],
+      autorId: [null as number | null, Validators.required]
+    });
+  }
+
   ngOnInit(): void {
-    this.busy=true
-    var currentUser:any = localStorage.getItem('MasonUser')
-    currentUser = JSON.parse(currentUser)
-   
-      var id = this.route.snapshot.paramMap.get('id');
-      
-      if(id!=null){
-        this.noticiaService.verNoticia(parseInt(id)).subscribe(data=>{
-          this.noticiaForm.controls['id'].setValue(data.id)
-          this.noticiaForm.controls['titulo'].setValue(data.titulo)
-          var texto = data.texto.replace("</p>","\n").replace("<p>","")
-          this.noticiaForm.controls['texto'].setValue(texto)
-          this.noticiaForm.controls['dataPublicacao'].setValue(data.dataPublicacao)
-          this.noticiaForm.controls['autorId'].setValue(data.autorId)
-          this.foto =  `data:image/png;base64,${data.fotosNoticias![0].fotoFile}`
-          this.fotoNoticia = data.fotosNoticias![0]
-          this.acao='editar'
-          this.busy=false
-        },error=>{
-          if(error.status==404 && id!="0"){
-            this.showMessage("Nenhuma notícia encontrada!",true)
-            this.noticiaForm.controls['id'].setValue(0)
-            this.noticiaForm.controls['autorId'].setValue(currentUser.id)
-            this.noticiaForm.controls['dataPublicacao'].setValue(new Date)
-            this.acao = 'criar'
-            console.log(this.noticiaForm.value)
-            this.busy=false
-          }
-          this.noticiaForm.controls['id'].setValue(0)
-          this.noticiaForm.controls['autorId'].setValue(currentUser.id)
-          this.noticiaForm.controls['dataPublicacao'].setValue(new Date)
-          this.acao = 'criar'
-          console.log(this.noticiaForm.value)
-          this.busy=false
-        
-        })
-      }else{
-        this.noticiaForm.controls['id'].setValue(0)
-        this.noticiaForm.controls['autorId'].setValue(currentUser.id)
-        this.noticiaForm.controls['dataPublicacao'].setValue(new Date)
-        this.acao = 'criar'
-        console.log(this.noticiaForm.value)
-        this.busy=false
-      }
-      }
-      onFileChange(event:any){
-        this.file = <File>event.target.files[0]
-    
-        if (event.target.files && event.target.files[0]) {
-          var reader = new FileReader();
-          reader.onload = (event: any) => {
-           var ok = event.target.result;
-           this.arquivoFoto = ok
-           this.foto = this.arquivoFoto?.toString()?this.arquivoFoto?.toString():''
-          }
-          reader.readAsDataURL(event.target.files[0]);
-          this.textoFoto = this.file.name
-        }
-      }
-      escolheFoto(){
-        document.getElementById('input-file')!.click();
-      }
-      salvar(){
-       
-        this.busy = true
-        if(this.acao=="criar"){
-              var listaTexto = []
-              listaTexto = this.noticiaForm.value.texto.split("\n")
-              this.noticiaForm.value.texto=''
-              for(let i=0;i<listaTexto.length;i++){
-                this.noticiaForm.value.texto += `<p>${listaTexto[i]}</p>`
-              }
-              var noticiaEnviar:NoticiasInterface={
-                id:this.noticiaForm.value.id,
-                autorId:this.noticiaForm.value.autorId,
-                dataPublicacao:this.noticiaForm.value.dataPublicacao,
-                texto:this.noticiaForm.value.texto,
-                titulo:this.noticiaForm.value.titulo
-              }
-              this.noticiaService.gravarNoticia(noticiaEnviar).subscribe(data=>{
-                    this.noticiaService.gravarFotoNoticia(this.file,data.id).subscribe(dataFoto=>{
-                      this.showMessage("Notícia cadastrada com sucesso",false)
-                      this.busy=false
-                      this.router.navigate(['/cadastros/noticias'])
-                    },error=>{
-                      this.showMessage("Houve um erro, contate o administrador",true)
-                      this.busy=false
-                    })
-              },error=>{
-                this.showMessage("Houve um erro, contate o administrador",true)
-                this.busy=false
-              })
-            }else{
-              var listaTexto = []
-              listaTexto = this.noticiaForm.value.texto.split("\n")
-              this.noticiaForm.value.texto=''
-              for(let i=0;i<listaTexto.length;i++){
-                this.noticiaForm.value.texto += `<p>${listaTexto[i]}</p>`
-              }
-              var noticiaEnviar:NoticiasInterface={
-                id:this.noticiaForm.value.id,
-                autorId:this.noticiaForm.value.autorId,
-                dataPublicacao:this.noticiaForm.value.dataPublicacao,
-                texto:this.noticiaForm.value.texto,
-                titulo:this.noticiaForm.value.titulo
-              }
-              this.noticiaService.gravarNoticia(noticiaEnviar).subscribe(data=>{
-                    this.noticiaService.gravarFotoNoticia(this.file,data.id).subscribe(dataFoto=>{
-                      this.showMessage("Notícia cadastrada com sucesso",false)
-                      this.busy=false
-                      this.router.navigate(['/cadastros/noticias'])
-                    },error=>{
-                      this.showMessage("Houve um erro, contate o administrador",true)
-                      this.busy=false
-                    })
-              },error=>{
-                this.showMessage("Houve um erro, contate o administrador",true)
-                this.busy=false
-              })
-            }
+    this.loadCurrentUser();
+    this.loadNoticia();
+  }
+
+  private loadCurrentUser(): void {
+    const userStr = localStorage.getItem('MasonUser');
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      this.noticiaForm.patchValue({ autorId: user.id });
     }
   }
 
+  private loadNoticia(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id || id === '0') {
+      this.isEditing = false;
+      return;
+    }
+
+    this.busy = true;
+    this.isEditing = true;
+
+    this.noticiaService.verNoticia(parseInt(id))
+      .pipe(
+        tap(noticia => {
+          const textoLimpo = noticia.texto?.replace(/<\/?p>/g, '\n').trim() || '';
+          this.noticiaForm.patchValue({
+            id: noticia.id,
+            titulo: noticia.titulo,
+            texto: textoLimpo,
+            dataPublicacao: new Date(noticia.dataPublicacao),
+            autorId: noticia.autorId
+          });
+
+          if (noticia.fotosNoticias?.[0]?.fotoFile) {
+            this.fotoPreview = `data:image/png;base64,${noticia.fotosNoticias[0].fotoFile}`;
+          }
+        }),
+        catchError(error => {
+          this.showMessage('Notícia não encontrada!', true);
+          this.router.navigate(['/cadastros/noticias']);
+          return of(null);
+        }),
+        finalize(() => this.busy = false)
+      )
+      .subscribe();
+  }
+
+  onFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.selectedFile = input.files[0];
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.fotoPreview = e.target?.result || null;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
+
+  escolheFoto(): void {
+    document.getElementById('input-file')?.click();
+  }
+
+  showMessage(msg: string, isError: boolean = false): void {
+    this.snackBar.open(msg, '✕', {
+      duration: 5000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: isError ? 'msg-error' : 'msg-success'
+    });
+  }
+
+  salvar(): void {
+    if (this.noticiaForm.invalid || this.busy) return;
+
+    this.busy = true;
+    const formValue = this.noticiaForm.value;
+    
+    const textoFormatado = formValue.texto
+      .split('\n')
+      .filter((line: string) => line.trim())
+      .map((line: string) => `<p>${line.trim()}</p>`)
+      .join('');
+
+    const noticia: NoticiasInterface = {
+      id: formValue.id,
+      titulo: formValue.titulo,
+      texto: textoFormatado,
+      dataPublicacao: formValue.dataPublicacao,
+      autorId: formValue.autorId
+    };
+
+    this.noticiaService.gravarNoticia(noticia)
+      .pipe(
+        switchMap(savedNoticia => {
+          if (this.selectedFile) {
+            return this.noticiaService.gravarFotoNoticia(this.selectedFile, savedNoticia.id!);
+          }
+          return of(null);
+        }),
+        tap(() => {
+          this.showMessage('Notícia salva com sucesso!', false);
+          this.router.navigate(['/cadastros/noticias']);
+        }),
+        catchError(error => {
+          this.showMessage('Erro ao salvar notícia. Tente novamente.', true);
+          return of(null);
+        }),
+        finalize(() => this.busy = false)
+      )
+      .subscribe();
+  }
+}

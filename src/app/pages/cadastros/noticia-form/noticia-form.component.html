@@ -1,28 +1,124 @@
-<app-header></app-header>
-<div class="overlay" *ngIf="busy">
-    <img src="../../../assets/images/glumbsp_logo.png" alt="GLUMBSP" class="loading col-12 col-md-1">
-</div>
-<div class="noticia contanier-fluid">
-    <div class="noticia--inner container">
-        <app-breadcumb></app-breadcumb>
-        <h2 class="noticia--inner--title">Notícia</h2>
-        <div class="noticia--inner--box col-12">
-            <form class="noticia--inner--box--form" [formGroup]="noticiaForm">
-                <mat-form-field class="noticia--inner--box--form--input col-12">
-                    <mat-label>Titulo</mat-label>
-                        <input matInput placeholder="Titulo" formControlName="titulo" name="titulo">
-                </mat-form-field>
-
-                <mat-form-field class="noticia--inner--box--form--input col-12">
-                    <mat-label>Nome</mat-label>
-                    <textarea matInput placeholder="Escreva o texto da notícia" formControlName="texto" name="texto" rows="10"></textarea>
-                </mat-form-field>
-                <img src="{{foto}}" alt="Foto Noticia" *ngIf="foto!=''" class="col-12 col-md-4  previa">
-                <button mat-raised-button class="input col-12 col-md-4" (click)="escolheFoto()"><mat-icon>image</mat-icon>{{textoFoto}}</button>
-                <input type="file" id="input-file" (change)="onFileChange($event)" style="display: none;"/>
-                <button mat-raised-button class="salvar col-12 col-md-4" (click)="salvar()" [disabled]="!noticiaForm.valid"><mat-icon>save</mat-icon>Salvar</button>
-            </form>
-        </div>
-    </div>
+<div class="form-container">
   
+  <!-- Loading Overlay -->
+  @if (busy) {
+    <div class="loading-overlay">
+      <div class="loading-content">
+        <mat-spinner diameter="60" color="primary"></mat-spinner>
+        <p>Salvando notícia...</p>
+      </div>
+    </div>
+  }
+
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="page-icon">{{ isEditing ? 'edit_note' : 'article' }}</mat-icon>
+        <div>
+          <h1>{{ isEditing ? 'Editar Notícia' : 'Nova Notícia' }}</h1>
+          <p>{{ isEditing ? 'Atualize as informações da notícia' : 'Preencha os dados para criar uma nova notícia' }}</p>
+        </div>
+      </div>
+      <button mat-button routerLink="/cadastros/noticias" class="btn-voltar">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Voltar</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Form Card -->
+  <mat-card class="form-card">
+    <mat-card-content>
+      <form [formGroup]="noticiaForm" class="noticia-form">
+        
+        <!-- Título -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Título</mat-label>
+          <input matInput formControlName="titulo" placeholder="Digite o título da notícia">
+          <mat-icon matSuffix>title</mat-icon>
+          @if (noticiaForm.get('titulo')?.invalid && noticiaForm.get('titulo')?.touched) {
+            <mat-error>
+              @if (noticiaForm.get('titulo')?.errors?.['required']) {
+                Título é obrigatório
+              }
+              @if (noticiaForm.get('titulo')?.errors?.['minlength']) {
+                Título deve ter pelo menos 5 caracteres
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Data de Publicação -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Data de Publicação</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="dataPublicacao">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Texto da Notícia -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Texto da Notícia</mat-label>
+          <textarea matInput formControlName="texto" rows="10" placeholder="Escreva o conteúdo da notícia (cada linha será um parágrafo)"></textarea>
+          @if (noticiaForm.get('texto')?.invalid && noticiaForm.get('texto')?.touched) {
+            <mat-error>
+              @if (noticiaForm.get('texto')?.errors?.['required']) {
+                Texto é obrigatório
+              }
+              @if (noticiaForm.get('texto')?.errors?.['minlength']) {
+                Texto deve ter pelo menos 50 caracteres
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Upload de Imagem -->
+        <div class="upload-section">
+          <h3 class="section-title">
+            <mat-icon>image</mat-icon>
+            Imagem de Capa
+          </h3>
+          
+          @if (fotoPreview) {
+            <div class="image-preview">
+              <img [src]="fotoPreview" alt="Preview" class="preview-img">
+              <button mat-icon-button class="remove-btn" (click)="fotoPreview = null; selectedFile = undefined">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          } @else {
+            <div class="upload-area" (click)="escolheFoto()">
+              <mat-icon class="upload-icon">cloud_upload</mat-icon>
+              <p>Clique para selecionar uma imagem</p>
+              <span class="upload-hint">PNG, JPG ou JPEG (máx. 5MB)</span>
+            </div>
+          }
+
+          <input type="file" id="input-file" (change)="onFileChange($event)" accept="image/*" style="display: none;">
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button mat-button type="button" routerLink="/cadastros/noticias" class="btn-cancel">
+            <mat-icon>cancel</mat-icon>
+            <span>Cancelar</span>
+          </button>
+          <button mat-raised-button 
+                  color="primary" 
+                  type="button"
+                  class="btn-salvar"
+                  [disabled]="noticiaForm.invalid || busy"
+                  (click)="salvar()">
+            @if (!busy) {
+              <span mat-icon>save</span>
+              <span>Salvar Notícia</span>
+            } @else {
+              <mat-spinner diameter="20"></mat-spinner>
+            }
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
 </div>

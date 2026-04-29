@@ -1,10 +1,19 @@
-<app-header></app-header>
 <div class="overlay" *ngIf="busy">
     <img src="../../../assets/images/glumbsp_logo.png" alt="GLUMBSP" class="loading col-12 col-md-1">
 </div>
-<div class="home contanier-fluid">
-    <div class="home--inner container">
-        <app-breadcumb></app-breadcumb>
+<div class="livros contanier-fluid">
+    <div class="livros--inner container">
+        <div class="page-header">
+            <div class="header-content">
+                <div class="title-section">
+                    <mat-icon class="page-icon">library_books</mat-icon>
+                    <div>
+                        <h1>Biblioteca Maçônica</h1>
+                        <p>Leitura recomendada por grau</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="livros">
             <div class="livros--buttons">
                 <button mat-raised-button class="livros--buttons--btn" (click)="seleciona('aprendiz')">Grau Aprendiz</button>

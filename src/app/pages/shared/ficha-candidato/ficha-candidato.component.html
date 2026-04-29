@@ -1,96 +1,146 @@
-<div class="overlay" *ngIf="busy">
-    <img src="../../../assets/images/glumbsp_logo.png" alt="GLUMBSP" class="loading col-12 col-md-1">
-</div>
-
-<div class="container-fluid ficha">
-    <div class="container ficha--inner"  #htmlData>
-            <div class="ficha--inner--head">
-            </div>
-            <div class="separador col-12" id="separador1">
-                <h2 class="separador--title">Dados Pessoais</h2>
-            </div>
-            <div class="pessoais">
-                
-                <div class="pessoais--info ">
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text nome"><strong>Nome:</strong> {{candidato.nome}}</p>
-                        <p class="pessoais--info--linha--text "><strong>CPF:</strong> {{candidato.cpf}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Idade:</strong> {{idade}} anos</p>
-                    </div>
-                    <div class="pessoais--info--linha">
-                       
-                        <p class="pessoais--info--linha--text "><strong>RG:</strong> {{candidato.rg}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Data Exped..</strong> {{candidato.dataExpedicao | date:"dd/MM/yyyy"}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Data Nasc.</strong> {{candidato.nascimento | date:"dd/MM/yyyy"}}</p>
-                        
-                    </div>
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text "><strong>Religião:</strong> {{candidato.religiao}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Acredita em um Ser Supremo:</strong> {{candidato.acreditaSerSupremo | acredita}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Estado Civil:</strong> {{candidato.estadoCivil}}</p>
-                    </div>
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text "><strong>Naturalidade:</strong> {{candidato.naturalidade}}/{{candidato.estado}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Nacionalidade:</strong> {{candidato.nacionalidade}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Tipo. Sang.:</strong> <span class="sangue"> {{candidato.tipoSanguineo}}</span></p>
-                    </div>
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text "><strong>Pai:</strong> {{candidato.pai}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Pai Maçom:</strong> {{candidato.paiMacom|acredita}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Mãe:</strong> {{capitalize(candidato.mae)}}</p>
-                        
-                      
-                    </div>
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text "><strong>Profissão:</strong> {{capitalize(candidato.profissao)}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Renda:</strong> {{candidato.renda}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Família concorda:</strong> {{candidato.familiaConcorda|acredita}}</p>
-                    </div>
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text "><strong>Telefone:</strong> {{candidato.fone}}</p>
-                        <p class="pessoais--info--linha--text "><strong>E-mail:</strong> {{candidato.email}}</p>
-                      
-                    </div>
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text "><strong>Endereço:</strong> {{candidato.endereco}},{{candidato.numero}}, {{candidato.bairro}} / CEP: {{candidato.cep}} - {{candidato.cidade}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Tempo Moradia:</strong> {{candidato.tempoMoradia}}</p>
-                      
-                    </div>
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text "><strong>Vícios:</strong> {{candidato.vicios}}</p>
-                        <p class="pessoais--info--linha--text "><strong>Aptidões:</strong> {{candidato.aptidoes}}</p>
-                      
-                    </div>
-                    <div class="pessoais--info--linha">
-                        <p class="pessoais--info--linha--text "><strong>Motivos a entrar na Ordem:</strong> {{candidato.motivos}}</p>
-                      
-                    </div>
-                    
-                </div>
-               
-            </div>
-            <div class="separador col-12" id="separador3">
-                <h2 class="separador--title">Familiares</h2>
-            </div>
-            <div class="pessoais">
-                <div class="pessoais--familiares">
-                    <div class="pessoais--familiares--box" *ngFor="let familiar of candidato.familiares">
-                        <div class="pessoais--familiares--item">
-                            <p class="pessoais--familiares--item--text parent"><strong>Nome:</strong> {{capitalize(familiar.familiarNome)}} ({{familiar.relacao}}) - {{getAge(familiar.nascimentoFamiliar.toString())}} anos</p>
-                            <p class="pessoais--familiares--item--tex nasc"><strong>Data Nasc.:</strong> {{(familiar.nascimentoFamiliar | date:"dd/MM/yyyy")}}</p>
-                            <p class="pessoais--familiares--item--text tel"><strong>Tel:</strong> {{familiar.telefone}}</p>
-                        </div>
-                      
-                    </div>
-                </div>
-        
-            </div>
-           
+<div class="ficha-container">
+  <!-- Loading -->
+  @if (busy) {
+    <div class="loading-overlay">
+      <mat-spinner diameter="60" color="primary"></mat-spinner>
+      <p>Carregando...</p>
     </div>
-    
-</div>
+  }
 
-<div class="acoesFicha">
-    <button mat-raised-button class="acoesFicha--baixar" (click)="openPDF()"><mat-icon>download</mat-icon>Baixar Ficha</button>
-    <a [routerLink]="['/candidatos']" mat-raised-button class="acoesFicha--baixar"><mat-icon>undo</mat-icon>Voltar</a>
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="page-icon">description</mat-icon>
+        <div>
+          <h1>Ficha do Candidato</h1>
+          <p>{{ candidato.nome }}</p>
+        </div>
+      </div>
+      <a mat-raised-button color="primary" routerLink="/candidatos" class="btn-voltar">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Voltar</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Content -->
+  @if (!busy) {
+    <div class="ficha-content" #htmlData>
+      
+      <!-- Dados Pessoais -->
+      <section class="section">
+        <h2 class="section-title">Dados Pessoais</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <strong>Nome:</strong> {{ candidato.nome }}
+          </div>
+          <div class="info-item">
+            <strong>CPF:</strong> {{ candidato.cpf }}
+          </div>
+          <div class="info-item">
+            <strong>Idade:</strong> {{ idade }} anos
+          </div>
+          <div class="info-item">
+            <strong>RG:</strong> {{ candidato.rg }}
+          </div>
+          <div class="info-item">
+            <strong>Data Expedição:</strong> {{ candidato.dataExpedicao | date:"dd/MM/yyyy" }}
+          </div>
+          <div class="info-item">
+            <strong>Data Nasc.:</strong> {{ candidato.nascimento | date:"dd/MM/yyyy" }}
+          </div>
+          <div class="info-item">
+            <strong>Religião:</strong> {{ candidato.religiao }}
+          </div>
+          <div class="info-item">
+            <strong>Acredita Ser Supremo:</strong> {{ candidato.acreditaSerSupremo | acredita }}
+          </div>
+          <div class="info-item">
+            <strong>Naturalidade:</strong> {{ candidato.naturalidade }}/{{ candidato.estado }}
+          </div>
+          <div class="info-item">
+            <strong>Nacionalidade:</strong> {{ candidato.nacionalidade }}
+          </div>
+          <div class="info-item">
+            <strong>Estado Civil:</strong> {{ candidato.estadoCivil }}
+          </div>
+          <div class="info-item">
+            <strong>Tipo Sang.:</strong> <span class="sangue"> {{ candidato.tipoSanguineo }}</span>
+          </div>
+          <div class="info-item">
+            <strong>Pai:</strong> {{ capitalize(candidato.pai) }}
+          </div>
+          <div class="info-item">
+            <strong>Pai Maçom:</strong> {{ candidato.paiMacom | acredita }}
+          </div>
+          <div class="info-item">
+            <strong>Mãe:</strong> {{ capitalize(candidato.mae) }}
+          </div>
+          <div class="info-item">
+            <strong>Profissão:</strong> {{ capitalize(candidato.profissao) }}
+          </div>
+          <div class="info-item">
+            <strong>Renda:</strong> {{ candidato.renda | qtdNumeros }}
+          </div>
+          <div class="info-item">
+            <strong>Vícios:</strong> {{ candidato.vicios }}
+          </div>
+          <div class="info-item">
+            <strong>Aptidões:</strong> {{ candidato.aptidoes }}
+          </div>
+          <div class="info-item full-width">
+            <strong>Endereço:</strong> {{ candidato.endereco }}, {{ candidato.numero }}, {{ candidato.bairro }} / CEP: {{ candidato.cep }} - {{ candidato.cidade }}
+          </div>
+          <div class="info-item">
+            <strong>Tempo Moradia:</strong> {{ candidato.tempoMoradia }}
+          </div>
+          <div class="info-item">
+            <strong>Telefone:</strong> {{ candidato.fone }}
+          </div>
+          <div class="info-item">
+            <strong>E-mail:</strong> {{ candidato.email }}
+          </div>
+          <div class="info-item">
+            <strong>Contato Emergência:</strong> {{ candidato.contatoEmergencia }}
+          </div>
+          <div class="info-item">
+            <strong>Tel. Emergência:</strong> {{ candidato.foneEmergencia }}
+          </div>
+          <div class="info-item full-width">
+            <strong>Família concorda:</strong> {{ candidato.familiaConcorda | acredita }}
+          </div>
+          <div class="info-item">
+            <strong>Motivos:</strong> {{ candidato.motivos }}
+          </div>
+        </div>
+      </section>
+
+      <!-- Familiares -->
+      <section class="section">
+        <h2 class="section-title">Familiares</h2>
+        <div class="familiares-list">
+          @for (familiar of candidato.familiares; track familiar.familiarNome) {
+            <div class="familiar-item">
+              <p class="familiar-nome"><strong>Nome:</strong> {{ capitalize(familiar.familiarNome) }} ({{ familiar.relacao }}) - {{ getAge(familiar.nascimentoFamiliar.toString()) }} anos</p>
+              <p><strong>Data Nasc.:</strong> {{ familiar.nascimentoFamiliar | date:"dd/MM/yyyy" }}</p>
+              <p><strong>Tel:</strong> {{ familiar.telefone }}</p>
+            </div>
+          }
+        </div>
+      </section>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button mat-raised-button class="btn-download" (click)="openPDF()">
+        <mat-icon>download</mat-icon>
+        <span>Baixar Ficha</span>
+      </button>
+      <a mat-raised-button routerLink="/candidatos" class="btn-back">
+        <mat-icon>undo</mat-icon>
+        <span>Voltar</span>
+      </a>
+    </div>
+  }
 </div>

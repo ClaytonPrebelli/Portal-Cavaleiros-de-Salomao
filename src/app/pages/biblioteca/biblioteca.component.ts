@@ -1,100 +1,105 @@
-import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatListModule } from '@angular/material/list';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Observable, catchError, finalize, of, tap } from 'rxjs';
 import { LivrosInterface } from 'src/app/core/interfaces/livros';
 import { LoginResponse } from 'src/app/core/interfaces/login';
 import { LivrosService } from 'src/app/core/services/livros.service';
 
-
 @Component({
   selector: 'app-biblioteca',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatTabsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatListModule,
+    MatTooltipModule
+  ],
   templateUrl: './biblioteca.component.html',
   styleUrls: ['./biblioteca.component.scss']
 })
-export class BibliotecaComponent implements OnInit{
-busy=false 
-currentUser!:LoginResponse
-livrosAprendiz!:LivrosInterface[]
-livrosCompanheiro!:LivrosInterface[]
-livrosMestre!:LivrosInterface[]
-selecionadoAprendiz=false
-selecionadoCompanheiro=false
-selecionadoMestre=false
+export class BibliotecaComponent implements OnInit {
+  private livrosService = inject(LivrosService);
 
-constructor(private livrosService:LivrosService){}
-
-ngOnInit(): void {
-    var local:any = localStorage.getItem("MasonUser")
-    local = JSON.parse(local)
-    this.currentUser = local
-    if(this.currentUser.isAprendiz){
-        this.verLivrosAprendiz()
-    }
-     if (this.currentUser.isCompanheiro){
-      this.verLivrosCompanheiro()
-    }
-     if (this.currentUser.isMestre){
-      this.verLivrosMestre()
-    }
-}
-seleciona(categoria:string){
-    if(categoria=="aprendiz"){
-        this.selecionadoCompanheiro = false
-        this.selecionadoMestre = false
-        this.selecionadoAprendiz = true
-    }else if(categoria=="companheiro"){
-      this.selecionadoAprendiz = false;
-      this.selecionadoCompanheiro = true;
-      this.selecionadoMestre = false;
-    }else if(categoria=="mestre"){
-      this.selecionadoAprendiz = false;
-      this.selecionadoCompanheiro = false;
-      this.selecionadoMestre = true;
-    }
-}
-verLivrosAprendiz(){
+  busy = false;
+  currentUser!: LoginResponse;
+  livrosAprendiz: LivrosInterface[] = [];
+  livrosCompanheiro: LivrosInterface[] = [];
+  livrosMestre: LivrosInterface[] = [];
   
-    this.livrosService.verLivrosAprendiz().subscribe(data=>{
-        this.livrosAprendiz = data.sort(function (a, b) {
-            if (a.nome > b.nome) {
-              return 1;
-            }
-            if (a.nome < b.nome) {
-              return -1;
-            }
-            // a must be equal to b
-            return 0;
-          })
-       
-    })
-}
-verLivrosCompanheiro(){
-  this.livrosService.verLivrosCompanheiro().subscribe(data=>{
-    this.livrosCompanheiro = data.sort(function (a, b) {
-        if (a.nome > b.nome) {
-          return 1;
-        }
-        if (a.nome < b.nome) {
-          return -1;
-        }
-        // a must be equal to b
-        return 0;
-      })
-   
-})
-}
-verLivrosMestre(){
-  this.livrosService.verLivrosMestre().subscribe(data=>{
-    this.livrosMestre = data.sort(function (a, b) {
-        if (a.nome > b.nome) {
-          return 1;
-        }
-        if (a.nome < b.nome) {
-          return -1;
-        }
-        // a must be equal to b
-        return 0;
-      })
-   
-})
-}
+  selecionadoAprendiz = false;
+  selecionadoCompanheiro = false;
+  selecionadoMestre = false;
+
+  ngOnInit(): void {
+    const local: any = localStorage.getItem('MasonUser');
+    if (local) {
+      this.currentUser = JSON.parse(local);
+      
+      if (this.currentUser.isAprendiz) {
+        this.verLivrosAprendiz();
+      }
+      if (this.currentUser.isCompanheiro) {
+        this.verLivrosCompanheiro();
+      }
+      if (this.currentUser.isMestre) {
+        this.verLivrosMestre();
+      }
+    }
+  }
+
+  seleciona(categoria: string): void {
+    this.selecionadoAprendiz = categoria === 'aprendiz';
+    this.selecionadoCompanheiro = categoria === 'companheiro';
+    this.selecionadoMestre = categoria === 'mestre';
+  }
+
+  verLivrosAprendiz(): void {
+    this.busy = true;
+    this.livrosService.verLivrosAprendiz()
+      .pipe(
+        tap(data => {
+          this.livrosAprendiz = data.sort((a, b) => a.nome.localeCompare(b.nome));
+        }),
+        catchError(() => of([])),
+        finalize(() => this.busy = false)
+      )
+      .subscribe();
+  }
+
+  verLivrosCompanheiro(): void {
+    this.busy = true;
+    this.livrosService.verLivrosCompanheiro()
+      .pipe(
+        tap(data => {
+          this.livrosCompanheiro = data.sort((a, b) => a.nome.localeCompare(b.nome));
+        }),
+        catchError(() => of([])),
+        finalize(() => this.busy = false)
+      )
+      .subscribe();
+  }
+
+  verLivrosMestre(): void {
+    this.busy = true;
+    this.livrosService.verLivrosMestre()
+      .pipe(
+        tap(data => {
+          this.livrosMestre = data.sort((a, b) => a.nome.localeCompare(b.nome));
+        }),
+        catchError(() => of([])),
+        finalize(() => this.busy = false)
+      )
+      .subscribe();
+  }
 }

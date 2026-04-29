@@ -23,7 +23,7 @@ export interface CandidatoInterface{
      bairro:string, 
      email:string, 
      fone :string,//
-     pai?:string,
+      pai:string,
      paiMacom:boolean, 
      renda: number, //
      mae:string, 
