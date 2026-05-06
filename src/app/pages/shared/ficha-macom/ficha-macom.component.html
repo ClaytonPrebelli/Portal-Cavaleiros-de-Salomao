@@ -1,181 +1,194 @@
 <div class="ficha-container">
-  <!-- Loading -->
   @if (busy) {
     <div class="loading-overlay">
       <mat-spinner diameter="60" color="primary"></mat-spinner>
-      <p>Carregando...</p>
+      <p>Carregando ficha...</p>
     </div>
   }
 
-  <!-- Header -->
-  <header class="page-header">
-    <div class="header-content">
-      <div class="title-section">
-        <mat-icon class="page-icon">badge</mat-icon>
-        <div>
-          <h1>Ficha do Maçom</h1>
-          <p>{{ macom.nome }}</p>
+  @if (!busy && macom) {
+    <header class="page-header">
+      <div class="header-content">
+        <div class="title-section">
+          <div class="avatar-wrapper">
+            <img [src]="'https://prebellisolucoes.com/FotosUsers/' + macom.id + '.png'"
+                 [alt]="macom.nome" class="user-photo" (error)="handleImgError($event)">
+          </div>
+          <div>
+            <h1>Ficha do Maçom</h1>
+            <p class="subtitle">{{ capitalize(macom.nome) }}</p>
+            <div class="badges">
+              <span class="badge grau" [class]="getGrauClass()">{{ grauSimb }}</span>
+              <span class="badge status" [class]="getStatusClass()">{{ macom.status?.status }}</span>
+            </div>
+          </div>
         </div>
+        <a mat-raised-button color="primary" routerLink="/cadastros/macons" class="btn-voltar">
+          <mat-icon>arrow_back</mat-icon>
+          <span>Voltar</span>
+        </a>
       </div>
-      <a mat-raised-button color="primary" routerLink="/cadastros/macons" class="btn-voltar">
-        <mat-icon>arrow_back</mat-icon>
-        <span>Voltar</span>
-      </a>
-    </div>
-  </header>
+    </header>
 
-  <!-- Content -->
-  @if (!busy) {
     <div class="ficha-content" #htmlData>
-      
-      <!-- Dados Pessoais -->
-      <section class="section">
-        <h2 class="section-title">Dados Pessoais</h2>
-        <div class="info-grid">
-          <div class="info-item">
-            <img [src]="'https://prebellisolucoes.com/FotosUsers/' + macom.id + '.png'" 
-                 [alt]="macom.nome" class="foto-macom">
-          </div>
-          <div class="info-item">
-            <div class="info-grid-inner">
+      <div class="cards-grid">
+        <mat-card class="card">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>person</mat-icon>
+            <mat-card-title>Dados Pessoais</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="info-grid">
               <div class="info-item">
-                <strong>Nome:</strong> {{ capitalize(macom.nome) }}
+                <span class="label">CIM</span>
+                <span class="value">{{ pad(macom.cim) }}</span>
               </div>
               <div class="info-item">
-                <strong>CIM:</strong> {{ pad(macom.cim) }}
+                <span class="label">CPF</span>
+                <span class="value">{{ macom.cpf }}</span>
               </div>
               <div class="info-item">
-                <strong>CPF:</strong> {{ macom.cpf }}
+                <span class="label">RG</span>
+                <span class="value">{{ macom.rg }}</span>
               </div>
               <div class="info-item">
-                <strong>RG:</strong> {{ macom.rg }}
+                <span class="label">Data de Nascimento</span>
+                <span class="value">{{ macom.nascimento | date:"dd/MM/yyyy" }}</span>
               </div>
               <div class="info-item">
-                <strong>Data Nasc.:</strong> {{ macom.nascimento | date:"dd/MM/yyyy" }}
+                <span class="label">Idade</span>
+                <span class="value highlight">{{ idade }} anos</span>
               </div>
               <div class="info-item">
-                <strong>Idade:</strong> {{ idade }} anos
-              </div>
-            </div>
-          </div>
-          <div class="info-item">
-            <div class="info-grid-inner">
-              <div class="info-item">
-                <strong>Naturalidade:</strong> {{ macom.naturalidade }}/{{ macom.estado }}
+                <span class="label">Tipo Sanguíneo</span>
+                <span class="value sangue">{{ macom.tipoSanguineo }}</span>
               </div>
               <div class="info-item">
-                <strong>Nacionalidade:</strong> {{ macom.nacionalidade }}
+                <span class="label">Naturalidade</span>
+                <span class="value">{{ macom.naturalidade }}/{{ macom.estado }}</span>
               </div>
               <div class="info-item">
-                <strong>Tipo Sang.:</strong> <span class="sangue"> {{ macom.tipoSanguineo }}</span>
+                <span class="label">Nacionalidade</span>
+                <span class="value">{{ macom.nacionalidade }}</span>
               </div>
               <div class="info-item">
-                <strong>Pai:</strong> {{ capitalize(macom.pai) }}
+                <span class="label">Pai</span>
+                <span class="value">{{ capitalize(macom.pai) }}</span>
               </div>
               <div class="info-item">
-                <strong>Mãe:</strong> {{ capitalize(macom.mae) }}
-              </div>
-            </div>
-          </div>
-          <div class="info-item">
-            <div class="info-grid-inner">
-              <div class="info-item">
-                <strong>Profissão:</strong> {{ capitalize(macom.profissao) }}
+                <span class="label">Mãe</span>
+                <span class="value">{{ capitalize(macom.mae) }}</span>
               </div>
               <div class="info-item">
-                <strong>Telefone:</strong> {{ macom.fone }}
+                <span class="label">Profissão</span>
+                <span class="value">{{ capitalize(macom.profissao) }}</span>
               </div>
               <div class="info-item">
-                <strong>E-mail:</strong> {{ macom.email }}
+                <span class="label">Telefone</span>
+                <span class="value">{{ macom.fone }}</span>
               </div>
               <div class="info-item full-width">
-                <strong>Endereço:</strong> {{ macom.endereco }}, {{ macom.numero }}, {{ macom.bairro }} / CEP: {{ macom.cep }} - {{ macom.cidade }}
+                <span class="label">E-mail</span>
+                <span class="value">{{ macom.email }}</span>
+              </div>
+              <div class="info-item full-width">
+                <span class="label">Endereço</span>
+                <span class="value">{{ macom.endereco }}, {{ macom.numero }}, {{ macom.bairro }} - CEP: {{ macom.cep }} - {{ macom.cidade }}/{{ macom.estado }}</span>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </mat-card-content>
+        </mat-card>
 
-      <!-- Dados Maçônicos -->
-      <section class="section">
-        <h2 class="section-title">Dados Maçônicos</h2>
-        <div class="info-grid">
-          <div class="info-item">
-            <img [src]="'https://prebellisolucoes.com/FotosLojas/' + macom.loja?.id + '.png'" 
-                 [alt]="macom.loja?.nomeLoja" class="foto-loja">
-          </div>
-          <div class="info-item">
-            <div class="info-grid-inner">
+        <mat-card class="card">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>shield</mat-icon>
+            <mat-card-title>Dados Maçônicos</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="info-grid">
               <div class="info-item">
-                <strong>Loja:</strong> {{ macom.loja?.nomeLoja }} nº {{ macom.loja?.numeroLoja }}
+                <span class="label">Loja</span>
+                <span class="value">{{ macom.loja?.nomeLoja }} nº {{ macom.loja?.numeroLoja }}</span>
               </div>
               <div class="info-item">
-                <strong>Oriente:</strong> {{ macom.loja?.oriente }} / {{ macom.loja?.estado }}
+                <span class="label">Oriente</span>
+                <span class="value">{{ macom.loja?.oriente }}/{{ macom.loja?.estado }}</span>
               </div>
               <div class="info-item">
-                <strong>Grau Simb.:</strong> {{ grauSimb }}
+                <span class="label">Grau Simbólico</span>
+                <span class="value">{{ grauSimb }}</span>
               </div>
               <div class="info-item">
-                <strong>Status:</strong> {{ macom.status?.status }}
+                <span class="label">Status</span>
+                <span class="value">{{ macom.status?.status }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Data de Afiliação</span>
+                <span class="value">{{ macom.dataAfiliacao | date:"dd/MM/yyyy" }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Forma de Afiliação</span>
+                <span class="value">{{ macom.formaAfiliacao }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Iniciação</span>
+                <span class="value">{{ macom.iniciacao | date:"dd/MM/yyyy" }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Elevação</span>
+                <span class="value">{{ macom.elevacao | date:"dd/MM/yyyy" }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Exaltação</span>
+                <span class="value">{{ macom.exaltacao | date:"dd/MM/yyyy" }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Cargo em Loja</span>
+                <span class="value">{{ macom.cargo }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Título</span>
+                <span class="value">{{ macom.titulo }}</span>
               </div>
             </div>
-          </div>
-          <div class="info-item">
-            <div class="info-grid-inner">
-              <div class="info-item">
-                <strong>Data Afiliação:</strong> {{ macom.dataAfiliacao | date:"dd/MM/yyyy" }}
-              </div>
-              <div class="info-item">
-                <strong>Forma Afiliação:</strong> {{ macom.formaAfiliacao }}
-              </div>
-              <div class="info-item">
-                <strong>Iniciação:</strong> {{ macom.iniciacao | date:"dd/MM/yyyy" }}
-              </div>
-              <div class="info-item">
-                <strong>Elevação:</strong> {{ macom.elevacao | date:"dd/MM/yyyy" }}
-              </div>
-              <div class="info-item">
-                <strong>Exaltação:</strong> {{ macom.exaltacao | date:"dd/MM/yyyy" }}
-              </div>
-            </div>
-          </div>
-          <div class="info-item">
-            <div class="info-grid-inner">
-              <div class="info-item">
-                <strong>Cargo em Loja:</strong> {{ macom.cargo }}
-              </div>
-              <div class="info-item">
-                <strong>Título:</strong> {{ macom.titulo }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+          </mat-card-content>
+        </mat-card>
+      </div>
 
-      <!-- Familiares -->
-      <section class="section">
-        <h2 class="section-title">Familiares</h2>
-        <div class="familiares-list">
-          @for (familiar of macom.familiares; track familiar.familiarNome) {
-            <div class="familiar-item">
-              <p class="familiar-nome"><strong>Nome:</strong> {{ capitalize(familiar.familiarNome) }} ({{ familiar.relacao }}) - {{ getAge(familiar.nascimentoFamiliar.toString()) }} anos</p>
-              <p><strong>Data Nasc.:</strong> {{ familiar.nascimentoFamiliar | date:"dd/MM/yyyy" }}</p>
-              <p><strong>Tel:</strong> {{ familiar.telefone }}</p>
+      @if (macom.familiares && macom.familiares.length > 0) {
+        <mat-card class="card">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>groups</mat-icon>
+            <mat-card-title>Familiares</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="familiares-grid">
+              @for (familiar of macom.familiares; track familiar.familiarNome) {
+                <div class="familiar-card">
+                  <div class="familiar-header">
+                    <span class="familiar-nome">{{ capitalize(familiar.familiarNome) }}</span>
+                    <span class="familiar-relacao">{{ familiar.relacao }}</span>
+                  </div>
+                  <div class="familiar-info">
+                    <span>{{ familiar.nascimentoFamiliar | date:"dd/MM/yyyy" }} ({{ getAge(familiar.nascimentoFamiliar.toString()) }} anos)</span>
+                    <span>Tel: {{ familiar.telefone }}</span>
+                  </div>
+                </div>
+              }
             </div>
-          }
-        </div>
-      </section>
+          </mat-card-content>
+        </mat-card>
+      }
     </div>
 
-    <!-- Actions -->
-    <div class="actions">
-      <button mat-raised-button class="btn-download" (click)="openPDF()">
+    <div class="actions-bar">
+      <button mat-raised-button color="primary" (click)="openPDF()">
         <mat-icon>download</mat-icon>
-        <span>Baixar Ficha</span>
+        <span>Baixar Ficha em PDF</span>
       </button>
-      <a mat-raised-button routerLink="/cadastros/macons" class="btn-back">
-        <mat-icon>undo</mat-icon>
-        <span>Voltar</span>
+      <a mat-raised-button routerLink="/cadastros/macons">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Voltar para Lista</span>
       </a>
     </div>
   }

@@ -152,7 +152,7 @@ export class CandidatosComponent implements OnInit {
           dialogRef.afterClosed().subscribe(() => {
             this.showMessage('Sua ficha foi enviada. Iremos analisar e retornar o contato.', false);
             setTimeout(() => {
-              window.location.href = 'https://glumbsp.com.br';
+          window.location.href = 'https://gosp.com.br';
             }, 7000);
           });
         }),

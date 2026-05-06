@@ -141,7 +141,7 @@ export class HomePainelComponent implements OnInit {
   gerarToken(): void {
     this.userService.gerarToken(this.currentUser.id).pipe(
       tap(data => {
-        const token = 'https://restrito.glumbsp.com.br/cadastro/candidato/' + data;
+        const token = 'https://restrito.gosp.com.br/cadastro/candidato/' + data;
         this.abrirModal(token);
       }),
       catchError(error => {

@@ -72,7 +72,7 @@ export class HeaderComponent implements OnInit {
   }
 
   gerarToken(): void {
-    const token = 'https://restrito.glumbsp.com.br/cadastro/candidato/';
+    const token = 'https://restrito.gosp.com.br/cadastro/candidato/';
     this.authService.gerarToken(this.currentUser.id).pipe(
       tap(data => {
         this.abrirModal(token + data);

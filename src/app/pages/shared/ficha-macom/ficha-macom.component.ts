@@ -1,19 +1,16 @@
 import { Component, OnInit, inject, ViewChild, ElementRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { DatePipe } from '@angular/common';
-import { DecimalPipe } from '@angular/common';
 import { UsuariosInterface } from 'src/app/core/interfaces/login';
-import { LojasInterface } from 'src/app/core/interfaces/lojas';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { LojasService } from 'src/app/core/services/lojas.service';
 import { AcreditaPipe } from 'src/app/core/pipes/acredita.pipe';
 import { QtdNumerosPipe } from 'src/app/core/pipes/qtd-numeros.pipe';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
-import { Observable, catchError, finalize, of, tap } from 'rxjs';
+import { MatChipsModule } from '@angular/material/chips';
+import { catchError, finalize, of, tap } from 'rxjs';
 
 @Component({
   selector: 'app-ficha-macom',
@@ -22,13 +19,13 @@ import { Observable, catchError, finalize, of, tap } from 'rxjs';
     CommonModule,
     RouterLink,
     DatePipe,
-    DecimalPipe,
     AcreditaPipe,
     QtdNumerosPipe,
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatCardModule
+    MatCardModule,
+    MatChipsModule
   ],
   templateUrl: './ficha-macom.component.html',
   styleUrls: ['./ficha-macom.component.scss']
@@ -36,13 +33,12 @@ import { Observable, catchError, finalize, of, tap } from 'rxjs';
 export class FichaMacomComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private usuarioService = inject(AuthService);
-  private lojasService = inject(LojasService);
 
   busy = false;
   macom!: UsuariosInterface;
   idade = 0;
   grauSimb = '';
-  
+
   @ViewChild('htmlData', { static: false }) htmlData!: ElementRef;
 
   ngOnInit(): void {
@@ -56,12 +52,10 @@ export class FichaMacomComponent implements OnInit {
       .pipe(
         tap(data => {
           this.macom = data;
-          this.grauSimb = this.validaGrauSimb(this.macom);
-          this.idade = this.getAge(this.macom.nascimento.toString());
+          this.grauSimb = this.validaGrauSimb(data);
+          this.idade = this.getAge(data.nascimento.toString());
         }),
-        catchError(() => {
-          return of(null);
-        }),
+        catchError(() => of(null)),
         finalize(() => this.busy = false)
       )
       .subscribe();
@@ -80,11 +74,9 @@ export class FichaMacomComponent implements OnInit {
     const birthDate = new Date(dateString);
     let age = today.getFullYear() - birthDate.getFullYear();
     const m = today.getMonth() - birthDate.getMonth();
-    
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
-    
     return age;
   }
 
@@ -95,32 +87,38 @@ export class FichaMacomComponent implements OnInit {
     return 'Candidato';
   }
 
+  getGrauClass(): string {
+    if (this.macom.isMestre) return 'grau-mestre';
+    if (this.macom.isCompanheiro) return 'grau-companheiro';
+    if (this.macom.isAprendiz) return 'grau-aprendiz';
+    return 'grau-candidato';
+  }
+
+  getStatusClass(): string {
+    const status = this.macom.status?.status.toLowerCase() ?? '';
+    if (status.includes('ativo')) return 'status-ativo';
+    if (status.includes('inativo')) return 'status-inativo';
+    if (status.includes('afastado')) return 'status-afastado';
+    return '';
+  }
+
+  handleImgError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.style.display = 'none';
+  }
+
   openPDF(): void {
     this.usuarioService.baixarFichaMacom(this.macom.id, this.idade)
       .pipe(
         tap(data => {
           const linkSource = 'data:application/pdf;base64,' + data;
           const downloadLink = document.createElement('a');
-          const fileName = `Ficha - ${this.macom.nome}.pdf`;
-          
           downloadLink.href = linkSource;
-          downloadLink.download = fileName;
+          downloadLink.download = `Ficha - ${this.macom.nome}.pdf`;
           downloadLink.click();
         }),
-        catchError(() => {
-          return of(null);
-        })
+        catchError(() => of(null))
       )
       .subscribe();
-  }
-
-  base64ToArrayBuffer(base64: any): ArrayBuffer {
-    const binary_string = window.atob(base64);
-    const len = binary_string.length;
-    const bytes = new Uint8Array(len);
-    for (let i = 0; i < len; i++) {
-      bytes[i] = binary_string.charCodeAt(i);
-    }
-    return bytes.buffer;
   }
 }
