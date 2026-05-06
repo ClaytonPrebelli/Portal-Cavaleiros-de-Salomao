@@ -1,8 +1,9 @@
-import { Component, OnInit, inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CandidatoInterface } from 'src/app/core/interfaces/candidato';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { PdfGeneratorService } from 'src/app/core/services/pdf-generator.service';
 import { AcreditaPipe } from 'src/app/core/pipes/acredita.pipe';
 import { QtdNumerosPipe } from 'src/app/core/pipes/qtd-numeros.pipe';
 import { MatButtonModule } from '@angular/material/button';
@@ -33,12 +34,11 @@ import { catchError, finalize, of, tap } from 'rxjs';
 export class FichaCandidatoComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private usuarioService = inject(AuthService);
+  private pdfGenerator = inject(PdfGeneratorService);
 
   busy = false;
   candidato: CandidatoInterface | null = null;
   idade = 0;
-
-  @ViewChild('htmlData', { static: false }) htmlData!: ElementRef;
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id') ?? '0';
@@ -78,19 +78,8 @@ export class FichaCandidatoComponent implements OnInit {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
 
-  openPDF(): void {
+  async openPDF(): Promise<void> {
     if (!this.candidato) return;
-    this.usuarioService.baixarFichaCandidato(this.candidato.id, this.idade)
-      .pipe(
-        tap(data => {
-          const linkSource = 'data:application/pdf;base64,' + data;
-          const downloadLink = document.createElement('a');
-          downloadLink.href = linkSource;
-          downloadLink.download = `Ficha Candidato - ${this.candidato!.nome}.pdf`;
-          downloadLink.click();
-        }),
-        catchError(() => of(null))
-      )
-      .subscribe();
+    await this.pdfGenerator.generateFichaCandidato(this.candidato, this.idade);
   }
 }

@@ -84,68 +84,93 @@
       <mat-tab label="Carteirinha Digital">
         @if (macom) {
         <div class="tab-content carteirinha-tab">
-          <div class="carteirinha-frente">
-            <img src="../../../assets/images/logos/gosp_logo.png" alt="" class="carteirinha-gosp">
-            <div class="carteirinha-header">
-              <div class="carteirinha-cim">
-                  <h4>CARTEIRA DE IDENTIDADE MAÇÔNICA</h4>
-                  <h4>{{ macom.cim | qtdNumeros }}</h4>
+          <div class="carteirinha-wrapper">
+            <div class="carteirinha-face carteirinha-frente">
+              <div class="card-bg-pattern"></div>
+              <div class="card-header">
+                <img src="assets/images/logos/salomao.png" alt="GOSP" class="card-logo">
+                <div class="card-org">
+                  <span class="org-name">GRANDE ORIENTE DE SÃO PAULO</span>
+                  <span class="card-title">CARTEIRA DE IDENTIDADE MAÇÔNICA</span>
+                </div>
               </div>
-              <div class="carteirinha-nome">
-                  <h4>{{ macom.nome }}</h4>
-                  <h4>{{ grau(macom) }}</h4>
+              <div class="card-divider"></div>
+              <div class="card-main">
+                <div class="card-info">
+                  <div class="info-row">
+                    <span class="info-label">CIM</span>
+                    <span class="info-value">{{ macom.cim | qtdNumeros }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Loja</span>
+                    <span class="info-value">{{ nomeLoja }} nº {{ macom.loja?.numeroLoja }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Oriente</span>
+                    <span class="info-value">{{ macom.loja?.oriente }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Obediência</span>
+                    <span class="info-value">GOSP</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Nascimento</span>
+                    <span class="info-value">{{ macom.nascimento | date:"dd/MM/yyyy" }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Idade</span>
+                    <span class="info-value">{{ idade }} anos</span>
+                  </div>
+                  <div class="info-row footer-rows">
+                    <span class="info-label">Emissão: {{ hoje }}</span>
+                    <span class="info-label">Validade: {{ validade }}</span>
+                  </div>
+                </div>
+                <div class="card-photo-area">
+                  <img [src]="'https://prebellisolucoes.com/FotosUsers/' + macom.id + '.png'" 
+                       [alt]="macom.nome" class="card-photo" (error)="handleImgError($event)">
+                  <div class="card-photo-fallback" *ngIf="false">
+                    <mat-icon>person</mat-icon>
+                  </div>
+                </div>
+              </div>
+              <div class="card-name-badge">
+                <span class="member-name">{{ macom.nome }}</span>
+                <span class="member-grau">{{ grau(macom) }}</span>
               </div>
             </div>
-            
-            <img [src]="'https://prebellisolucoes.com/FotosLojas/' + macom.loja?.id + '.png'" 
-                 [alt]="macom.loja?.nomeLoja" class="carteirinha-frente--loja">
-            <div class="carteirinha-body">
-              <div class="carteirinha-info">
-                  <h5><strong>Oriente:</strong> {{ macom.loja?.oriente }}</h5>
-                  <h5><strong>Loja:</strong> {{ nomeLoja }}</h5>
-                  <h5><strong>Obediência:</strong> GOSP</h5>
-              </div>
-              <img [src]="'https://prebellisolucoes.com/FotosUsers/' + macom.id + '.png'" 
-                   [alt]="macom.nome" class="carteirinha-frente--foto">
-            </div>
-            <div class="carteirinha-footer">
-              <div class="carteirinha-footer-inner">
-                  <div class="footer-item">
-                                      <h5><strong>Emissão</strong></h5>
-                                      <h5>{{ hoje }}</h5>
-                                  </div>
-                                  <div class="footer-item">
-                                      <h5><strong>Validade</strong></h5>
-                                      <h5>{{ validade }}</h5>
-                                  </div>
+
+            <div class="carteirinha-face carteirinha-verso">
+              <div class="card-bg-pattern"></div>
+              <div class="verso-content">
+                <div class="verso-logo">
+                  <img src="assets/images/logos/salomao.png" alt="GOSP" class="verso-logo-img">
+                </div>
+                <h3 class="verso-title">GRANDE ORIENTE DE SÃO PAULO</h3>
+                <p class="verso-texto">Esta carteira de identidade maçônica constitui documento oficial do Grande Oriente de São Paulo, certificando regularidade de obreiro.</p>
+                <div class="verso-graus">
+                  <div class="grau-card">
+                    <span class="grau-label">INICIAÇÃO</span>
+                    <span class="grau-date">{{ macom.iniciacao | date:"dd/MM/yyyy" }}</span>
+                  </div>
+                  <div class="grau-card">
+                    <span class="grau-label">ELEVAÇÃO</span>
+                    <span class="grau-date">{{ macom.elevacao | date:"dd/MM/yyyy" }}</span>
+                  </div>
+                  <div class="grau-card">
+                    <span class="grau-label">EXALTAÇÃO</span>
+                    <span class="grau-date">{{ macom.exaltacao | date:"dd/MM/yyyy" }}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          
-          <div class="carteirinha-verso">
-            <h3>GRANDE LOJA UNIDA MAÇÔNICA DO BRASIL-SP</h3>
-            <h4 class="carteirinha-texto">Esta carteira de identidade maçônica constitui documento oficial do Grande Oriente de São Paulo, certificando regularidade de obreiro.</h4>
-            <div class="carteirinha-graus">
-                <div class="grau-item">
-                                        <h4>Inciação</h4>
-                                        <h4>{{ macom.iniciacao ? (macom.iniciacao.toString().split('T')[0].split('-')[2] + '/' + (macom.iniciacao.toString().split('T')[0].split('-')[1] + '/' + macom.iniciacao.toString().split('T')[0].split('-')[0])) : 'XXXX' }}</h4>
-                                    </div>
-                                    <div class="grau-item">
-                                        <h4>Elevação</h4>
-                                        <h4>{{ macom.elevacao ? (macom.elevacao.toString().split('T')[0].split('-')[2] + '/' + (macom.elevacao.toString().split('T')[0].split('-')[1] + '/' + macom.elevacao.toString().split('T')[0].split('-')[0])) : 'XXXX' }}</h4>
-                                    </div>
-                                    <div class="grau-item">
-                                        <h4>Exaltação</h4>
-                                        <h4>{{ macom.exaltacao ? (macom.exaltacao.toString().split('T')[0].split('-')[2] + '/' + (macom.exaltacao.toString().split('T')[0].split('-')[1] + '/' + macom.exaltacao.toString().split('T')[0].split('-')[0])) : 'XXXX' }}</h4>
-                                    </div>
-            </div>
-            <div class="carteirinha-assinatura">
-              <img src="../../../assets/images/selo.png" alt="" class="carteirinha-assinatura-img">
-            </div>
-          </div>
-        
+
           <div class="carteirinha-actions">
-            <button mat-raised-button class="btn-carteirinha" (click)="openPDF()">Baixar</button>
+            <button mat-raised-button class="btn-carteirinha" (click)="openPDF()">
+              <mat-icon>download</mat-icon>
+              <span>Baixar Carteirinha</span>
+            </button>
           </div>
         </div>
         }

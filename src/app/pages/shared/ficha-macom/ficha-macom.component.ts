@@ -1,10 +1,9 @@
-import { Component, OnInit, inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { UsuariosInterface } from 'src/app/core/interfaces/login';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { AcreditaPipe } from 'src/app/core/pipes/acredita.pipe';
-import { QtdNumerosPipe } from 'src/app/core/pipes/qtd-numeros.pipe';
+import { PdfGeneratorService } from 'src/app/core/services/pdf-generator.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -19,8 +18,6 @@ import { catchError, finalize, of, tap } from 'rxjs';
     CommonModule,
     RouterLink,
     DatePipe,
-    AcreditaPipe,
-    QtdNumerosPipe,
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
@@ -33,13 +30,12 @@ import { catchError, finalize, of, tap } from 'rxjs';
 export class FichaMacomComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private usuarioService = inject(AuthService);
+  private pdfGenerator = inject(PdfGeneratorService);
 
   busy = false;
   macom!: UsuariosInterface;
   idade = 0;
   grauSimb = '';
-
-  @ViewChild('htmlData', { static: false }) htmlData!: ElementRef;
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id') ?? '0';
@@ -107,18 +103,7 @@ export class FichaMacomComponent implements OnInit {
     img.style.display = 'none';
   }
 
-  openPDF(): void {
-    this.usuarioService.baixarFichaMacom(this.macom.id, this.idade)
-      .pipe(
-        tap(data => {
-          const linkSource = 'data:application/pdf;base64,' + data;
-          const downloadLink = document.createElement('a');
-          downloadLink.href = linkSource;
-          downloadLink.download = `Ficha - ${this.macom.nome}.pdf`;
-          downloadLink.click();
-        }),
-        catchError(() => of(null))
-      )
-      .subscribe();
+  async openPDF(): Promise<void> {
+    await this.pdfGenerator.generateFichaMacom(this.macom, this.idade);
   }
 }

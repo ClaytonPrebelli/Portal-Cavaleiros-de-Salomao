@@ -1,6 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DatePipe } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,12 +10,10 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
-import { Observable, catchError, finalize, of, tap } from 'rxjs';
-import { dash } from 'pdfkit';
-import { FotoInterface } from 'src/app/core/interfaces/foto';
+import { catchError, finalize, of, tap } from 'rxjs';
 import { FamiliaresInterface, LoginResponse, UsuariosInterface } from 'src/app/core/interfaces/login';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { LojasService } from 'src/app/core/services/lojas.service';
+import { PdfGeneratorService } from 'src/app/core/services/pdf-generator.service';
 import { ModalTokenComponent } from 'src/app/pages/shared/modal-token/modal-token.component';
 import { QtdNumerosPipe } from 'src/app/core/pipes/qtd-numeros.pipe';
 
@@ -25,7 +22,6 @@ import { QtdNumerosPipe } from 'src/app/core/pipes/qtd-numeros.pipe';
   standalone: true,
   imports: [
     CommonModule,
-    DatePipe,
     MatTabsModule,
     MatCardModule,
     MatButtonModule,
@@ -42,13 +38,12 @@ import { QtdNumerosPipe } from 'src/app/core/pipes/qtd-numeros.pipe';
 })
 export class HomePainelComponent implements OnInit {
   private userService = inject(AuthService);
-  private lojaService = inject(LojasService);
+  private pdfGenerator = inject(PdfGeneratorService);
   private router = inject(Router);
   private dialog = inject(MatDialog);
 
   busy = false;
   currentUser!: LoginResponse;
-  fotoLoja: FotoInterface = { fotoFile: [], fotoName: '', id: 0 };
   nomeLoja = '';
   macom: UsuariosInterface = {
     bairro: '', cargo: '', cep: '', cidade: '', cim: 0,
@@ -124,18 +119,15 @@ export class HomePainelComponent implements OnInit {
     return 'Candidato';
   }
 
-  openPDF(): void {
-    this.userService.gerarCarteirinha(this.macom.id).pipe(
-      tap(data => {
-        const linkSource = 'data:application/pdf;base64,' + data;
-        const downloadLink = document.createElement('a');
-        const fileName = `CIM ${this.macom.nome}.pdf`;
-        downloadLink.href = linkSource;
-        downloadLink.download = fileName;
-        downloadLink.click();
-      }),
-      catchError(() => of(null))
-    ).subscribe();
+  async openPDF(): Promise<void> {
+    await this.pdfGenerator.generateCarteirinha(
+      this.macom,
+      this.idade,
+      this.grau(this.macom),
+      this.hoje,
+      this.validade,
+      this.nomeLoja
+    );
   }
 
   gerarToken(): void {
@@ -168,10 +160,17 @@ export class HomePainelComponent implements OnInit {
   }
 
   abrirModalFamiliar(): void {
-    // TODO: implementar modal de familiar
   }
 
   editarFamiliares(): void {
-    // TODO: implementar edição de familiares
+  }
+
+  handleImgError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.style.display = 'none';
+    const fallback = img.parentElement?.querySelector('.card-photo-fallback') as HTMLElement;
+    if (fallback) {
+      fallback.style.display = 'flex';
+    }
   }
 }

@@ -114,27 +114,6 @@ export class AuthService {
     );
   }
 
-  baixarFichaCandidato(id: number, idade: number): Observable<Blob> {
-    return this.http.get(
-      `${Envs.apiUrl}Candidatos/FichaCandidato?id=${id}&idade=${idade}`,
-      { responseType: 'blob' }
-    );
-  }
-
-  baixarFichaMacom(id: number, idade: number): Observable<Blob> {
-    return this.http.get(
-      `${Envs.apiUrl}Usuarios/FichaMacom?id=${id}&idade=${idade}`,
-      { responseType: 'blob' }
-    );
-  }
-
-  gerarCarteirinha(id: number): Observable<Blob> {
-    return this.http.get(
-      `${Envs.apiUrl}Usuarios/Carteirinha?id=${id}`,
-      { responseType: 'blob' }
-    );
-  }
-
   verAniversarios(): Observable<UsuariosInterface[]> {
     return this.http.get<UsuariosInterface[]>(
       `${Envs.apiUrl}Usuarios/VerAniversarios`

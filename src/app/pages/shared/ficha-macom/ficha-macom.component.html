@@ -10,27 +10,34 @@
     <header class="page-header">
       <div class="header-content">
         <div class="title-section">
-          <div class="avatar-wrapper">
-            <img [src]="'https://prebellisolucoes.com/FotosUsers/' + macom.id + '.png'"
-                 [alt]="macom.nome" class="user-photo" (error)="handleImgError($event)">
-          </div>
+          <img [src]="'https://prebellisolucoes.com/FotosUsers/' + macom.id + '.png'"
+               [alt]="macom.nome" class="header-photo" (error)="handleImgError($event)">
           <div>
             <h1>Ficha do Maçom</h1>
             <p class="subtitle">{{ capitalize(macom.nome) }}</p>
             <div class="badges">
               <span class="badge grau" [class]="getGrauClass()">{{ grauSimb }}</span>
               <span class="badge status" [class]="getStatusClass()">{{ macom.status?.status }}</span>
+              @if (macom.cargo) {
+                <span class="badge cargo">{{ macom.cargo }}</span>
+              }
             </div>
           </div>
         </div>
-        <a mat-raised-button color="primary" routerLink="/cadastros/macons" class="btn-voltar">
-          <mat-icon>arrow_back</mat-icon>
-          <span>Voltar</span>
-        </a>
+        <div class="header-actions">
+          <button mat-raised-button class="btn-download" (click)="openPDF()">
+            <mat-icon>download</mat-icon>
+            <span>Baixar Ficha</span>
+          </button>
+          <a mat-raised-button color="primary" routerLink="/cadastros/macons" class="btn-voltar">
+            <mat-icon>arrow_back</mat-icon>
+            <span>Voltar</span>
+          </a>
+        </div>
       </div>
     </header>
 
-    <div class="ficha-content" #htmlData>
+    <div class="ficha-content">
       <div class="cards-grid">
         <mat-card class="card">
           <mat-card-header>
@@ -179,17 +186,6 @@
           </mat-card-content>
         </mat-card>
       }
-    </div>
-
-    <div class="actions-bar">
-      <button mat-raised-button color="primary" (click)="openPDF()">
-        <mat-icon>download</mat-icon>
-        <span>Baixar Ficha em PDF</span>
-      </button>
-      <a mat-raised-button routerLink="/cadastros/macons">
-        <mat-icon>arrow_back</mat-icon>
-        <span>Voltar para Lista</span>
-      </a>
     </div>
   }
 </div>
