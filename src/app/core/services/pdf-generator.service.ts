@@ -9,34 +9,28 @@ export class PdfGeneratorService {
   private doc!: jsPDF;
 
   private async imageToBase64(src: string): Promise<string> {
-    const existingImg = document.querySelector(`img[src="${src}"]`) as HTMLImageElement;
-    if (existingImg && existingImg.complete && existingImg.naturalWidth > 0) {
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = existingImg.naturalWidth;
-        canvas.height = existingImg.naturalHeight;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.drawImage(existingImg, 0, 0);
-          return canvas.toDataURL('image/png');
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0);
+            resolve(canvas.toDataURL('image/png'));
+          } else {
+            resolve('');
+          }
+        } catch {
+          resolve('');
         }
-      } catch {
-        // fallback
-      }
-    }
-
-    try {
-      const response = await fetch(src);
-      const blob = await response.blob();
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.onerror = () => resolve('');
-        reader.readAsDataURL(blob);
-      });
-    } catch {
-      return '';
-    }
+      };
+      img.onerror = () => resolve('');
+      img.src = src;
+    });
   }
 
   async generateFichaMacom(macom: UsuariosInterface, idade: number): Promise<void> {
@@ -109,7 +103,6 @@ export class PdfGeneratorService {
         .header-photo {
           width: 120px;
           height: 120px;
-          border-radius: 50%;
           object-fit: cover;
           border: 4px solid rgba(255, 255, 255, 0.3);
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -481,21 +474,17 @@ export class PdfGeneratorService {
       const canvasW = canvas.width;
       const canvasH = canvas.height;
       const imgRatio = canvasW / canvasH;
-      const pdfRatio = pdfW / pdfH;
 
-      let renderW: number;
-      let renderH: number;
+      let renderW = pdfW;
+      let renderH = pdfW / imgRatio;
 
-      if (imgRatio > pdfRatio) {
-        renderW = pdfW;
-        renderH = pdfW / imgRatio;
-      } else {
+      if (renderH > pdfH) {
         renderH = pdfH;
         renderW = pdfH * imgRatio;
       }
 
       const xOffset = (pdfW - renderW) / 2;
-      const yOffset = (pdfH - renderH) / 2;
+      const yOffset = 0;
 
       this.doc.addImage(imgData, 'JPEG', xOffset, yOffset, renderW, renderH);
 
