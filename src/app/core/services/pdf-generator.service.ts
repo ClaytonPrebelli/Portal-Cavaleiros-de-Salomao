@@ -561,6 +561,25 @@ export class PdfGeneratorService {
       return;
     }
 
+    const allImgs = Array.from(frenteEl.querySelectorAll('img')).concat(Array.from(versoEl.querySelectorAll('img')));
+
+    await Promise.all(allImgs.map(async (img) => {
+      if (img.complete && img.naturalWidth > 0) {
+        try {
+          const c = document.createElement('canvas');
+          c.width = img.naturalWidth;
+          c.height = img.naturalHeight;
+          const ctx = c.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0);
+            img.src = c.toDataURL('image/png');
+          }
+        } catch {
+          // skip
+        }
+      }
+    }));
+
     await new Promise(r => setTimeout(r, 300));
 
     const [frenteCanvas, versoCanvas] = await Promise.all([
@@ -571,6 +590,7 @@ export class PdfGeneratorService {
         logging: false,
         backgroundColor: null,
         foreignObjectRendering: false,
+        imageTimeout: 0,
       }),
       html2canvas(versoEl, {
         scale: 3,
@@ -579,6 +599,7 @@ export class PdfGeneratorService {
         logging: false,
         backgroundColor: null,
         foreignObjectRendering: false,
+        imageTimeout: 0,
       }),
     ]);
 

@@ -92,9 +92,7 @@
   .card-bg-pattern {
     position: absolute;
     inset: 0;
-    background:
-      radial-gradient(circle at 10% 90%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
-      radial-gradient(circle at 90% 10%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    background: rgba(255, 255, 255, 0.03);
     pointer-events: none;
   }
 }
