@@ -27,7 +27,11 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "web.config",
+              {
+                "glob": "web.config",
+                "input": "src/",
+                "output": "/"
+              },
               {
                 "glob": "**/*",
                 "input": "./node_modules/pspdfkit/dist/pspdfkit-lib/",
