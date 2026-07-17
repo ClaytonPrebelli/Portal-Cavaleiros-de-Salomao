@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,6 +15,7 @@ import FileSaver from 'file-saver';
 import { DocumentosResponse } from 'src/app/core/interfaces/documentos';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { DocumentosService } from 'src/app/core/services/documentos.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-documento',
@@ -40,6 +41,7 @@ export class DocumentoComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private usuarioService = inject(AuthService);
   private documentosService = inject(DocumentosService);
+  private destroyRef = inject(DestroyRef);
 
   busy = false;
   currentUser: any = null;
@@ -64,7 +66,7 @@ export class DocumentoComponent implements OnInit {
   }
 
   private loadMacomData(id: string): void {
-    this.usuarioService.verMacom(id).subscribe({
+    this.usuarioService.verMacom(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.nomeIrmao = data.nome;
       },
@@ -78,6 +80,7 @@ export class DocumentoComponent implements OnInit {
     this.busy = true;
     this.documentosService.verDocumentosUsuario(id)
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         tap(data => {
           this.listaDocumentos = data;
         }),
@@ -108,6 +111,7 @@ export class DocumentoComponent implements OnInit {
     this.busy = true;
     this.documentosService.enviarDocumentoUsuario(this.selectedFile, this.usuarioId)
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         tap(() => {
           this.showMessage('Documento cadastrado com sucesso!', false);
           this.buscaDocumentos(this.usuarioId!);

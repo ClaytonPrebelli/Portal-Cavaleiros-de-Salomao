@@ -10,7 +10,7 @@
     <header class="page-header">
       <div class="header-content">
         <div class="title-section">
-          <img [src]="'https://prebellisolucoes.com/FotosUsers/' + macom.id + '.png'"
+          <img [src]="fotosUrl + macom.id + '.png'"
                [alt]="macom.nome" class="header-photo" (error)="handleImgError($event)">
           <div>
             <h1>Ficha do Maçom</h1>
@@ -115,11 +115,11 @@
             <div class="info-grid">
               <div class="info-item">
                 <span class="label">Loja</span>
-                <span class="value">{{ macom.loja?.nomeLoja }} nº {{ macom.loja?.numeroLoja }}</span>
+                <span class="value">Cavaleiros de Salomão nº 7106</span>
               </div>
               <div class="info-item">
                 <span class="label">Oriente</span>
-                <span class="value">{{ macom.loja?.oriente }}/{{ macom.loja?.estado }}</span>
+                <span class="value">São Paulo</span>
               </div>
               <div class="info-item">
                 <span class="label">Grau Simbólico</span>
@@ -151,11 +151,7 @@
               </div>
               <div class="info-item">
                 <span class="label">Cargo em Loja</span>
-                <span class="value">{{ macom.cargo }}</span>
-              </div>
-              <div class="info-item">
-                <span class="label">Título</span>
-                <span class="value">{{ macom.titulo }}</span>
+                <span class="value">{{ macom.cargo || 'Sem Cargo' }}</span>
               </div>
             </div>
           </mat-card-content>

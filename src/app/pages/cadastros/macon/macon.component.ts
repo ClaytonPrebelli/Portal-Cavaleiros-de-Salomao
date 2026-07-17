@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -18,13 +18,13 @@ import { Router, RouterLink } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, catchError, finalize, of, switchMap, tap } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { LojasService } from 'src/app/core/services/lojas.service';
+import { Envs } from 'src/app/core/services/envs';
 import { UsuariosInterface } from 'src/app/core/interfaces/login';
 import { StatusInterface } from 'src/app/core/interfaces/status';
-import { LojasInterface } from 'src/app/core/interfaces/lojas';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ModalFamiliarComponent } from '../../shared/modal-familiar/modal-familiar.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-macom',
@@ -58,9 +58,9 @@ export class MaconComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private usuarioService = inject(AuthService);
-  private lojasService = inject(LojasService);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
+  private destroyRef = inject(DestroyRef);
 
   busy = false;
   isEditing = false;
@@ -68,8 +68,13 @@ export class MaconComponent implements OnInit {
   selectedFile?: File;  
   listaEstados = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'];
   listaFormas = ['Iniciação','Afiliação','Transferência'];
+  listaCargos = [
+    { id: 0, nome: 'Sem Cargo' },
+    { id: 1, nome: 'Venerável Mestre' },
+    { id: 2, nome: 'Tesoureiro' },
+    { id: 3, nome: 'Secretário' }
+  ];
   listaStatus: StatusInterface[] = [];
-  listaLojas: LojasInterface[] = [];
   macom?: UsuariosInterface;
   grauSimb = '';
   idade = 0;
@@ -112,10 +117,8 @@ export class MaconComponent implements OnInit {
     pass: ['', Validators.required],
     dataAfiliacao: [''],
     formaAfiliacao: [''],
-    cargo: [''],
-    titulo: [''],
-    statusId: [1, Validators.required],
-    lojaId: [0, Validators.required]
+    cargoId: [null],
+    statusId: [1, Validators.required]
   });
 
   ngOnInit(): void {
@@ -126,14 +129,8 @@ export class MaconComponent implements OnInit {
   private loadInitialData(): void {
     this.usuarioService.listarStatus()
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         tap(data => this.listaStatus = data),
-        catchError(() => of([]))
-      )
-      .subscribe();
-
-    this.lojasService.verLojasAtivas()
-      .pipe(
-        tap(data => this.listaLojas = data),
         catchError(() => of([]))
       )
       .subscribe();
@@ -151,6 +148,7 @@ export class MaconComponent implements OnInit {
     this.busy = true;
     this.usuarioService.verMacom(id)
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         tap(data => {
           this.macom = data;
           this.grauSimb = this.validaGrauSimb(this.macom);
@@ -160,7 +158,7 @@ export class MaconComponent implements OnInit {
           if (data.foto && data.foto.length > 0 && data.foto[0].fotoFile) {
             this.fotoPreview = `data:image/png;base64,${data.foto[0].fotoFile}`;
           } else {
-            this.fotoPreview = `https://prebellisolucoes.com/FotosUsers/${data.id}.png`;
+            this.fotoPreview = `${Envs.fotosUrl}${data.id}.png`;
           }
         }),
         finalize(() => this.busy = false)
@@ -207,10 +205,8 @@ export class MaconComponent implements OnInit {
       pass: data.pass,
       dataAfiliacao: this.parseLocalDate(data.dataAfiliacao),
       formaAfiliacao: data.formaAfiliacao,
-      cargo: data.cargo,
-      titulo: data.titulo,
-      statusId: data.statusId,
-      lojaId: data.lojaId
+      cargoId: data.cargoId,
+      statusId: data.statusId
     });
 
     if (data.foto && data.foto.length > 0 && data.foto[0].fotoFile) {
@@ -299,6 +295,7 @@ export class MaconComponent implements OnInit {
 
     this.usuarioService.cadastrarMacom(userEnviar)
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         switchMap(savedMacom => {
           if (this.selectedFile) {
             return this.usuarioService.gravarFotoIUser(this.selectedFile, savedMacom.id!);
@@ -331,7 +328,7 @@ export class MaconComponent implements OnInit {
       data: { id: this.macomForm.get('id')?.value || 0, candidato: false }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(result => {
       if (result) {
         this.familiaresTemp.push(result);
         this.showMessage('Familiar adicionado!', false);
@@ -348,7 +345,7 @@ export class MaconComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(result => {
       if (result) {
         const index = this.familiaresTemp.findIndex(f => f.id === result.id);
         if (index > -1) {

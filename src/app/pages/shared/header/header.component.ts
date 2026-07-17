@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +9,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { Envs } from 'src/app/core/services/envs';
 import { ModalTokenComponent } from '../modal-token/modal-token.component';
 import { Observable, catchError, of, tap } from 'rxjs';
 
@@ -28,6 +30,7 @@ import { Observable, catchError, of, tap } from 'rxjs';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   private authService = inject(AuthService);
   private router = inject(Router);
   private dialog = inject(MatDialog);
@@ -35,6 +38,7 @@ export class HeaderComponent implements OnInit {
 
   currentUser: any = null;
   exibeHamb = false;
+  fotosUrl = Envs.fotosUrl;
 
   ngOnInit(): void {
     const local: any = localStorage.getItem('MasonUser');
@@ -48,6 +52,7 @@ export class HeaderComponent implements OnInit {
 
   private verificaAtivo(): void {
     this.authService.verificaAtivo(this.currentUser.id).pipe(
+      takeUntilDestroyed(this.destroyRef),
       tap(() => {}),
       catchError(() => {
         localStorage.removeItem('MasonUser');
@@ -63,7 +68,8 @@ export class HeaderComponent implements OnInit {
 
   setDefaultImage(event: Event): void {
     const img = event.target as HTMLImageElement;
-    img.src = 'assets/images/default-avatar.png';
+    img.onerror = null;
+    img.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v1.2c0 .66.54 1.2 1.2 1.2h16.8c.66 0 1.2-.54 1.2-1.2v-1.2c0-3.2-6.4-4.8-9.6-4.8z"/></svg>');
   }
 
   sair(): void {
@@ -74,6 +80,7 @@ export class HeaderComponent implements OnInit {
   gerarToken(): void {
     const token = 'https://restrito.gosp.com.br/cadastro/candidato/';
     this.authService.gerarToken(this.currentUser.id).pipe(
+      takeUntilDestroyed(this.destroyRef),
       tap(data => {
         this.abrirModal(token + data);
       }),

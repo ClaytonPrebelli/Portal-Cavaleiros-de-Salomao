@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTabsModule, MatTabChangeEvent } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
@@ -7,10 +7,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatBadgeModule } from '@angular/material/badge';
-import { Observable, catchError, finalize, of, tap } from 'rxjs';
+import { Observable, catchError, finalize, forkJoin, of, tap } from 'rxjs';
 import { LivrosInterface } from 'src/app/core/interfaces/livros';
 import { LoginResponse } from 'src/app/core/interfaces/login';
 import { LivrosService } from 'src/app/core/services/livros.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-biblioteca',
@@ -30,6 +31,7 @@ import { LivrosService } from 'src/app/core/services/livros.service';
 })
 export class BibliotecaComponent implements OnInit {
   private livrosService = inject(LivrosService);
+  private destroyRef = inject(DestroyRef);
 
   busy = false;
   currentUser!: LoginResponse;
@@ -48,57 +50,45 @@ export class BibliotecaComponent implements OnInit {
   }
 
   private loadInitialData(): void {
+    this.busy = true;
+    const requests: Observable<LivrosInterface[]>[] = [];
+
     if (this.currentUser.isAprendiz) {
-      this.loadLivros('aprendiz');
+      requests.push(this.livrosService.verLivrosAprendiz());
     }
     if (this.currentUser.isCompanheiro) {
-      this.loadLivros('companheiro');
+      requests.push(this.livrosService.verLivrosCompanheiro());
     }
     if (this.currentUser.isMestre) {
-      this.loadLivros('mestre');
+      requests.push(this.livrosService.verLivrosMestre());
     }
+
+    if (requests.length === 0) {
+      this.busy = false;
+      return;
+    }
+
+    forkJoin(requests).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      tap(results => {
+        let index = 0;
+        if (this.currentUser.isAprendiz) {
+          this.livrosAprendiz = (results[index++] || []).sort((a, b) => a.nome.localeCompare(b.nome));
+        }
+        if (this.currentUser.isCompanheiro) {
+          this.livrosCompanheiro = (results[index++] || []).sort((a, b) => a.nome.localeCompare(b.nome));
+        }
+        if (this.currentUser.isMestre) {
+          this.livrosMestre = (results[index++] || []).sort((a, b) => a.nome.localeCompare(b.nome));
+        }
+      }),
+      catchError(() => of([])),
+      finalize(() => this.busy = false)
+    ).subscribe();
   }
 
   onTabChange(event: MatTabChangeEvent): void {
     this.selectedTab = event.index;
-  }
-
-  private loadLivros(grau: 'aprendiz' | 'companheiro' | 'mestre'): void {
-    this.busy = true;
-    let observable: Observable<LivrosInterface[]>;
-    
-    switch (grau) {
-      case 'aprendiz':
-        observable = this.livrosService.verLivrosAprendiz();
-        break;
-      case 'companheiro':
-        observable = this.livrosService.verLivrosCompanheiro();
-        break;
-      case 'mestre':
-        observable = this.livrosService.verLivrosMestre();
-        break;
-    }
-
-    observable
-      .pipe(
-        tap(data => {
-          const sorted = data.sort((a, b) => a.nome.localeCompare(b.nome));
-          switch (grau) {
-            case 'aprendiz':
-              this.livrosAprendiz = sorted;
-              break;
-            case 'companheiro':
-              this.livrosCompanheiro = sorted;
-              break;
-            case 'mestre':
-              this.livrosMestre = sorted;
-              break;
-          }
-        }),
-        catchError(() => of([])),
-        finalize(() => this.busy = false)
-      )
-      .subscribe();
   }
 
   getLivrosForCurrentTab(): LivrosInterface[] {

@@ -66,7 +66,7 @@
                 <mat-form-field class="macom--inner--box--form--input col-12 col-md-2">
                     <mat-label>Estado</mat-label>
                     <mat-select formControlName="estado">
-                        <mat-option *ngFor="let estado of listaEstados" [value]="estado">
+                        <mat-option *ngFor="let estado of listaEstados; trackBy: trackByEstado" [value]="estado">
                            <strong>{{estado}}</strong>
                         </mat-option>
                       </mat-select>

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CandidatoInterface } from 'src/app/core/interfaces/candidato';
@@ -12,6 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { catchError, finalize, of, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-ficha-candidato',
@@ -35,6 +36,7 @@ export class FichaCandidatoComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private usuarioService = inject(AuthService);
   private pdfGenerator = inject(PdfGeneratorService);
+  private destroyRef = inject(DestroyRef);
 
   busy = false;
   candidato: CandidatoInterface | null = null;
@@ -49,6 +51,7 @@ export class FichaCandidatoComponent implements OnInit {
     this.busy = true;
     this.usuarioService.verCandidato(id)
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         tap(data => {
           this.candidato = data;
           this.idade = this.getAge(data.nascimento.toString());

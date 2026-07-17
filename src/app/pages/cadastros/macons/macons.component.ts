@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
@@ -12,11 +13,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { RouterLink } from '@angular/router';
-import { Observable, catchError, finalize, of, tap } from 'rxjs';
+import { catchError, finalize, of, tap } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { LojasService } from 'src/app/core/services/lojas.service';
+import { Envs } from 'src/app/core/services/envs';
 import { StatusInterface, UsuariosInterface } from 'src/app/core/interfaces/login';
-import { LojasInterface } from 'src/app/core/interfaces/lojas';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
@@ -42,23 +42,22 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   styleUrls: ['./macons.component.scss']
 })
 export class MaconsComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   private usuariosService = inject(AuthService);
-  private lojasService = inject(LojasService);
   private snackBar = inject(MatSnackBar);
 
   busy = false;
+  fotosUrl = Envs.fotosUrl;
   page = 1;
   
-  listaLojas: LojasInterface[] = [];
   listaMacons: UsuariosInterface[] = [];
   listaStatus: StatusInterface[] = [];
   listaView: UsuariosInterface[] = [];
   
-  lojaEscolhida = 0;
   sentenca = '';
   statusEscolhido = 0;
   
-  displayedColumns: string[] = ['indice', 'foto', 'cim', 'nome', 'loja', 'status', 'acoes'];
+  displayedColumns: string[] = ['indice', 'foto', 'cim', 'nome', 'status', 'acoes'];
 
   ngOnInit(): void {
     this.loadInitialData();
@@ -67,17 +66,10 @@ export class MaconsComponent implements OnInit {
   private loadInitialData(): void {
     this.busy = true;
 
-    // Load lojas
-    this.lojasService.verLojasAtivas()
-      .pipe(
-        tap(data => this.listaLojas = data),
-        catchError(() => of([]))
-      )
-      .subscribe();
-
     // Load status
     this.usuariosService.listarStatus()
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         tap(data => this.listaStatus = data),
         catchError(() => of([]))
       )
@@ -91,11 +83,11 @@ export class MaconsComponent implements OnInit {
     this.busy = true;
     this.usuariosService.listarMacons(
       this.page,
-      this.lojaEscolhida,
       this.statusEscolhido,
       this.sentenca
     )
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         tap(data => {
           this.listaView = data.items.map(item => ({
             ...item,
@@ -128,7 +120,6 @@ export class MaconsComponent implements OnInit {
   }
 
   clearFilters(): void {
-    this.lojaEscolhida = 0;
     this.statusEscolhido = 0;
     this.sentenca = '';
     this.buscarMacons();

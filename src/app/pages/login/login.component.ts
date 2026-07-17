@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -33,6 +34,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
+  private destroyRef = inject(DestroyRef);
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -72,12 +74,10 @@ export class LoginComponent {
       pass: pass
     };
 
-    this.authService.login(login).subscribe({
+    this.authService.login(login).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         localStorage.setItem('MasonUser', JSON.stringify(data));
-        const welcomeMsg = data.titulo 
-          ? `Bem-vindo Ir. ${data.titulo} ${data.nome}`
-          : `Bem-vindo Ir. ${data.nome}`;
+        const welcomeMsg = `Bem-vindo Ir. ${data.nome}`;
         
         this.showMessage(welcomeMsg, false);
         this.router.navigate(['/home']);

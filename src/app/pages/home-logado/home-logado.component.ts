@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
@@ -31,6 +32,7 @@ import { Observable, catchError, finalize, map, of, tap } from 'rxjs';
   styleUrls: ['./home-logado.component.scss']
 })
 export class HomeLogadoComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   private service = inject(AuthService);
   private router = inject(Router);
 
@@ -40,8 +42,8 @@ export class HomeLogadoComponent implements OnInit {
   listaAniversario: UsuariosInterface[] = [];
   listaNiverFamilia: NiverFamiliaInterface[] = [];
 
-  displayedColumns: string[] = ['irmao', 'loja', 'oriente', 'data', 'idade'];
-  displayedColumnsFam: string[] = ['nome', 'irmao', 'loja', 'data', 'idade'];
+  displayedColumns: string[] = ['irmao', 'data', 'idade'];
+  displayedColumnsFam: string[] = ['nome', 'irmao', 'data', 'idade'];
 
   ngOnInit(): void {
     const userStr = localStorage.getItem('MasonUser');
@@ -54,6 +56,7 @@ export class HomeLogadoComponent implements OnInit {
   loadAniversarios(): void {
     this.busy = true;
     this.service.verAniversarios().pipe(
+      takeUntilDestroyed(this.destroyRef),
       tap(data => {
         this.listaAniversario = data.sort((a, b) =>
           new Date(a.nascimento).getDate() - new Date(b.nascimento).getDate()
@@ -67,6 +70,7 @@ export class HomeLogadoComponent implements OnInit {
     ).subscribe();
 
     this.service.verAniversariosFamilia().pipe(
+      takeUntilDestroyed(this.destroyRef),
       tap(data => {
         this.listaNiverFamilia = data.sort((a, b) =>
           new Date(a.data).getDate() - new Date(b.data).getDate()

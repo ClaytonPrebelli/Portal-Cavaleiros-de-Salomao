@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Envs } from './envs';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { CandidatoInterface } from '../interfaces/candidato';
@@ -377,11 +378,11 @@ export class PdfGeneratorService {
             <div class="info-grid">
               <div class="info-item">
                 <span class="label">Loja</span>
-                <span class="value">${macom.loja?.nomeLoja} nº ${macom.loja?.numeroLoja}</span>
+                <span class="value">Cavaleiros de Salomão nº 7106</span>
               </div>
               <div class="info-item">
                 <span class="label">Oriente</span>
-                <span class="value">${macom.loja?.oriente}/${macom.loja?.estado}</span>
+                <span class="value">São Paulo</span>
               </div>
               <div class="info-item">
                 <span class="label">Grau Simbólico</span>
@@ -413,11 +414,7 @@ export class PdfGeneratorService {
               </div>
               <div class="info-item">
                 <span class="label">Cargo em Loja</span>
-                <span class="value">${macom.cargo ?? '-'}</span>
-              </div>
-              <div class="info-item">
-                <span class="label">Título</span>
-                <span class="value">${macom.titulo ?? '-'}</span>
+                <span class="value">${macom.cargo ?? 'Sem Cargo'}</span>
               </div>
             </div>
           </div>
@@ -541,7 +538,7 @@ export class PdfGeneratorService {
     this.doc.save(`Ficha Candidato - ${candidato.nome}.pdf`);
   }
 
-  async generateCarteirinha(macom: UsuariosInterface, idade: number, grau: string, hoje: string, validade: string, nomeLoja: string): Promise<void> {
+  async generateCarteirinha(macom: UsuariosInterface, idade: number, grau: string, hoje: string, validade: string): Promise<void> {
     const frenteEl = document.querySelector('.carteirinha-frente') as HTMLElement;
     const versoEl = document.querySelector('.carteirinha-verso') as HTMLElement;
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
@@ -12,6 +12,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { NoticiasService } from 'src/app/core/services/noticias.service';
 import { NoticiasInterface, NoticiasResponse } from 'src/app/core/interfaces/noticias';
 import { Observable, catchError, finalize, of, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-noticias',
@@ -34,6 +35,7 @@ import { Observable, catchError, finalize, of, tap } from 'rxjs';
 export class NoticiasComponent implements OnInit {
   private noticiasService = inject(NoticiasService);
   private snackBar = inject(MatSnackBar);
+  private destroyRef = inject(DestroyRef);
 
   busy = false;
   page = 1;
@@ -50,6 +52,7 @@ export class NoticiasComponent implements OnInit {
     this.busy = true;
     this.noticiasService.listarNoticias(this.page, this.pageSize)
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         tap(data => {
           this.listaView = data;
           if (data.noticias.length === 0) {

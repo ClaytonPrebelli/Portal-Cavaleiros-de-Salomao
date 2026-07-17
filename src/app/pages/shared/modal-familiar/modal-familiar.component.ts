@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, Inject, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,7 +11,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { FamiliaresInterface } from 'src/app/core/interfaces/login';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { Observable, catchError, finalize, of, tap } from 'rxjs';
+import { Observable, catchError, finalize, forkJoin, of, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-modal-familiar',
@@ -34,6 +35,7 @@ import { Observable, catchError, finalize, of, tap } from 'rxjs';
 export class ModalFamiliarComponent implements OnInit {
   private fb = inject(FormBuilder);
   private service = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
   
   familiar!: FamiliaresInterface;
   listaFamiliares: FamiliaresInterface[] = [];
@@ -93,13 +95,25 @@ export class ModalFamiliarComponent implements OnInit {
     this.listaFamiliares.splice(index, 1);
   }
 
+  trackByIndex(index: number): number {
+    return index;
+  }
+
   salvar(): void {
-    this.listaFamiliares.forEach(element => {
-      this.service.cadastrarFamiliar(element).subscribe({
-        next: () => {},
-        error: () => {}
-      });
-    });
-    this.dialogRef.close();
+    if (this.listaFamiliares.length === 0) {
+      this.dialogRef.close();
+      return;
+    }
+
+    const requests = this.listaFamiliares.map(element =>
+      this.service.cadastrarFamiliar(element).pipe(
+        catchError(() => of(null))
+      )
+    );
+
+    forkJoin(requests).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.dialogRef.close())
+    ).subscribe();
   }
 }

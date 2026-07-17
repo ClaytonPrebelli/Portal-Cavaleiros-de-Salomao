@@ -38,19 +38,6 @@
           </h3>
           
           <div class="filters-grid">
-            <!-- Loja Filter -->
-            <mat-form-field appearance="outline" class="filter-field">
-              <mat-label>Filtrar por Loja</mat-label>
-              <mat-select [(ngModel)]="lojaEscolhida">
-                <mat-option [value]="0">Todas as Lojas</mat-option>
-                @for (loja of listaLojas; track loja.id) {
-                  <mat-option [value]="loja.id">
-                    {{ loja.nomeLoja }} nº {{ loja.numeroLoja }}
-                  </mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-
             <!-- Status Filter -->
             <mat-form-field appearance="outline" class="filter-field">
               <mat-label>Filtrar por Status</mat-label>
@@ -100,7 +87,7 @@
               <ng-container matColumnDef="foto">
                 <th mat-header-cell *matHeaderCellDef class="center">Foto</th>
                 <td mat-cell *matCellDef="let element" class="center">
-                  <img [src]="'https://prebellisolucoes.com/FotosUsers/' + element.id + '.png'" 
+                  <img [src]="fotosUrl + element.id + '.png'" 
                        [alt]="element.nome"
                        class="user-photo"
                        (error)="handleImgError($event)">
@@ -114,8 +101,7 @@
                 </td>
               </ng-container>
 
-              <ng-container matColumnDef="nome">
-                <th mat-header-cell *matHeaderCellDef>Nome</th>
+              <ng-container matColumnDef="nome">                <th mat-header-cell *matHeaderCellDef>Nome</th>
                 <td mat-cell *matCellDef="let element">
                   <div class="user-cell">
                     <div class="avatar">{{ element.nome.charAt(0) }}</div>
@@ -123,13 +109,6 @@
                       <strong>{{ element.nome }}</strong>
                     </div>
                   </div>
-                </td>
-              </ng-container>
-
-              <ng-container matColumnDef="loja">
-                <th mat-header-cell *matHeaderCellDef>Loja</th>
-                <td mat-cell *matCellDef="let element">
-                  {{ element.loja?.nomeLoja }} nº {{ element.loja?.numeroLoja }}
                 </td>
               </ng-container>
 

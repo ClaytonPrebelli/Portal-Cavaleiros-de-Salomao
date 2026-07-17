@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
@@ -30,6 +31,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
   styleUrls: ['./lista-candidatos.component.scss']
 })
 export class ListaCandidatosComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   private service = inject(AuthService);
 
   busy = false;
@@ -49,6 +51,7 @@ export class ListaCandidatosComponent implements OnInit {
     this.busy = true;
     this.service.verCandidatos()
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         tap(data => {
           this.listaCandidatos = data;
         }),

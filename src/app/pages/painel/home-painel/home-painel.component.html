@@ -11,12 +11,12 @@
   <div class="header-content">
     <div class="title-section">
     @if (currentUser) {
-      <img [src]="'https://prebellisolucoes.com/FotosUsers/' + currentUser.id + '.png'" 
+      <img [src]="fotosUrl + currentUser.id + '.png'" 
            [alt]="currentUser.nome" class="user-photo">
     }
       <div>
         @if (currentUser) {
-          <h1>Bem-vindo, {{ currentUser.titulo ? currentUser.titulo + ' ' : '' }}{{ currentUser.nome }}</h1>
+          <h1>Bem-vindo, {{ currentUser.nome }}</h1>
         }
         <p>Portal Cavaleiros de Salomão - Painel do Maçom</p>
       </div>
@@ -67,13 +67,10 @@
               <strong>Idade:</strong> {{ getAge(macom.nascimento.toString()) }} anos
             </div>
             <div class="info-item">
-              <strong>Loja:</strong> {{ nomeLoja }} nº {{ macom.loja?.numeroLoja }}
+              <strong>Loja:</strong> Cavaleiros de Salomão nº 7106
             </div>
             <div class="info-item">
-              <strong>Cargo:</strong> {{ macom.cargo }}
-            </div>
-            <div class="info-item">
-              <strong>Título:</strong> {{ macom.titulo }}
+              <strong>Cargo:</strong> {{ macom.cargo || 'Sem Cargo' }}
             </div>
           </div>
         </div>
@@ -103,11 +100,11 @@
                   </div>
                   <div class="info-row">
                     <span class="info-label">Loja</span>
-                    <span class="info-value">{{ nomeLoja }} nº {{ macom.loja?.numeroLoja }}</span>
+                    <span class="info-value">Cavaleiros de Salomão nº 7106</span>
                   </div>
                   <div class="info-row">
                     <span class="info-label">Oriente</span>
-                    <span class="info-value">{{ macom.loja?.oriente }}</span>
+                    <span class="info-value">São Paulo</span>
                   </div>
                   <div class="info-row">
                     <span class="info-label">Obediência</span>
@@ -127,7 +124,7 @@
                   </div>
                 </div>
                 <div class="card-photo-area">
-                  <img [src]="'https://prebellisolucoes.com/FotosUsers/' + macom.id + '.png'" 
+                  <img [src]="fotosUrl + macom.id + '.png'" 
                        [alt]="macom.nome" class="card-photo" (error)="handleImgError($event)">
                   <div class="card-photo-fallback" *ngIf="false">
                     <mat-icon>person</mat-icon>

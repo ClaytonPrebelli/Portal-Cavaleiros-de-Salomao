@@ -25,10 +25,6 @@
             <span>Maçons</span>
           </button>
           <button mat-menu-item disabled>
-            <mat-icon>store</mat-icon>
-            <span>Lojas</span>
-          </button>
-          <button mat-menu-item disabled>
             <mat-icon>payment</mat-icon>
             <span>Cobranças</span>
           </button>
@@ -113,11 +109,13 @@
         <mat-icon>exit_to_app</mat-icon>
       </button>
 
-      <img 
-        [src]="'https://prebellisolucoes.com/FotosUsers/' + currentUser?.id + '.png'"
-        [alt]="currentUser?.nome"
-        class="user-avatar"
-        (error)="setDefaultImage($event)">
+      @if (currentUser) {
+        <img 
+          [src]="fotosUrl + currentUser.id + '.png'"
+          [alt]="currentUser.nome"
+          class="user-avatar"
+          (error)="setDefaultImage($event)">
+      }
     </div>
   </div>
 
@@ -133,11 +131,13 @@
         <mat-icon>close</mat-icon>
       </button>
       
-      <img 
-        [src]="'https://prebellisolucoes.com/FotosUsers/' + currentUser?.id + '.png'"
-        [alt]="currentUser?.nome"
-        class="mobile-avatar"
-        (error)="setDefaultImage($event)">
+      @if (currentUser) {
+        <img 
+          [src]="fotosUrl + currentUser.id + '.png'"
+          [alt]="currentUser.nome"
+          class="mobile-avatar"
+          (error)="setDefaultImage($event)">
+      }
       
       <span class="mobile-name">{{ currentUser?.nome }}</span>
     </div>
@@ -151,10 +151,6 @@
           <button mat-button [routerLink]="['/cadastros/macons']" (click)="showHamb()">
             <mat-icon>people</mat-icon>
             <span>Maçons</span>
-          </button>
-          <button mat-button disabled>
-            <mat-icon>store</mat-icon>
-            <span>Lojas</span>
           </button>
           <button mat-button disabled>
             <mat-icon>payment</mat-icon>

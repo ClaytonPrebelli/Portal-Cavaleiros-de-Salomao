@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -13,6 +13,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NoticiasService } from 'src/app/core/services/noticias.service';
 import { NoticiasInterface } from 'src/app/core/interfaces/noticias';
 import { Observable, catchError, finalize, of, switchMap, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-noticia-form',
@@ -39,6 +40,7 @@ export class NoticiaFormComponent implements OnInit {
   private router = inject(Router);
   private noticiaService = inject(NoticiasService);
   private snackBar = inject(MatSnackBar);
+  private destroyRef = inject(DestroyRef);
 
   busy = false;
   noticiaForm: FormGroup;
@@ -81,6 +83,7 @@ export class NoticiaFormComponent implements OnInit {
 
     this.noticiaService.verNoticia(parseInt(id))
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         tap(noticia => {
           const textoLimpo = noticia.texto?.replace(/<\/?p>/g, '\n').trim() || '';
           this.noticiaForm.patchValue({

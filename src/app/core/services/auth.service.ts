@@ -34,12 +34,11 @@ export class AuthService {
 
   listarMacons(
     page?: number,
-    loja?: number,
     status?: number,
     termo?: string
   ): Observable<PaginatorInterface> {
     return this.http.get<PaginatorInterface>(
-      `${Envs.apiUrl}Usuarios/ListarUsuarios?page=${page}&loja=${loja}&status=${status}&termo=${termo}`
+      `${Envs.apiUrl}Usuarios/ListarUsuarios?page=${page}&status=${status}&termo=${termo}`
     );
   }
 

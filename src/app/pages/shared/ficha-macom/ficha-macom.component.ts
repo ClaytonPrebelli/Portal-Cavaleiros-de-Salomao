@@ -1,8 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { UsuariosInterface } from 'src/app/core/interfaces/login';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { Envs } from 'src/app/core/services/envs';
 import { PdfGeneratorService } from 'src/app/core/services/pdf-generator.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,6 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { catchError, finalize, of, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-ficha-macom',
@@ -31,8 +33,10 @@ export class FichaMacomComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private usuarioService = inject(AuthService);
   private pdfGenerator = inject(PdfGeneratorService);
+  private destroyRef = inject(DestroyRef);
 
   busy = false;
+  fotosUrl = Envs.fotosUrl;
   macom!: UsuariosInterface;
   idade = 0;
   grauSimb = '';
@@ -46,6 +50,7 @@ export class FichaMacomComponent implements OnInit {
     this.busy = true;
     this.usuarioService.verMacom(id)
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         tap(data => {
           this.macom = data;
           this.grauSimb = this.validaGrauSimb(data);

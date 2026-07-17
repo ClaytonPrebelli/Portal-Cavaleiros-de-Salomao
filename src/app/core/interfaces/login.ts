@@ -1,5 +1,4 @@
 
-import { LojasInterface } from "./lojas"
 import { FotoInterface } from './foto';
 
 export interface LoginParams{
@@ -17,8 +16,6 @@ export interface LoginResponse{
   isAdmin: boolean,
   isSuperAdmin:boolean,
   isActive: boolean
-  lojaId:number
-  titulo:string
   foto:any[]
 }
 export interface UsuariosInterface{
@@ -58,12 +55,10 @@ export interface UsuariosInterface{
   pass: string,
   dataAfiliacao: Date,
   formaAfiliacao: string,
-  cargo: string,
-  titulo: string,
+  cargo: string | null,
+  cargoId: number | null,
   statusId: number,
-  lojaId: number,
   status?:any,
-  loja?:LojasInterface,
   familiares?:FamiliaresInterface[],
   documentos?:[],
   cobrancas?:[],

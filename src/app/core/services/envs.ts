@@ -1,4 +1,6 @@
+import { environment } from '../../../environments/environment';
+
 export const Envs = {
- // apiUrl : "https://localhost:7130/"
-  apiUrl:"https://apiloja.claytonprebelli.com.br/"
+  apiUrl: environment.apiUrl,
+  fotosUrl: environment.fotosUrl
 }

@@ -29,7 +29,7 @@
         </div>
         <h2 class="modalFamilia--inner--subtitle">Familiares Adicionados</h2>
         <div class="modalFamilia--inner--lista">
-            <div class="modalFamilia--inner--lista--linha" *ngFor="let item of listaFamiliares">
+            <div class="modalFamilia--inner--lista--linha" *ngFor="let item of listaFamiliares; trackBy: trackByIndex">
                 <h3 class="modalFamilia--inner--lista--linha--text col-6"><strong>Nome: </strong>{{item.familiarNome}}</h3>
                 <h3 class="modalFamilia--inner--lista--linha--text col-3"><strong>Relação: </strong>{{item.relacao}}</h3>
                 <mat-icon (click)="remover(listaFamiliares.indexOf(item))" class="botao">delete</mat-icon>

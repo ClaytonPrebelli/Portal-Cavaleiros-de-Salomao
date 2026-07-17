@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -21,6 +21,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { AcreditaPipe } from 'src/app/core/pipes/acredita.pipe';
 import { QtdNumerosPipe } from 'src/app/core/pipes/qtd-numeros.pipe';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-candidatos',
@@ -52,6 +53,7 @@ export class CandidatosComponent implements OnInit {
   private modal = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   busy = false;
   candidatoEnviar!: CandidatoInterface;
@@ -105,6 +107,7 @@ export class CandidatosComponent implements OnInit {
 
   private validaToken(): void {
     this.service.validaToken(this.token).pipe(
+      takeUntilDestroyed(this.destroyRef),
       tap(() => {
         // Token válido
       }),
@@ -141,6 +144,7 @@ export class CandidatosComponent implements OnInit {
 
     this.service.cadastrarCandidato(this.candidatoEnviar, this.token)
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         tap(data => {
           this.candidatoId = data.id;
           const dialogRef = this.modal.open(ModalFamiliarComponent, {
@@ -149,7 +153,7 @@ export class CandidatosComponent implements OnInit {
             height: '90vh'
           });
 
-          dialogRef.afterClosed().subscribe(() => {
+          dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
             this.showMessage('Sua ficha foi enviada. Iremos analisar e retornar o contato.', false);
             setTimeout(() => {
           window.location.href = 'https://gosp.com.br';
@@ -163,5 +167,9 @@ export class CandidatosComponent implements OnInit {
         })
       )
       .subscribe();
+  }
+
+  trackByEstado(index: number, estado: string): string {
+    return estado;
   }
 }

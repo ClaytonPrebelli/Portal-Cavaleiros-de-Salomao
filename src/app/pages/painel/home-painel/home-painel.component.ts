@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
@@ -13,6 +14,7 @@ import { Router, RouterLink } from '@angular/router';
 import { catchError, finalize, of, tap } from 'rxjs';
 import { FamiliaresInterface, LoginResponse, UsuariosInterface } from 'src/app/core/interfaces/login';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { Envs } from 'src/app/core/services/envs';
 import { PdfGeneratorService } from 'src/app/core/services/pdf-generator.service';
 import { ModalTokenComponent } from 'src/app/pages/shared/modal-token/modal-token.component';
 import { QtdNumerosPipe } from 'src/app/core/pipes/qtd-numeros.pipe';
@@ -37,26 +39,25 @@ import { QtdNumerosPipe } from 'src/app/core/pipes/qtd-numeros.pipe';
   styleUrls: ['./home-painel.component.scss']
 })
 export class HomePainelComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   private userService = inject(AuthService);
   private pdfGenerator = inject(PdfGeneratorService);
   private router = inject(Router);
   private dialog = inject(MatDialog);
 
   busy = false;
+  fotosUrl = Envs.fotosUrl;
   currentUser!: LoginResponse;
-  nomeLoja = '';
+  nomeLoja = 'Cavaleiros de Salomão';
   macom: UsuariosInterface = {
-    bairro: '', cargo: '', cep: '', cidade: '', cim: 0,
+    bairro: '', cargo: null, cep: '', cidade: '', cim: 0,
     contatoEmergencia: '', cpf: '', dataAfiliacao: new Date(), 
     email: '', endereco: '', estado: '', estadoCivil: '', exaltacao: new Date(),elevacao: new Date(),
     fone: '', foneEmergencia: '', formaAfiliacao: '', id: 0,
     iniciacao: new Date(), isAdmin: false, isAprendiz: false, isCandidato: false,
     isCompanheiro: false, isMestre: false, isSuperAdmin: false,
-    lojaId: 0, mae: '', nacionalidade: '', naturalidade: '', nascimento: new Date(),
-    nome: '', numero: '', observacoes: '', pai: '', pass: '', profissao: '', rg: '', statusId: 0, tipoSanguineo: '', titulo: '',
-    loja: { ativa: true,rito:'', dataFundacao: new Date(), documentos: [], endereco: '',
-      estado: '', id: 0, instagram: '', nomeLoja: '', numeroLoja: 0,
-      oriente: '', veneravel: 0 },
+    mae: '', nacionalidade: '', naturalidade: '', nascimento: new Date(),
+    nome: '', numero: '', observacoes: '', pai: '', pass: '', profissao: '', rg: '', statusId: 0, tipoSanguineo: '', cargoId: null,
     familiares: []
   };
   
@@ -76,13 +77,11 @@ export class HomePainelComponent implements OnInit {
       this.currentUser = JSON.parse(local);
       this.userService.verMacom(this.currentUser.id)
         .pipe(
+          takeUntilDestroyed(this.destroyRef),
           tap(macom => {
             this.macom = macom;
             this.grauSimb = this.validaGrauSimb(macom);
             this.idade = this.getAge(macom.nascimento.toString());
-            if (macom.loja) {
-              this.nomeLoja = macom.loja.nomeLoja;
-            }
           }),
           catchError(() => of(null)),
           finalize(() => this.busy = false)
@@ -125,13 +124,13 @@ export class HomePainelComponent implements OnInit {
       this.idade,
       this.grau(this.macom),
       this.hoje,
-      this.validade,
-      this.nomeLoja
+      this.validade
     );
   }
 
   gerarToken(): void {
     this.userService.gerarToken(this.currentUser.id).pipe(
+      takeUntilDestroyed(this.destroyRef),
       tap(data => {
         const token = 'https://restrito.gosp.com.br/cadastro/candidato/' + data;
         this.abrirModal(token);

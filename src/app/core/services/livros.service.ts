@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LivrosInterface } from '../interfaces/livros';
@@ -11,20 +11,14 @@ export class LivrosService {
 
 
   constructor(private http :HttpClient) { }
-  headers = new HttpHeaders()
-  .append('Access-Control-Allow-Origin', '*')
-  .append('Access-Control-Allow-Headers', '*')
-  .append('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS')
-  .append('mode', 'no-cors')
- 
 
   verLivrosAprendiz():Observable<LivrosInterface[]>{
-    return this.http.get<LivrosInterface[]>(`${Envs.apiUrl}Livros/VerLivrosAprendiz`,{headers:this.headers})
+    return this.http.get<LivrosInterface[]>(`${Envs.apiUrl}Livros/VerLivrosAprendiz`)
   }
   verLivrosCompanheiro():Observable<LivrosInterface[]>{
-    return this.http.get<LivrosInterface[]>(`${Envs.apiUrl}Livros/VerLivrosCompanheiro`,{headers:this.headers})
+    return this.http.get<LivrosInterface[]>(`${Envs.apiUrl}Livros/VerLivrosCompanheiro`)
   }
   verLivrosMestre():Observable<LivrosInterface[]>{
-    return this.http.get<LivrosInterface[]>(`${Envs.apiUrl}Livros/VerLivrosMestre`,{headers:this.headers})
+    return this.http.get<LivrosInterface[]>(`${Envs.apiUrl}Livros/VerLivrosMestre`)
   }
 }

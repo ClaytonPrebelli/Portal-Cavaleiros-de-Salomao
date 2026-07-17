@@ -403,22 +403,10 @@
               <!-- Loja e Status -->
               <div class="section-title">
                 <mat-icon>account_balance</mat-icon>
-                <h3>Loja e Status</h3>
+                <h3>Status</h3>
               </div>
 
               <div class="form-grid">
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Loja</mat-label>
-                  <mat-select formControlName="lojaId">
-                    <mat-option [value]="0">Selecione...</mat-option>
-                    @for (loja of listaLojas; track loja.id) {
-                      <mat-option [value]="loja.id">
-                        {{ loja.nomeLoja }} nº {{ loja.numeroLoja }}
-                      </mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
-
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Status</mat-label>
                   <mat-select formControlName="statusId">
@@ -430,12 +418,11 @@
 
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Cargo</mat-label>
-                  <input matInput formControlName="cargo" placeholder="Ex: Secretário">
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Título</mat-label>
-                  <input matInput formControlName="titulo" placeholder="Ex: Ven.', Gr.' Sec.'">
+                  <mat-select formControlName="cargoId">
+                    @for (cargo of listaCargos; track cargo.id) {
+                      <mat-option [value]="cargo.id">{{ cargo.nome }}</mat-option>
+                    }
+                  </mat-select>
                 </mat-form-field>
               </div>
 

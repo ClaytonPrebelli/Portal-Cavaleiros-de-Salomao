@@ -5,7 +5,6 @@ export interface DocumentosInterface{
     usuarioId?:number | undefined;
     candidatoId?:number | undefined;
     GrauId?:number | undefined;
-    LojaId?:number | undefined;
 }
 export interface DocumentosResponse{
     link:string,
