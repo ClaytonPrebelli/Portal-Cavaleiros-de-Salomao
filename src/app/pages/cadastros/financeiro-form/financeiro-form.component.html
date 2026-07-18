@@ -1,0 +1,100 @@
+<div class="form-container">
+  @if (busy) {
+    <div class="loading-overlay">
+      <div class="loading-content">
+        <mat-spinner diameter="60" color="primary"></mat-spinner>
+        <p>Salvando...</p>
+      </div>
+    </div>
+  }
+
+  <header class="page-header" [class.header-saida]="form.get('tipo')?.value === 'Saida'">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="page-icon">{{ isEditing ? 'edit_note' : 'add_circle' }}</mat-icon>
+        <div>
+          <h1>{{ isEditing ? 'Editar Lançamento' : 'Novo Lançamento' }}</h1>
+          <p>Registre uma entrada ou saída financeira</p>
+        </div>
+      </div>
+      <button mat-button routerLink="/cadastros/financeiro" class="btn-voltar">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Voltar</span>
+      </button>
+    </div>
+  </header>
+
+  <mat-card class="form-card">
+    <mat-card-content>
+      <form [formGroup]="form" class="financeiro-form">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Tipo</mat-label>
+            <mat-select formControlName="tipo">
+              <mat-option value="Entrada">Entrada</mat-option>
+              <mat-option value="Saida">Saída</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Categoria</mat-label>
+            <mat-select formControlName="categoriaFinanceiroId">
+              @for (cat of categoriasFiltradas; track cat.id) {
+                <mat-option [value]="cat.id">{{ cat.nome }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Descrição</mat-label>
+            <input matInput formControlName="descricao" placeholder="Ex: Pagamento de aluguel">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Valor (R$)</mat-label>
+            <input matInput type="text" formControlName="valor" currencyMaskBR placeholder="0,00">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Data</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="data">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Membro (opcional)</mat-label>
+            <mat-select formControlName="usuarioModelsId">
+              <mat-option [value]="null">Loja (sem membro)</mat-option>
+              @for (membro of membros; track membro.id) {
+                <mat-option [value]="membro.id">{{ membro.nome | capitalize }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Observação</mat-label>
+            <input matInput formControlName="observacao">
+          </mat-form-field>
+        </div>
+
+        <mat-checkbox formControlName="pago" class="pago-check">Já pago</mat-checkbox>
+
+        <div class="form-actions">
+          <button mat-button type="button" routerLink="/cadastros/financeiro">
+            <mat-icon>cancel</mat-icon>
+            <span>Cancelar</span>
+          </button>
+          <button mat-raised-button color="primary" type="button" [disabled]="form.invalid || busy" (click)="salvar()">
+            @if (!busy) {
+              <mat-icon>save</mat-icon>
+              <span>Salvar</span>
+            } @else {
+              <mat-spinner diameter="20"></mat-spinner>
+            }
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

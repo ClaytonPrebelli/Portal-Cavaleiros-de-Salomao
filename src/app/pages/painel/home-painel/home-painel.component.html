@@ -70,7 +70,7 @@
               <strong>Loja:</strong> Cavaleiros de Salomão nº 7106
             </div>
             <div class="info-item">
-              <strong>Cargo:</strong> {{ macom.cargo || 'Sem Cargo' }}
+              <strong>Cargo:</strong> {{ macom.cargo?.nome || 'Sem Cargo' }}
             </div>
           </div>
         </div>
@@ -202,7 +202,47 @@
       </mat-tab>
 
       <mat-tab label="Documentos"> Em Breve </mat-tab>
-      <mat-tab label="Débitos"> Em Breve</mat-tab>
+      <mat-tab label="Débitos">
+        <div class="tab-content">
+          @if (cobrancas.length > 0) {
+            <div class="table-responsive">
+              <table class="cobrancas-table">
+                <thead>
+                  <tr>
+                    <th>Descrição</th>
+                    <th>Mês Ref.</th>
+                    <th>Valor</th>
+                    <th>Vencimento</th>
+                    <th>Status</th>
+                    <th>Pgto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (cob of cobrancas; track cob.id) {
+                    <tr [class.paga]="cob.pago">
+                      <td>{{ cob.descricao }}</td>
+                      <td>{{ cob.mesReferencia || '-' }}</td>
+                      <td class="valor">R$ {{ cob.valor | number:'1.2-2' }}</td>
+                      <td>{{ cob.vencimento | date:"dd/MM/yyyy" }}</td>
+                      <td>
+                        <span class="status-badge" [class.status-paga]="cob.pago" [class.status-pendente]="!cob.pago">
+                          {{ cob.statusPagamento || (cob.pago ? 'Pago' : 'Pendente') }}
+                        </span>
+                      </td>
+                      <td>{{ cob.dataPagamento | date:"dd/MM/yyyy" }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          } @else {
+            <div class="empty-state">
+              <mat-icon class="empty-icon">receipt_long</mat-icon>
+              <p>Nenhuma cobrança registrada</p>
+            </div>
+          }
+        </div>
+      </mat-tab>
       <mat-tab label="Alterar Foto"> Em Breve</mat-tab>
       <mat-tab label="Trocar Senha"> Em Breve</mat-tab>
     </mat-tab-group>

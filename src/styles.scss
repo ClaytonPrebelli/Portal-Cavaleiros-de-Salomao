@@ -183,6 +183,27 @@ body {
   }
 }
 
+/* Fix: mat-select options com texto legível */
+.mat-mdc-select-panel {
+  background: white;
+}
+
+.mat-mdc-option {
+  color: var(--text-primary);
+
+  &:hover {
+    background: #e8eaf6;
+  }
+
+  &.mdc-list-item--selected {
+    background: #e8eaf6;
+  }
+}
+
+.mdc-list-item__primary-text {
+  color: var(--text-primary);
+}
+
 /* Botões Modernos */
 .mat-mdc-raised-button,
 .mat-mdc-unelevated-button {

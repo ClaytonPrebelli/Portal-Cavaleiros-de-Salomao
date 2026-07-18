@@ -19,7 +19,7 @@
               <span class="badge grau" [class]="getGrauClass()">{{ grauSimb }}</span>
               <span class="badge status" [class]="getStatusClass()">{{ macom.status?.status }}</span>
               @if (macom.cargo) {
-                <span class="badge cargo">{{ macom.cargo }}</span>
+                <span class="badge cargo">{{ macom.cargo.nome }}</span>
               }
             </div>
           </div>
@@ -151,8 +151,14 @@
               </div>
               <div class="info-item">
                 <span class="label">Cargo em Loja</span>
-                <span class="value">{{ macom.cargo || 'Sem Cargo' }}</span>
+                <span class="value">{{ macom.cargo?.nome || 'Sem Cargo' }}</span>
               </div>
+              @if (macom.isMestreInstalado && macom.dataInstalacao) {
+                <div class="info-item">
+                  <span class="label">Data de Instalação</span>
+                  <span class="value">{{ macom.dataInstalacao | date:"dd/MM/yyyy" }}</span>
+                </div>
+              }
             </div>
           </mat-card-content>
         </mat-card>
@@ -178,6 +184,47 @@
                   </div>
                 </div>
               }
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+
+      @if (macom.cobrancas && macom.cobrancas.length > 0) {
+        <mat-card class="card">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>receipt_long</mat-icon>
+            <mat-card-title>Cobranças</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="table-responsive">
+              <table class="cobrancas-table">
+                <thead>
+                  <tr>
+                    <th>Descrição</th>
+                    <th>Mês Ref.</th>
+                    <th>Valor</th>
+                    <th>Vencimento</th>
+                    <th>Status</th>
+                    <th>Pgto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (cob of macom.cobrancas; track cob.id) {
+                    <tr [class.paga]="cob.pago">
+                      <td>{{ cob.descricao }}</td>
+                      <td>{{ cob.mesReferencia || '-' }}</td>
+                      <td class="valor">R$ {{ cob.valor | number:'1.2-2' }}</td>
+                      <td>{{ cob.vencimento | date:"dd/MM/yyyy" }}</td>
+                      <td>
+                        <span class="status-badge" [class.status-paga]="cob.pago" [class.status-pendente]="!cob.pago">
+                          {{ cob.statusPagamento || (cob.pago ? 'Pago' : 'Pendente') }}
+                        </span>
+                      </td>
+                      <td>{{ cob.dataPagamento | date:"dd/MM/yyyy" }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
             </div>
           </mat-card-content>
         </mat-card>

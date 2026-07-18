@@ -30,6 +30,36 @@ export const routes: Routes = [
     canActivate: [AuthGuardGuard]
   },
   {
+    path: 'cadastros/comunicados',
+    loadComponent: () => import('./pages/cadastros/comunicados/comunicados.component').then(m => m.ComunicadosComponent),
+    canActivate: [AuthGuardGuard]
+  },
+  {
+    path: 'cadastros/comunicados/:id',
+    loadComponent: () => import('./pages/cadastros/comunicado-form/comunicado-form.component').then(m => m.ComunicadoFormComponent),
+    canActivate: [AuthGuardGuard]
+  },
+  {
+    path: 'cadastros/cobrancas',
+    loadComponent: () => import('./pages/cadastros/cobrancas/cobrancas.component').then(m => m.CobrancasComponent),
+    canActivate: [AuthGuardGuard]
+  },
+  {
+    path: 'cadastros/cobrancas/:id',
+    loadComponent: () => import('./pages/cadastros/cobranca-form/cobranca-form.component').then(m => m.CobrancaFormComponent),
+    canActivate: [AuthGuardGuard]
+  },
+  {
+    path: 'cadastros/financeiro',
+    loadComponent: () => import('./pages/cadastros/financeiro/financeiro.component').then(m => m.FinanceiroComponent),
+    canActivate: [AuthGuardGuard]
+  },
+  {
+    path: 'cadastros/financeiro/:id',
+    loadComponent: () => import('./pages/cadastros/financeiro-form/financeiro-form.component').then(m => m.FinanceiroFormComponent),
+    canActivate: [AuthGuardGuard]
+  },
+  {
     path: 'cadastros/macons',
     loadComponent: () => import('./pages/cadastros/macons/macons.component').then(m => m.MaconsComponent),
     canActivate: [AuthGuardGuard]

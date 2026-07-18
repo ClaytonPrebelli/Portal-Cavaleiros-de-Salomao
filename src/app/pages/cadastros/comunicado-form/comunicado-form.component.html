@@ -1,0 +1,96 @@
+<div class="form-container">
+  @if (busy) {
+    <div class="loading-overlay">
+      <div class="loading-content">
+        <mat-spinner diameter="60" color="primary"></mat-spinner>
+        <p>Salvando comunicado...</p>
+      </div>
+    </div>
+  }
+
+  <header class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="page-icon">{{ isEditing ? 'edit_note' : 'campaign' }}</mat-icon>
+        <div>
+          <h1>{{ isEditing ? 'Editar Comunicado' : 'Novo Comunicado' }}</h1>
+          <p>{{ isEditing ? 'Atualize as informações do comunicado' : 'Crie um comunicado para os irmãos' }}</p>
+        </div>
+      </div>
+      <button mat-button routerLink="/cadastros/comunicados" class="btn-voltar">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Voltar</span>
+      </button>
+    </div>
+  </header>
+
+  <mat-card class="form-card">
+    <mat-card-content>
+      <form [formGroup]="comunicadoForm" class="comunicado-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Título</mat-label>
+          <input matInput formControlName="titulo" placeholder="Título do comunicado">
+          <mat-icon matSuffix>title</mat-icon>
+          @if (comunicadoForm.get('titulo')?.invalid && comunicadoForm.get('titulo')?.touched) {
+            <mat-error>
+              @if (comunicadoForm.get('titulo')?.errors?.['required']) { Título é obrigatório }
+              @if (comunicadoForm.get('titulo')?.errors?.['minlength']) { Mínimo 5 caracteres }
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Data de Publicação</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="dataPublicacao">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <div class="graus-section">
+          <label class="graus-label">Graus destinatários</label>
+          <div class="graus-chips">
+            @for (grau of grausDisponiveis; track grau.value) {
+              <button mat-stroked-button
+                      type="button"
+                      [class.selected]="isGrauSelected(grau.value)"
+                      (click)="toggleGrau(grau.value)">
+                <mat-icon>{{ isGrauSelected(grau.value) ? 'check_circle' : 'circle' }}</mat-icon>
+                {{ grau.label }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Texto do Comunicado</mat-label>
+          <textarea matInput formControlName="texto" rows="10" placeholder="Escreva o comunicado (cada linha = parágrafo)"></textarea>
+          @if (comunicadoForm.get('texto')?.invalid && comunicadoForm.get('texto')?.touched) {
+            <mat-error>
+              @if (comunicadoForm.get('texto')?.errors?.['required']) { Texto é obrigatório }
+              @if (comunicadoForm.get('texto')?.errors?.['minlength']) { Mínimo 20 caracteres }
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button mat-button type="button" routerLink="/cadastros/comunicados" class="btn-cancel">
+            <mat-icon>cancel</mat-icon>
+            <span>Cancelar</span>
+          </button>
+          <button mat-raised-button color="primary" type="button" class="btn-salvar"
+                  [disabled]="comunicadoForm.invalid || busy || grausSelecionados.length === 0"
+                  (click)="salvar()">
+            @if (!busy) {
+              <ng-container>
+                <mat-icon>save</mat-icon>
+                <span>Salvar</span>
+              </ng-container>
+            } @else {
+              <mat-spinner diameter="20"></mat-spinner>
+            }
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

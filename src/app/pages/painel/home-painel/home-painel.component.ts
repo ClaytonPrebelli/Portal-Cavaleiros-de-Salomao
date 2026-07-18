@@ -12,8 +12,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
 import { catchError, finalize, of, tap } from 'rxjs';
-import { FamiliaresInterface, LoginResponse, UsuariosInterface } from 'src/app/core/interfaces/login';
+import { FamiliaresInterface, LoginResponse, UsuariosInterface, CobrancaInterface } from 'src/app/core/interfaces/login';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { CobrancasService } from 'src/app/core/services/cobrancas.service';
 import { Envs } from 'src/app/core/services/envs';
 import { PdfGeneratorService } from 'src/app/core/services/pdf-generator.service';
 import { ModalTokenComponent } from 'src/app/pages/shared/modal-token/modal-token.component';
@@ -41,6 +42,7 @@ import { QtdNumerosPipe } from 'src/app/core/pipes/qtd-numeros.pipe';
 export class HomePainelComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private userService = inject(AuthService);
+  private cobrancasService = inject(CobrancasService);
   private pdfGenerator = inject(PdfGeneratorService);
   private router = inject(Router);
   private dialog = inject(MatDialog);
@@ -56,6 +58,7 @@ export class HomePainelComponent implements OnInit {
     fone: '', foneEmergencia: '', formaAfiliacao: '', id: 0,
     iniciacao: new Date(), isAdmin: false, isAprendiz: false, isCandidato: false,
     isCompanheiro: false, isMestre: false, isSuperAdmin: false,
+    isMestreInstalado: false, dataInstalacao: null,
     mae: '', nacionalidade: '', naturalidade: '', nascimento: new Date(),
     nome: '', numero: '', observacoes: '', pai: '', pass: '', profissao: '', rg: '', statusId: 0, tipoSanguineo: '', cargoId: null,
     familiares: []
@@ -65,6 +68,7 @@ export class HomePainelComponent implements OnInit {
   grauSimb = '';
   hoje = '';
   validade = '';
+  cobrancas: CobrancaInterface[] = [];
 
   ngOnInit(): void {
     const hojeTemp = new Date();
@@ -87,6 +91,16 @@ export class HomePainelComponent implements OnInit {
           finalize(() => this.busy = false)
         )
         .subscribe();
+
+      this.cobrancasService.listarPorMembro(this.currentUser.id)
+        .pipe(
+          takeUntilDestroyed(this.destroyRef),
+          tap(data => {
+            this.cobrancas = data;
+          }),
+          catchError(() => of([]))
+        )
+        .subscribe();
     }
   }
 
@@ -95,6 +109,7 @@ export class HomePainelComponent implements OnInit {
   }
 
   grau(macom: UsuariosInterface): string {
+    if (macom.isMestre && macom.isMestreInstalado) return 'Mestre Instalado';
     if (macom.isMestre) return 'Mestre Maçom';
     if (macom.isCompanheiro) return 'Companheiro de Ofício';
     return 'Aprendiz Admitido';
@@ -112,6 +127,7 @@ export class HomePainelComponent implements OnInit {
   }
 
   validaGrauSimb(macom: UsuariosInterface): string {
+    if (macom.isMestre && macom.isMestreInstalado) return 'Mestre Instalado';
     if (macom.isMestre) return 'Mestre Maçom';
     if (macom.isCompanheiro) return 'Companheiro de Ofício';
     if (macom.isAprendiz) return 'Aprendiz Maçom';

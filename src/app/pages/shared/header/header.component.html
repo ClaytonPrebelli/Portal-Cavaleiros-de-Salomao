@@ -14,7 +14,7 @@
 
     <!-- Center: Navigation (Desktop) -->
     <nav class="nav-desktop">
-      @if (currentUser?.isAdmin || currentUser?.isSuperAdmin) {
+      @if (currentUser?.isAdmin || currentUser?.isSuperAdmin || currentUser?.isMestre) {
         <button mat-button [matMenuTriggerFor]="menuCadastros" class="nav-btn">
           <mat-icon>folder</mat-icon>
           <span>Cadastros</span>
@@ -24,13 +24,17 @@
             <mat-icon>people</mat-icon>
             <span>Maçons</span>
           </button>
-          <button mat-menu-item disabled>
-            <mat-icon>payment</mat-icon>
+          <button mat-menu-item [routerLink]="['/cadastros/comunicados']">
+            <mat-icon>campaign</mat-icon>
+            <span>Comunicados</span>
+          </button>
+          <button mat-menu-item [routerLink]="['/cadastros/cobrancas']">
+            <mat-icon>receipt_long</mat-icon>
             <span>Cobranças</span>
           </button>
-          <button mat-menu-item [routerLink]="['/cadastros/noticias']">
-            <mat-icon>description</mat-icon>
-            <span>Notícias</span>
+          <button mat-menu-item [routerLink]="['/cadastros/financeiro']">
+            <mat-icon>account_balance</mat-icon>
+            <span>Financeiro</span>
           </button>
         </mat-menu>
       }
@@ -145,20 +149,24 @@
     <mat-divider></mat-divider>
 
     <div class="mobile-content">
-      @if (currentUser?.isAdmin || currentUser?.isSuperAdmin) {
+      @if (currentUser?.isAdmin || currentUser?.isSuperAdmin || currentUser?.isMestre) {
         <div class="mobile-section">
           <div class="section-title">Cadastros</div>
           <button mat-button [routerLink]="['/cadastros/macons']" (click)="showHamb()">
             <mat-icon>people</mat-icon>
             <span>Maçons</span>
           </button>
-          <button mat-button disabled>
-            <mat-icon>payment</mat-icon>
+          <button mat-button [routerLink]="['/cadastros/comunicados']" (click)="showHamb()">
+            <mat-icon>campaign</mat-icon>
+            <span>Comunicados</span>
+          </button>
+          <button mat-button [routerLink]="['/cadastros/cobrancas']" (click)="showHamb()">
+            <mat-icon>receipt_long</mat-icon>
             <span>Cobranças</span>
           </button>
-          <button mat-button [routerLink]="['/cadastros/noticias']" (click)="showHamb()">
-            <mat-icon>description</mat-icon>
-            <span>Notícias</span>
+          <button mat-button [routerLink]="['/cadastros/financeiro']" (click)="showHamb()">
+            <mat-icon>account_balance</mat-icon>
+            <span>Financeiro</span>
           </button>
         </div>
       }

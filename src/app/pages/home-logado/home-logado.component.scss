@@ -279,6 +279,73 @@
   }
 }
 
+// Comunicados Section (separada dos aniversários)
+.comunicados-section {
+  margin-bottom: 24px;
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    color: #1a237e;
+
+    mat-icon { font-size: 28px; width: 28px; height: 28px; }
+    h2 { margin: 0; font-size: 1.3rem; font-weight: 600; }
+  }
+}
+
+.comunicados-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+
+  .comunicado-card {
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    mat-card-header {
+      margin-bottom: 12px;
+
+      .comunicado-icon {
+        color: #1a237e;
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+      }
+
+      mat-card-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1a237e;
+      }
+
+      mat-card-subtitle {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.8rem;
+      }
+    }
+
+    .comunicado-texto {
+      font-size: 0.9rem;
+      color: #444;
+      line-height: 1.6;
+
+      ::ng-deep p {
+        margin: 0 0 8px 0;
+      }
+    }
+  }
+}
+
 // Responsive
 @media (max-width: 768px) {
   .home-container {
@@ -300,6 +367,10 @@
   }
 
   .stats-row {
+    grid-template-columns: 1fr;
+  }
+
+  .comunicados-grid {
     grid-template-columns: 1fr;
   }
 

@@ -82,6 +82,7 @@ export class FichaMacomComponent implements OnInit {
   }
 
   validaGrauSimb(macom: UsuariosInterface): string {
+    if (macom.isMestre && macom.isMestreInstalado) return 'Mestre Instalado';
     if (macom.isMestre) return 'Mestre Maçom';
     if (macom.isCompanheiro) return 'Companheiro de Ofício';
     if (macom.isAprendiz) return 'Aprendiz Maçom';

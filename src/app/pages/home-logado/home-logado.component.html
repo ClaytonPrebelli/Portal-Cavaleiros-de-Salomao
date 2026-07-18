@@ -36,6 +36,18 @@
         <mat-card class="stat-card">
           <mat-card-content>
             <div class="stat-content">
+              <mat-icon class="stat-icon">campaign</mat-icon>
+              <div class="stat-info">
+                <span class="stat-number">{{ comunicados.length }}</span>
+                <span class="stat-label">Comunicados</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <div class="stat-content">
               <mat-icon class="stat-icon">cake</mat-icon>
               <div class="stat-info">
                 <span class="stat-number">{{ listaAniversario.length }}</span>
@@ -58,7 +70,37 @@
         </mat-card>
       </div>
 
-      <!-- Tabs com Aniversariantes -->
+      <!-- Comunicados separados -->
+      @if (comunicados.length > 0) {
+        <div class="comunicados-section">
+          <div class="section-header">
+            <mat-icon>campaign</mat-icon>
+            <h2>Comunicados</h2>
+          </div>
+          <div class="comunicados-grid">
+            @for (comunicado of comunicados; track comunicado.id) {
+              <mat-card class="comunicado-card">
+                <mat-card-header>
+                  <mat-icon mat-card-avatar class="comunicado-icon">campaign</mat-icon>
+                  <mat-card-title>{{ comunicado.titulo }}</mat-card-title>
+                  <mat-card-subtitle>
+                    <mat-icon style="font-size: 14px; width: 14px; height: 14px;">event</mat-icon>
+                    {{ comunicado.dataPublicacao | date:'dd/MM/yyyy' }}
+                    @if (comunicado.autor) {
+                      <span> — {{ comunicado.autor.nome }}</span>
+                    }
+                  </mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="comunicado-texto" [innerHTML]="comunicado.texto"></div>
+                </mat-card-content>
+              </mat-card>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Tabs de Aniversariantes -->
       <mat-card class="main-card">
         <mat-card-content>
           <mat-tab-group animationDuration="300ms">

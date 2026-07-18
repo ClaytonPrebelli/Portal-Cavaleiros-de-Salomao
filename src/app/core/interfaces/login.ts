@@ -18,6 +18,28 @@ export interface LoginResponse{
   isActive: boolean
   foto:any[]
 }
+
+export interface CargoInterface{
+  id: number,
+  nome: string
+}
+
+export interface CobrancaInterface{
+  id: number,
+  descricao: string,
+  ref: string,
+  categoriaCobrancaId: number,
+  categoriasCobrancas?: any,
+  usuarioModelsId: number | null,
+  valor: number,
+  pago: boolean,
+  mesReferencia: string | null,
+  statusPagamento: string | null,
+  vencimento: Date,
+  dataPagamento: Date | null,
+  usuario?: any
+}
+
 export interface UsuariosInterface{
   id: number,
   nome: string,
@@ -43,6 +65,8 @@ export interface UsuariosInterface{
   iniciacao: Date,
   elevacao: Date,
   exaltacao: Date,
+  isMestreInstalado: boolean,
+  dataInstalacao: Date | null,
   observacoes:string ,
   contatoEmergencia: string,
   foneEmergencia: string,
@@ -55,13 +79,13 @@ export interface UsuariosInterface{
   pass: string,
   dataAfiliacao: Date,
   formaAfiliacao: string,
-  cargo: string | null,
+  cargo: CargoInterface | null,
   cargoId: number | null,
   statusId: number,
   status?:any,
   familiares?:FamiliaresInterface[],
   documentos?:[],
-  cobrancas?:[],
+  cobrancas?:CobrancaInterface[],
   foto?:FotoInterface[]
 }
 export interface StatusInterface{

@@ -1,0 +1,107 @@
+<div class="form-container">
+  @if (busy) {
+    <div class="loading-overlay">
+      <div class="loading-content">
+        <mat-spinner diameter="60" color="primary"></mat-spinner>
+        <p>Salvando...</p>
+      </div>
+    </div>
+  }
+
+  <header class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="page-icon">{{ isEditing ? 'edit_note' : 'add_circle' }}</mat-icon>
+        <div>
+          <h1>{{ isEditing ? 'Editar Cobrança' : 'Nova Cobrança' }}</h1>
+          <p>{{ isEditing ? 'Atualize os dados da cobrança' : 'Cadastre uma nova cobrança para um membro' }}</p>
+        </div>
+      </div>
+      <button mat-button routerLink="/cadastros/cobrancas" class="btn-voltar">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Voltar</span>
+      </button>
+    </div>
+  </header>
+
+  <mat-card class="form-card">
+    <mat-card-content>
+      <form [formGroup]="cobrancaForm" class="cobranca-form">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Descrição</mat-label>
+            <input matInput formControlName="descricao" placeholder="Ex: Mensalidade Julho">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Categoria</mat-label>
+            <mat-select formControlName="categoriaCobrancaId">
+              @for (cat of categorias; track cat.id) {
+                <mat-option [value]="cat.id">{{ cat.categoriaNome }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Mês Referência</mat-label>
+            <mat-select formControlName="mesReferencia">
+              <mat-option value="">Nenhum</mat-option>
+              @for (mes of mesesRef; track mes) {
+                <mat-option [value]="mes">{{ mes }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Membro</mat-label>
+            <mat-select formControlName="usuarioModelsId">
+              <mat-option [value]="null">Todos os membros</mat-option>
+              @for (membro of membros; track membro.id) {
+                <mat-option [value]="membro.id">{{ membro.nome | capitalize }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Valor (R$)</mat-label>
+            <input matInput type="text" formControlName="valor" currencyMaskBR placeholder="0,00">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Vencimento</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="vencimento">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Status Pagamento</mat-label>
+            <mat-select formControlName="statusPagamento">
+              <mat-option value="Pendente">Pendente</mat-option>
+              <mat-option value="Pago">Pago</mat-option>
+              <mat-option value="Atrasado">Atrasado</mat-option>
+              <mat-option value="Isento">Isento</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <mat-checkbox formControlName="pago" class="pago-check">Já pago</mat-checkbox>
+
+        <div class="form-actions">
+          <button mat-button type="button" routerLink="/cadastros/cobrancas">
+            <mat-icon>cancel</mat-icon>
+            <span>Cancelar</span>
+          </button>
+          <button mat-raised-button color="primary" type="button" [disabled]="cobrancaForm.invalid || busy" (click)="salvar()">
+            @if (!busy) {
+              <mat-icon>save</mat-icon>
+              <span>Salvar</span>
+            } @else {
+              <mat-spinner diameter="20"></mat-spinner>
+            }
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

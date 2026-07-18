@@ -12,6 +12,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { LoginResponse, NiverFamiliaInterface, UsuariosInterface } from 'src/app/core/interfaces/login';
+import { ComunicadoInterface } from 'src/app/core/interfaces/comunicados';
+import { ComunicadosService } from 'src/app/core/services/comunicados.service';
 import { Observable, catchError, finalize, map, of, tap } from 'rxjs';
 
 @Component({
@@ -34,6 +36,7 @@ import { Observable, catchError, finalize, map, of, tap } from 'rxjs';
 export class HomeLogadoComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private service = inject(AuthService);
+  private comunicadosService = inject(ComunicadosService);
   private router = inject(Router);
 
   busy = false;
@@ -41,6 +44,7 @@ export class HomeLogadoComponent implements OnInit {
 
   listaAniversario: UsuariosInterface[] = [];
   listaNiverFamilia: NiverFamiliaInterface[] = [];
+  comunicados: ComunicadoInterface[] = [];
 
   displayedColumns: string[] = ['irmao', 'data', 'idade'];
   displayedColumnsFam: string[] = ['nome', 'irmao', 'data', 'idade'];
@@ -51,6 +55,7 @@ export class HomeLogadoComponent implements OnInit {
       this.userData = JSON.parse(userStr);
     }
     this.loadAniversarios();
+    this.loadComunicados();
   }
 
   loadAniversarios(): void {
@@ -97,10 +102,34 @@ export class HomeLogadoComponent implements OnInit {
   }
 
   validaGrauSimb(macom: UsuariosInterface): string {
+    if (macom.isMestre && macom.isMestreInstalado) return "Mestre Instalado";
     if (macom.isMestre) return "Mestre Maçom";
     if (macom.isCompanheiro) return "Companheiro de Ofício";
     if (macom.isAprendiz) return "Aprendiz Maçom";
     return "Candidato";
+  }
+
+  getGrauUsuario(): string {
+    if (!this.userData) return '';
+    if (this.userData.isMestre) return 'Mestre';
+    if (this.userData.isCompanheiro) return 'Companheiro';
+    if (this.userData.isAprendiz) return 'Aprendiz';
+    return '';
+  }
+
+  loadComunicados(): void {
+    const grau = this.getGrauUsuario();
+    if (!grau) return;
+
+    this.comunicadosService.listarPorGrau(grau)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap(data => {
+          this.comunicados = data;
+        }),
+        catchError(() => of([]))
+      )
+      .subscribe();
   }
 
   logout(): void {
