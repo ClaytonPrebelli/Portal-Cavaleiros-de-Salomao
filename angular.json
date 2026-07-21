@@ -29,7 +29,7 @@
               "src/assets",
               {
                 "glob": "web.config",
-                "input": "src/",
+                "input": "src/assets/",
                 "output": "/"
               },
               {
