@@ -8,10 +8,12 @@
           <p>Gerencie as cobranças da loja</p>
         </div>
       </div>
-      <button mat-raised-button color="primary" routerLink="/cadastros/cobrancas/0" class="btn-novo">
-        <mat-icon>add</mat-icon>
-        <span>Nova Cobrança</span>
-      </button>
+      @if (canManage) {
+        <button mat-raised-button color="primary" routerLink="/cadastros/cobrancas/0" class="btn-novo">
+          <mat-icon>add</mat-icon>
+          <span>Nova Cobrança</span>
+        </button>
+      }
     </div>
   </header>
 
@@ -84,7 +86,7 @@
                 <td mat-cell *matCellDef="let element">
                   <strong>{{ element.descricao }}</strong>
                   @if (element.categoriasCobrancas) {
-                    <small class="categoria-tag">{{ element.categoriasCobrancas.nome }}</small>
+                    <small class="categoria-tag">{{ element.categoriasCobrancas.nome | capitalize }}</small>
                   }
                 </td>
               </ng-container>
@@ -135,17 +137,19 @@
               <ng-container matColumnDef="acoes">
                 <th mat-header-cell *matHeaderCellDef>Ações</th>
                 <td mat-cell *matCellDef="let element">
-                  <button mat-icon-button color="primary" [routerLink]="['/cadastros/cobrancas', element.id]" matTooltip="Editar">
-                    <mat-icon>edit</mat-icon>
-                  </button>
-                  @if (!element.pago) {
-                    <button mat-icon-button color="accent" (click)="marcarPaga(element.id)" matTooltip="Marcar como paga">
-                      <mat-icon>check_circle</mat-icon>
+                  @if (canManage) {
+                    <button mat-icon-button color="primary" [routerLink]="['/cadastros/cobrancas', element.id]" matTooltip="Editar">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    @if (!element.pago) {
+                      <button mat-icon-button color="accent" (click)="marcarPaga(element.id)" matTooltip="Marcar como paga">
+                        <mat-icon>check_circle</mat-icon>
+                      </button>
+                    }
+                    <button mat-icon-button color="warn" (click)="excluir(element.id)" matTooltip="Excluir">
+                      <mat-icon>delete</mat-icon>
                     </button>
                   }
-                  <button mat-icon-button color="warn" (click)="excluir(element.id)" matTooltip="Excluir">
-                    <mat-icon>delete</mat-icon>
-                  </button>
                 </td>
               </ng-container>
 
@@ -160,7 +164,9 @@
           <div class="empty-state">
             <mat-icon class="empty-icon">receipt_long</mat-icon>
             <h3>Nenhuma cobrança encontrada</h3>
-            <p>Clique em "Nova Cobrança" para criar a primeira</p>
+            @if (canManage) {
+              <p>Clique em "Nova Cobrança" para criar a primeira</p>
+            }
           </div>
         }
       </mat-card-content>

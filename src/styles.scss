@@ -168,9 +168,17 @@ body {
   .mat-mdc-row {
     transition: background-color var(--transition-fast);
     
-    &:hover {
+    &:nth-child(even) {
       background-color: rgba(26, 35, 126, 0.04);
     }
+
+    &:hover {
+      background-color: rgba(26, 35, 126, 0.08);
+    }
+  }
+
+  td.mat-cell:last-child {
+    white-space: nowrap;
   }
 }
 
@@ -245,6 +253,18 @@ body {
       font-weight: 500 !important;
       border-radius: var(--radius-sm) !important;
     }
+  }
+}
+
+/* Dialog do Histórico de Frequência */
+.historico-dialog {
+  .mat-mdc-dialog-container {
+    --mdc-dialog-container-shape: 16px;
+    max-height: 90vh;
+  }
+  .mat-mdc-dialog-surface {
+    border-radius: 16px !important;
+    overflow: hidden;
   }
 }
 

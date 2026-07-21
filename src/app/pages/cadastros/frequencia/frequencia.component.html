@@ -1,0 +1,209 @@
+<div class="frequencia-container">
+  <header class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="page-icon">event_available</mat-icon>
+        <div>
+          <h1>Frequência</h1>
+          <p>Controle de presença nas reuniões</p>
+        </div>
+      </div>
+      <button mat-stroked-button class="btn-historico" (click)="abrirHistorico()">
+        <mat-icon>history</mat-icon>
+        <span>Histórico</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="filters-row">
+    <mat-card class="summary-card presente">
+      <mat-card-content>
+        <mat-icon>check_circle</mat-icon>
+        <div>
+          <span class="summary-value">{{ totalPresentes }}</span>
+          <span class="summary-label">Presentes</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="summary-card ausente">
+      <mat-card-content>
+        <mat-icon>cancel</mat-icon>
+        <div>
+          <span class="summary-value">{{ totalMembros - totalPresentes }}</span>
+          <span class="summary-label">Ausentes</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="summary-card percentual">
+      <mat-card-content>
+        <mat-icon>pie_chart</mat-icon>
+        <div>
+          <span class="summary-value">{{ getPercentual() }}%</span>
+          <span class="summary-label">Frequência</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="filter-card">
+      <mat-card-content>
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Mês</mat-label>
+          <mat-select [(ngModel)]="filtroMes" (selectionChange)="loadDatasReuniao()">
+            <mat-option [value]="mes.value" *ngFor="let mes of meses">{{ mes.label }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Ano</mat-label>
+          <mat-select [(ngModel)]="filtroAno" (selectionChange)="loadDatasReuniao()">
+            <mat-option [value]="ano" *ngFor="let ano of anos">{{ ano }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="datas-reuniao">
+    <div class="datas-header">
+      <span class="datas-label">Datas de reunião (2ª e 4ª quintas-feiras):</span>
+      <button mat-stroked-button color="primary" (click)="showAddData = !showAddData" class="btn-add-data">
+        <mat-icon>{{ showAddData ? 'close' : 'add' }}</mat-icon>
+        <span>Adicionar Data</span>
+      </button>
+    </div>
+
+    @if (showAddData) {
+      <div class="add-data-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Nova data</mat-label>
+          <input matInput type="date" [(ngModel)]="novaData">
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="adicionarData()" [disabled]="!novaData">
+          <mat-icon>check</mat-icon>
+          Adicionar
+        </button>
+      </div>
+    }
+
+    <div class="datas-chips">
+      @for (data of datasReuniao; track data) {
+        <div class="chip-wrapper">
+          <button mat-stroked-button
+            [class.chip-active]="dataSelecionada === data"
+            (click)="selecionarData(data)"
+            class="data-chip">
+            {{ formatarDataShort(data) }}
+          </button>
+          <button mat-icon-button class="chip-remove" (click)="removerData(data)" matTooltip="Remover data">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+
+  @if (busy) {
+    <div class="loading-container">
+      <mat-spinner diameter="60" color="primary"></mat-spinner>
+      <p>Carregando...</p>
+    </div>
+  }
+
+  @if (!busy && dataSelecionada) {
+    <mat-card class="table-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>event</mat-icon>
+          {{ formatarData(dataSelecionada) }}
+        </mat-card-title>
+        <div class="tipo-sessao-bar">
+          <mat-form-field appearance="outline" class="tipo-sessao-field">
+            <mat-label>Tipo de Sessão</mat-label>
+            <mat-select [(ngModel)]="tipoSessaoSelecionado">
+              @for (tipo of tiposSessao; track tipo) {
+                <mat-option [value]="tipo">{{ tipo }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        @if (membrosComPresenca.length > 0) {
+          <div class="membros-list">
+            @for (item of membrosComPresenca; track item.membro.id; let i = $index) {
+              <div class="membro-row" [class.presente]="item.presente" [class.visita]="isVisita(item)">
+                <div class="membro-info">
+                  <span class="membro-nome">{{ item.membro.nome | capitalize }}</span>
+                  @if (item.membro.cargo) {
+                    <span class="membro-cargo">{{ item.membro.cargo.nome }}</span>
+                  }
+                  @if (isVisita(item)) {
+                    <span class="visita-badge">{{ item.observacao }}</span>
+                  }
+                </div>
+                <div class="membro-actions">
+                  <button mat-stroked-button
+                    [class.visita-btn-active]="isVisita(item)"
+                    (click)="abrirVisita(i)"
+                    matTooltip="Marcar como visita a outra loja"
+                    class="visita-btn">
+                    <mat-icon>flight</mat-icon>
+                    <span>Visita</span>
+                  </button>
+                  <mat-slide-toggle
+                    [checked]="item.presente"
+                    (change)="togglePresente(i)"
+                    color="primary"
+                    class="presenca-toggle">
+                  </mat-slide-toggle>
+                </div>
+              </div>
+            }
+          </div>
+          <div class="save-row">
+            <button mat-raised-button color="primary" (click)="salvar()" [disabled]="saving" class="btn-salvar">
+              @if (saving) {
+                <mat-spinner diameter="20"></mat-spinner>
+              } @else {
+                <mat-icon>save</mat-icon>
+              }
+              <span>Salvar Frequência</span>
+            </button>
+          </div>
+        } @else {
+          <div class="empty-state">
+            <mat-icon class="empty-icon">people</mat-icon>
+            <h3>Nenhum membro encontrado</h3>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (!busy && datasReuniao.length === 0) {
+    <div class="empty-state">
+      <mat-icon class="empty-icon">event_busy</mat-icon>
+      <h3>Nenhuma reunião encontrada</h3>
+      <p>Clique em "Adicionar Data" para criar uma reunião</p>
+    </div>
+  }
+</div>
+
+@if (showVisitaModal) {
+  <div class="modal-overlay" (click)="cancelarVisita()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h3>Visita a Outra Loja</h3>
+      <p class="modal-subtitle">Informe o nome da loja visitada</p>
+      <mat-form-field appearance="outline" class="modal-field">
+        <mat-label>Nome da Loja</mat-label>
+        <input matInput [(ngModel)]="visitaLoja" placeholder="Ex: Cavaleiros de Salomão nº 7106" autofocus>
+      </mat-form-field>
+      <div class="modal-actions">
+        <button mat-button (click)="cancelarVisita()">Cancelar</button>
+        <button mat-raised-button color="primary" (click)="confirmarVisita()" [disabled]="!visitaLoja.trim()">
+          <mat-icon>check</mat-icon>
+          Confirmar
+        </button>
+      </div>
+    </div>
+  </div>
+}

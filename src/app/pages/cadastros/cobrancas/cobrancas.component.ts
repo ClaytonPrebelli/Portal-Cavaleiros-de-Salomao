@@ -36,17 +36,31 @@ export class CobrancasComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private destroyRef = inject(DestroyRef);
 
+  currentUser: any = null;
   busy = false;
   lista: CobrancaInterface[] = [];
-  displayedColumns: string[] = ['id', 'descricao', 'mesRef', 'membro', 'valor', 'vencimento', 'status', 'acoes'];
+  get displayedColumns(): string[] {
+    const cols = ['id', 'descricao', 'mesRef', 'membro', 'valor', 'vencimento', 'status'];
+    if (this.canManage) cols.push('acoes');
+    return cols;
+  }
 
   filtroCategoria: number | null = null;
   filtroPago: string = '';
   categorias: any[] = [];
 
   ngOnInit(): void {
+    const local: any = localStorage.getItem('MasonUser');
+    if (local) this.currentUser = JSON.parse(local);
     this.loadCategorias();
     this.loadCobrancas();
+  }
+
+  get canManage(): boolean {
+    if (!this.currentUser) return false;
+    if (this.currentUser.isAdmin || this.currentUser.isSuperAdmin || this.currentUser.isMestre) return true;
+    if (this.currentUser.cargo && [1, 2, 3].includes(this.currentUser.cargo.id)) return true;
+    return false;
   }
 
   loadCategorias(): void {
@@ -61,13 +75,21 @@ export class CobrancasComponent implements OnInit {
 
   loadCobrancas(): void {
     this.busy = true;
-    const catId = this.filtroCategoria;
-    const paga = this.filtroPago === '' ? undefined : this.filtroPago === 'true';
 
-    this.cobrancasService.listarTodas(catId ?? undefined, paga)
+    const request$ = this.canManage
+      ? this.cobrancasService.listarTodas(this.filtroCategoria ?? undefined, this.filtroPago === '' ? undefined : this.filtroPago === 'true')
+      : this.cobrancasService.listarPorMembro(this.currentUser.id);
+
+    request$
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        tap(data => this.lista = data),
+        tap(data => {
+          if (!this.canManage && this.filtroPago !== '') {
+            const paga = this.filtroPago === 'true';
+            data = data.filter(c => c.pago === paga);
+          }
+          this.lista = data;
+        }),
         catchError(() => {
           this.showMessage('Erro ao carregar cobranças!', true);
           return of([]);

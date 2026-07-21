@@ -147,7 +147,7 @@
                 <th mat-header-cell *matHeaderCellDef>Categoria</th>
                 <td mat-cell *matCellDef="let element">
                   @if (element.categoriaFinanceiro) {
-                    {{ element.categoriaFinanceiro.nome }}
+                    {{ element.categoriaFinanceiro.nome | capitalize }}
                   }
                 </td>
               </ng-container>

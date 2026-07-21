@@ -15,26 +15,35 @@
     <!-- Center: Navigation (Desktop) -->
     <nav class="nav-desktop">
       @if (currentUser?.isAdmin || currentUser?.isSuperAdmin || currentUser?.isMestre) {
-        <button mat-button [matMenuTriggerFor]="menuCadastros" class="nav-btn">
+        <button mat-button [matMenuTriggerFor]="menuSecretaria" class="nav-btn">
           <mat-icon>folder</mat-icon>
-          <span>Cadastros</span>
+          <span>Secretaria</span>
         </button>
-        <mat-menu #menuCadastros="matMenu">
+        <mat-menu #menuSecretaria="matMenu">
           <button mat-menu-item [routerLink]="['/cadastros/macons']">
             <mat-icon>people</mat-icon>
             <span>Maçons</span>
           </button>
-          <button mat-menu-item [routerLink]="['/cadastros/comunicados']">
-            <mat-icon>campaign</mat-icon>
-            <span>Comunicados</span>
+          <button mat-menu-item [routerLink]="['/cadastros/frequencia']">
+            <mat-icon>event_available</mat-icon>
+            <span>Frequência</span>
           </button>
+        </mat-menu>
+      }
+
+      @if (currentUser?.isAdmin || currentUser?.isSuperAdmin || currentUser?.isMestre || isSecretarioOuTesoureiro()) {
+        <button mat-button [matMenuTriggerFor]="menuFinanceiro" class="nav-btn">
+          <mat-icon>account_balance</mat-icon>
+          <span>Financeiro</span>
+        </button>
+        <mat-menu #menuFinanceiro="matMenu">
           <button mat-menu-item [routerLink]="['/cadastros/cobrancas']">
             <mat-icon>receipt_long</mat-icon>
             <span>Cobranças</span>
           </button>
           <button mat-menu-item [routerLink]="['/cadastros/financeiro']">
-            <mat-icon>account_balance</mat-icon>
-            <span>Financeiro</span>
+            <mat-icon>swap_horiz</mat-icon>
+            <span>Entradas/Saídas</span>
           </button>
         </mat-menu>
       }
@@ -62,31 +71,6 @@
           </button>
         }
       </mat-menu>
-
-      @if (!currentUser?.isCandidato) {
-        <button mat-button [matMenuTriggerFor]="menuServicos" class="nav-btn">
-          <mat-icon>build</mat-icon>
-          <span>Serviços</span>
-        </button>
-        <mat-menu #menuServicos="matMenu">
-          <button mat-menu-item disabled>
-            <mat-icon>description</mat-icon>
-            <span>2ª Via Certificado</span>
-          </button>
-          <button mat-menu-item disabled>
-            <mat-icon>swap_horiz</mat-icon>
-            <span>Transferência</span>
-          </button>
-          <button mat-menu-item disabled>
-            <mat-icon>check_circle</mat-icon>
-            <span>Quite Placet</span>
-          </button>
-          <button mat-menu-item disabled>
-            <mat-icon>edit</mat-icon>
-            <span>Alterações</span>
-          </button>
-        </mat-menu>
-      }
 
       @if (currentUser?.isAdmin || currentUser?.isSuperAdmin) {
         <button mat-button [matMenuTriggerFor]="menuAdmin" class="nav-btn">
@@ -151,22 +135,28 @@
     <div class="mobile-content">
       @if (currentUser?.isAdmin || currentUser?.isSuperAdmin || currentUser?.isMestre) {
         <div class="mobile-section">
-          <div class="section-title">Cadastros</div>
+          <div class="section-title">Secretaria</div>
           <button mat-button [routerLink]="['/cadastros/macons']" (click)="showHamb()">
             <mat-icon>people</mat-icon>
             <span>Maçons</span>
           </button>
-          <button mat-button [routerLink]="['/cadastros/comunicados']" (click)="showHamb()">
-            <mat-icon>campaign</mat-icon>
-            <span>Comunicados</span>
+          <button mat-button [routerLink]="['/cadastros/frequencia']" (click)="showHamb()">
+            <mat-icon>event_available</mat-icon>
+            <span>Frequência</span>
           </button>
+        </div>
+      }
+
+      @if (currentUser?.isAdmin || currentUser?.isSuperAdmin || currentUser?.isMestre || isSecretarioOuTesoureiro()) {
+        <div class="mobile-section">
+          <div class="section-title">Financeiro</div>
           <button mat-button [routerLink]="['/cadastros/cobrancas']" (click)="showHamb()">
             <mat-icon>receipt_long</mat-icon>
             <span>Cobranças</span>
           </button>
           <button mat-button [routerLink]="['/cadastros/financeiro']" (click)="showHamb()">
-            <mat-icon>account_balance</mat-icon>
-            <span>Financeiro</span>
+            <mat-icon>swap_horiz</mat-icon>
+            <span>Entradas/Saídas</span>
           </button>
         </div>
       }
@@ -191,28 +181,6 @@
           </button>
         }
       </div>
-
-      @if (!currentUser?.isCandidato) {
-        <div class="mobile-section">
-          <div class="section-title">Serviços</div>
-          <button mat-button disabled>
-            <mat-icon>description</mat-icon>
-            <span>2ª Via Certificado</span>
-          </button>
-          <button mat-button disabled>
-            <mat-icon>swap_horiz</mat-icon>
-            <span>Transferência</span>
-          </button>
-          <button mat-button disabled>
-            <mat-icon>check_circle</mat-icon>
-            <span>Quite Placet</span>
-          </button>
-          <button mat-button disabled>
-            <mat-icon>edit</mat-icon>
-            <span>Alterações</span>
-          </button>
-        </div>
-      }
 
       @if (currentUser?.isAdmin || currentUser?.isSuperAdmin) {
         <div class="mobile-section">

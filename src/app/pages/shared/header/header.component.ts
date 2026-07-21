@@ -66,6 +66,16 @@ export class HeaderComponent implements OnInit {
     this.exibeHamb = !this.exibeHamb;
   }
 
+  isSecretarioOuTesoureiro(): boolean {
+    if (!this.currentUser?.cargo?.id) return false;
+    return [2, 3].includes(this.currentUser.cargo.id);
+  }
+
+  isVeneravelSecretarioOuTesoureiro(): boolean {
+    if (!this.currentUser?.cargo?.id) return false;
+    return [1, 2, 3].includes(this.currentUser.cargo.id);
+  }
+
   setDefaultImage(event: Event): void {
     const img = event.target as HTMLImageElement;
     img.onerror = null;

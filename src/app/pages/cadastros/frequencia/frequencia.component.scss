@@ -1,0 +1,121 @@
+:host { display: block; animation: fadeIn 0.6s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.frequencia-container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+.page-header {
+  background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%); color: white; padding: 24px 32px;
+  border-radius: 16px; margin-bottom: 24px; box-shadow: 0 8px 32px rgba(13, 71, 161, 0.3);
+  .header-content { display: flex; justify-content: space-between; align-items: center; }
+  .title-section { display: flex; align-items: center; gap: 16px; }
+  .page-icon { font-size: 40px; width: 40px; height: 40px; }
+  h1 { margin: 0; font-size: 1.6rem; color: white; }
+  p { margin: 4px 0 0 0; opacity: 0.9; font-size: 0.9rem; color: white; }
+  .btn-historico {
+    border-color: rgba(255,255,255,0.6) !important; color: white !important; border-radius: 20px !important;
+    mat-icon { margin-right: 6px; }
+    &:hover { background: rgba(255,255,255,0.15) !important; border-color: white !important; }
+  }
+}
+
+.filters-row { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; align-items: center;
+  .summary-card {
+    border-radius: 12px; flex: 0 0 auto;
+    mat-card-content { display: flex; align-items: center; gap: 12px; padding: 16px 20px !important; }
+    mat-icon { font-size: 32px; width: 32px; height: 32px; }
+    .summary-value { font-size: 1.3rem; font-weight: 700; display: block; }
+    .summary-label { font-size: 0.8rem; color: #666; display: block; }
+    &.presente { border-left: 4px solid #4caf50; mat-icon { color: #4caf50; } }
+    &.ausente { border-left: 4px solid #f44336; mat-icon { color: #f44336; } }
+    &.percentual { border-left: 4px solid #1565c0; mat-icon { color: #1565c0; } }
+  }
+  .filter-card {
+    flex: 1; border-radius: 12px;
+    mat-card-content { display: flex; gap: 12px; padding: 12px 16px !important; }
+    .filter-field { flex: 1; }
+  }
+}
+
+.datas-reuniao {
+  margin-bottom: 24px;
+  .datas-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .datas-label { font-weight: 600; color: #333; }
+  .btn-add-data { border-radius: 20px !important; }
+  .datas-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip-wrapper { display: flex; align-items: center; gap: 2px; }
+  .data-chip {
+    border-radius: 20px !important; padding: 0 20px !important; font-weight: 500;
+    border: 2px solid #e0e0e0 !important; transition: all 0.2s ease;
+    &:hover { border-color: #1565c0 !important; color: #1565c0; }
+    &.chip-active { background: #1565c0 !important; color: white !important; border-color: #1565c0 !important; }
+  }
+  .chip-remove { width: 28px; height: 28px; mat-icon { font-size: 16px; width: 16px; height: 16px; } }
+  .add-data-row { display: flex; gap: 12px; align-items: center; margin-bottom: 12px;
+    mat-form-field { flex: 0 0 250px; }
+  }
+}
+
+.loading-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; gap: 16px; color: #666; }
+
+.table-card {
+  border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  mat-card-header { padding: 16px 24px; border-bottom: 1px solid #e0e0e0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  mat-card-title { display: flex; align-items: center; gap: 8px; font-size: 1.1rem; }
+  .tipo-sessao-bar { display: flex; align-items: center; }
+  .tipo-sessao-field { width: 300px; ::ng-deep .mat-mdc-form-field-subscript-wrapper { display: none; } }
+}
+
+.membros-list { padding: 8px 0; }
+.membro-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 24px; border-bottom: 1px solid #f5f5f5;
+  transition: background-color 0.2s ease;
+  &:nth-child(even) { background-color: rgba(21, 101, 192, 0.08); }
+  &:hover { background-color: rgba(21, 101, 192, 0.04); }
+  &.presente { background-color: rgba(76, 175, 80, 0.06); }
+  &.visita { background-color: rgba(33, 150, 243, 0.06); }
+  .membro-info { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .membro-nome { font-weight: 500; font-size: 0.95rem; }
+  .membro-cargo { font-size: 0.8rem; color: #666; background: #e8eaf6; padding: 2px 8px; border-radius: 10px; }
+  .visita-badge { font-size: 0.75rem; color: #1565c0; background: #e3f2fd; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .membro-actions { display: flex; align-items: center; gap: 12px; }
+  .visita-btn {
+    border-radius: 20px !important; font-size: 0.8rem !important; height: 32px !important;
+    padding: 0 12px !important; border-color: #e0e0e0 !important;
+    mat-icon { font-size: 16px; width: 16px; height: 16px; margin-right: 4px; }
+    &.visita-btn-active { border-color: #1565c0 !important; color: #1565c0; background: #e3f2fd !important; }
+  }
+  .presenca-toggle { }
+}
+
+.save-row { padding: 16px 24px; border-top: 1px solid #e0e0e0; display: flex; justify-content: flex-end; }
+.btn-salvar { display: flex; align-items: center; gap: 8px; padding: 0 24px !important; border-radius: 8px !important; }
+
+.empty-state { display: flex; flex-direction: column; align-items: center; padding: 60px 20px; color: #666;
+  .empty-icon { font-size: 64px; width: 64px; height: 64px; margin-bottom: 16px; opacity: 0.5; }
+  h3 { margin: 0 0 8px 0; color: #333; } p { margin: 0; }
+}
+
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;
+  z-index: 1000; animation: fadeIn 0.2s ease;
+}
+.modal-content {
+  background: white; border-radius: 16px; padding: 32px; min-width: 400px; max-width: 90vw;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+  h3 { margin: 0 0 4px 0; font-size: 1.2rem; color: #333; }
+  .modal-subtitle { margin: 0 0 20px 0; color: #666; font-size: 0.9rem; }
+  .modal-field { width: 100%; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px; }
+}
+
+@media (max-width: 768px) {
+  .frequencia-container { padding: 16px; }
+  .page-header .header-content { flex-direction: column; gap: 16px; text-align: center; }
+  .filters-row { flex-direction: column; }
+  .filters-row .filter-card mat-card-content { flex-direction: column; }
+  .membro-row { padding: 12px 16px; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .membro-actions { width: 100%; justify-content: space-between; }
+  .modal-content { min-width: auto; padding: 24px; }
+}

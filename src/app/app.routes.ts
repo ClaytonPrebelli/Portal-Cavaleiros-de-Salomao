@@ -60,6 +60,11 @@ export const routes: Routes = [
     canActivate: [AuthGuardGuard]
   },
   {
+    path: 'cadastros/frequencia',
+    loadComponent: () => import('./pages/cadastros/frequencia/frequencia.component').then(m => m.FrequenciaComponent),
+    canActivate: [AuthGuardGuard]
+  },
+  {
     path: 'cadastros/macons',
     loadComponent: () => import('./pages/cadastros/macons/macons.component').then(m => m.MaconsComponent),
     canActivate: [AuthGuardGuard]

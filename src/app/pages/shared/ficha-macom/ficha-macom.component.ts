@@ -3,6 +3,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { UsuariosInterface } from 'src/app/core/interfaces/login';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { FrequenciaService } from 'src/app/core/services/frequencia.service';
 import { Envs } from 'src/app/core/services/envs';
 import { PdfGeneratorService } from 'src/app/core/services/pdf-generator.service';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,7 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
-import { catchError, finalize, of, tap } from 'rxjs';
+import { catchError, finalize, forkJoin, of, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -32,6 +33,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class FichaMacomComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private usuarioService = inject(AuthService);
+  private frequenciaService = inject(FrequenciaService);
   private pdfGenerator = inject(PdfGeneratorService);
   private destroyRef = inject(DestroyRef);
 
@@ -40,6 +42,9 @@ export class FichaMacomComponent implements OnInit {
   macom!: UsuariosInterface;
   idade = 0;
   grauSimb = '';
+  frequenciaTotal = 0;
+  frequenciaPresentes = 0;
+  frequenciaPercentual = 0;
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id') ?? '0';
@@ -48,13 +53,21 @@ export class FichaMacomComponent implements OnInit {
 
   private loadMacom(id: number): void {
     this.busy = true;
-    this.usuarioService.verMacom(id)
+    forkJoin({
+      macom: this.usuarioService.verMacom(id),
+      frequencia: this.frequenciaService.listarPorMembro(id)
+    })
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        tap(data => {
-          this.macom = data;
-          this.grauSimb = this.validaGrauSimb(data);
-          this.idade = this.getAge(data.nascimento.toString());
+        tap(({ macom, frequencia }) => {
+          this.macom = macom;
+          this.grauSimb = this.validaGrauSimb(macom);
+          this.idade = this.getAge(macom.nascimento.toString());
+          this.frequenciaTotal = frequencia.length;
+          this.frequenciaPresentes = frequencia.filter(f => f.presente).length;
+          this.frequenciaPercentual = this.frequenciaTotal > 0
+            ? Math.round((this.frequenciaPresentes / this.frequenciaTotal) * 100)
+            : 0;
         }),
         catchError(() => of(null)),
         finalize(() => this.busy = false)

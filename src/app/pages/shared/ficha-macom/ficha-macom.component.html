@@ -164,6 +164,31 @@
         </mat-card>
       </div>
 
+      @if (frequenciaTotal > 0) {
+        <mat-card class="card frequencia-card">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>event_available</mat-icon>
+            <mat-card-title>Frequência</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="frequencia-stats">
+              <div class="freq-item">
+                <span class="freq-valor" [class.alto]="frequenciaPercentual >= 75" [class.medio]="frequenciaPercentual >= 50 && frequenciaPercentual < 75" [class.baixo]="frequenciaPercentual < 50">{{ frequenciaPercentual }}%</span>
+                <span class="freq-label">Percentual</span>
+              </div>
+              <div class="freq-item">
+                <span class="freq-valor">{{ frequenciaPresentes }}</span>
+                <span class="freq-label">Presenças</span>
+              </div>
+              <div class="freq-item">
+                <span class="freq-valor">{{ frequenciaTotal }}</span>
+                <span class="freq-label">Reuniões</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+
       @if (macom.familiares && macom.familiares.length > 0) {
         <mat-card class="card">
           <mat-card-header>
