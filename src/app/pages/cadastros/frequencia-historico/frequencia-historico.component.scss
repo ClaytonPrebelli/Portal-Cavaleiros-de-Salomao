@@ -1,4 +1,4 @@
-.historico-container { padding: 24px; }
+.historico-container { padding: 24px; max-height: 80vh; overflow-y: auto; }
 
 .historico-header {
   display: flex; justify-content: space-between; align-items: center;
