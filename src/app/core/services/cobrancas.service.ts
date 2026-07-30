@@ -47,7 +47,7 @@ export class CobrancasService {
   }
 
   marcarComoPaga(id: number, dataPagamento: string): Observable<any> {
-    return this.http.put<any>(
+    return this.http.post<any>(
       `${Envs.apiUrl}Cobrancas/MarcarComoPaga?id=${id}&dataPagamento=${dataPagamento}`,
       {}
     );
