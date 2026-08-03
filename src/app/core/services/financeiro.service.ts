@@ -66,7 +66,7 @@ export class FinanceiroService {
   }
 
   atualizar(lancamento: FinanceiroInterface): Observable<FinanceiroInterface> {
-    return this.http.put<FinanceiroInterface>(
+    return this.http.post<FinanceiroInterface>(
       `${Envs.apiUrl}Financeiro/AtualizarLancamento`,
       lancamento
     );
@@ -79,7 +79,7 @@ export class FinanceiroService {
   }
 
   marcarComoPago(id: number, dataPagamento: string): Observable<any> {
-    return this.http.put<any>(
+    return this.http.post<any>(
       `${Envs.apiUrl}Financeiro/MarcarComoPago?id=${id}&dataPagamento=${dataPagamento}`,
       {}
     );
