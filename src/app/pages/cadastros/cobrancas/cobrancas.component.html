@@ -57,6 +57,15 @@
             <mat-option value="true">Pago</mat-option>
           </mat-select>
         </mat-form-field>
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Membro</mat-label>
+          <mat-select [(ngModel)]="filtroMembro" (selectionChange)="aplicarFiltroMembro()">
+            <mat-option [value]="null">Todos</mat-option>
+            @for (m of membros; track m.id) {
+              <mat-option [value]="m.id">{{ m.nome }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
       </mat-card-content>
     </mat-card>
   </div>
@@ -71,9 +80,9 @@
   @if (!busy) {
     <mat-card class="table-card">
       <mat-card-content>
-        @if (lista.length > 0) {
+        @if (listaView.length > 0) {
           <div class="table-wrapper">
-            <table mat-table [dataSource]="lista" class="full-width">
+            <table mat-table [dataSource]="listaView" class="full-width">
               <ng-container matColumnDef="id">
                 <th mat-header-cell *matHeaderCellDef>ID</th>
                 <td mat-cell *matCellDef="let element">
@@ -158,7 +167,7 @@
             </table>
           </div>
           <div class="pagination-info">
-            <span>{{ lista.length }} cobrança(s) encontrada(s)</span>
+            <span>{{ listaView.length }} cobrança(s) encontrada(s)</span>
           </div>
         } @else {
           <div class="empty-state">

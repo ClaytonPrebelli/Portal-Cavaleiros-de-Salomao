@@ -39,6 +39,7 @@ export class CobrancasComponent implements OnInit {
   currentUser: any = null;
   busy = false;
   lista: CobrancaInterface[] = [];
+  listaView: CobrancaInterface[] = [];
   get displayedColumns(): string[] {
     const cols = ['id', 'descricao', 'mesRef', 'membro', 'valor', 'vencimento', 'status'];
     if (this.canManage) cols.push('acoes');
@@ -47,7 +48,9 @@ export class CobrancasComponent implements OnInit {
 
   filtroCategoria: number | null = null;
   filtroPago: string = '';
+  filtroMembro: number | null = null;
   categorias: any[] = [];
+  membros: { id: number; nome: string }[] = [];
 
   ngOnInit(): void {
     const local: any = localStorage.getItem('MasonUser');
@@ -89,6 +92,8 @@ export class CobrancasComponent implements OnInit {
             data = data.filter(c => c.pago === paga);
           }
           this.lista = data;
+          this.buildMembros();
+          this.aplicarFiltroMembro();
         }),
         catchError(() => {
           this.showMessage('Erro ao carregar cobranças!', true);
@@ -97,6 +102,22 @@ export class CobrancasComponent implements OnInit {
         finalize(() => this.busy = false)
       )
       .subscribe();
+  }
+
+  private buildMembros(): void {
+    const mapa = new Map<number, string>();
+    this.lista.forEach(c => {
+      if (c.usuario && c.usuario.id) mapa.set(c.usuario.id, c.usuario.nome);
+    });
+    this.membros = Array.from(mapa.entries())
+      .map(([id, nome]) => ({ id, nome }))
+      .sort((a, b) => a.nome.localeCompare(b.nome));
+  }
+
+  aplicarFiltroMembro(): void {
+    this.listaView = this.lista
+      .filter(c => this.filtroMembro === null || (c.usuario && c.usuario.id === this.filtroMembro))
+      .sort((a, b) => b.id - a.id);
   }
 
   marcarPaga(id: number): void {
@@ -143,10 +164,10 @@ export class CobrancasComponent implements OnInit {
   }
 
   totalPendente(): number {
-    return this.lista.filter(c => !c.pago).reduce((sum, c) => sum + c.valor, 0);
+    return this.listaView.filter(c => !c.pago).reduce((sum, c) => sum + c.valor, 0);
   }
 
   totalPago(): number {
-    return this.lista.filter(c => c.pago).reduce((sum, c) => sum + c.valor, 0);
+    return this.listaView.filter(c => c.pago).reduce((sum, c) => sum + c.valor, 0);
   }
 }
