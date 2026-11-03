@@ -48,13 +48,13 @@
       <mat-card-content>
         <mat-form-field appearance="outline" class="filter-field">
           <mat-label>Mês</mat-label>
-          <mat-select [(ngModel)]="filtroMes" (selectionChange)="loadDatasReuniao()">
+          <mat-select [(ngModel)]="filtroMes" (selectionChange)="onFiltroChange()">
             <mat-option [value]="mes.value" *ngFor="let mes of meses">{{ mes.label }}</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline" class="filter-field">
           <mat-label>Ano</mat-label>
-          <mat-select [(ngModel)]="filtroAno" (selectionChange)="loadDatasReuniao()">
+          <mat-select [(ngModel)]="filtroAno" (selectionChange)="onFiltroChange()">
             <mat-option [value]="ano" *ngFor="let ano of anos">{{ ano }}</mat-option>
           </mat-select>
         </mat-form-field>

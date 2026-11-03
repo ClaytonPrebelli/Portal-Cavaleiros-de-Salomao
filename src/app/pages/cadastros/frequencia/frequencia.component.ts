@@ -84,34 +84,69 @@ export class FrequenciaComponent implements OnInit {
   anos = [2025, 2026, 2027];
 
   ngOnInit(): void {
-    this.loadDatasReuniao();
     this.loadMembros();
+    this.loadDatasReuniao();
+  }
+
+  onFiltroChange(): void {
+    this.dataSelecionada = '';
+    this.registros = [];
+    this.membrosComPresenca = [];
+    this.totalMembros = 0;
+    this.totalPresentes = 0;
+    this.loadDatasReuniao();
   }
 
   loadDatasReuniao(): void {
     this.busy = true;
-    this.frequenciaService.listarDatasReuniao(this.filtroMes, this.filtroAno)
+    forkJoin({
+      datas: this.frequenciaService.listarDatasReuniao(this.filtroMes, this.filtroAno),
+      registros: this.frequenciaService.listarTodas(this.filtroMes, this.filtroAno)
+        .pipe(catchError(() => of([])))
+    })
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        tap(datas => {
+        tap(({ datas, registros }) => {
           this.datasReuniao = datas;
-          if (datas.length > 0 && !this.dataSelecionada) {
-            const hoje = new Date().toISOString().split('T')[0];
-            const proxima = datas.find(d => d.split('T')[0] >= hoje) || datas[datas.length - 1];
-            this.selecionarData(proxima);
-          } else if (this.dataSelecionada) {
+          if (datas.length === 0) {
+            this.dataSelecionada = '';
+            this.registros = [];
+            this.membrosComPresenca = [];
+            this.totalMembros = 0;
+            this.totalPresentes = 0;
+            return;
+          }
+
+          const dataAtualNoPeriodo = !!this.dataSelecionada &&
+            datas.some(d => this.formatarDataInput(d) === this.formatarDataInput(this.dataSelecionada));
+
+          if (dataAtualNoPeriodo) {
             this.loadRegistros();
           } else {
-            this.membrosComPresenca = [];
+            this.selecionarData(this.escolherDataPadrao(datas, registros));
           }
         }),
         catchError(() => {
           this.showMessage('Erro ao carregar datas!', true);
-          return of([]);
+          return of(null);
         }),
         finalize(() => this.busy = false)
       )
       .subscribe();
+  }
+
+  private escolherDataPadrao(datas: string[], registros: FrequenciaInterface[]): string {
+    const hoje = this.formatarDataInput(new Date());
+    const datasComRegistro = Array.from(
+      new Set(registros.map(r => this.formatarDataInput(r.dataReuniao)))
+    ).sort();
+
+    const padrao = datasComRegistro.filter(d => d <= hoje).pop()
+      ?? datasComRegistro[datasComRegistro.length - 1]
+      ?? datas.map(d => this.formatarDataInput(d)).find(d => d >= hoje)
+      ?? this.formatarDataInput(datas[datas.length - 1]);
+
+    return datas.find(d => this.formatarDataInput(d) === padrao) ?? datas[0];
   }
 
   loadMembros(): void {
@@ -122,6 +157,9 @@ export class FrequenciaComponent implements OnInit {
           this.membros = (data.items || data || [])
             .filter((m: any) => m.statusId === 1)
             .sort((a: any, b: any) => (a.nome || '').localeCompare(b.nome || ''));
+          if (this.dataSelecionada) {
+            this.montarLista();
+          }
         }),
         catchError(() => of([]))
       )
@@ -265,9 +303,12 @@ export class FrequenciaComponent implements OnInit {
     return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
   }
 
-  formatarDataInput(data: string): string {
+  formatarDataInput(data: Date | string): string {
     const d = new Date(data);
-    return d.toISOString().split('T')[0];
+    const ano = d.getFullYear();
+    const mes = (d.getMonth() + 1).toString().padStart(2, '0');
+    const dia = d.getDate().toString().padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
   }
 
   getPercentual(): number {
